@@ -1,4 +1,4 @@
-package com.orcchg.chatclient.ui;
+package com.orcchg.chatclient.ui.authorization;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
