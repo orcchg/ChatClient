@@ -10,6 +10,53 @@ public class Message {
     @SerializedName("timestamp") private long mTimestamp;
     @SerializedName("message") private String mMessage;
 
+    public Message(Builder builder) {
+        mId = builder.mId;
+        mLogin = builder.mLogin;
+        mChannel = builder.mChannel;
+        mDestId = builder.mDestId;
+        mTimestamp = builder.mTimestamp;
+        mMessage = builder.mMessage;
+    }
+
+    public static class Builder {
+        private final long mId;
+        private final String mLogin;
+        private int mChannel;
+        private long mDestId;
+        private long mTimestamp;
+        private String mMessage;
+
+        public Builder(long id, String login) {
+            mId = id;
+            mLogin = login;
+        }
+
+        public Builder setChannel(int channel) {
+            mChannel = channel;
+            return this;
+        }
+
+        public Builder setDestId(long destId) {
+            mDestId = destId;
+            return this;
+        }
+
+        public Builder setTimestamp(long timestamp) {
+            mTimestamp = timestamp;
+            return this;
+        }
+
+        public Builder setMessage(String message) {
+            mMessage = message;
+            return this;
+        }
+
+        public Message build() {
+            return new Message(this);
+        }
+    }
+
     public long getId() {
         return mId;
     }

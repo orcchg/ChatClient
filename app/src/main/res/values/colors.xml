@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#7CB342</color>
+    <color name="colorPrimaryDark">#558B2F</color>
+    <color name="colorPrimarySemi">#997CB342</color>
+    <color name="colorPrimaryDarkSemi">#99558B2F</color>
+    <color name="colorAccent">#ffd600</color>
+    <color name="colorAccentSemi">#33ffd600</color>
+    <color name="colorControlActivated">#f9a825</color>
+    <color name="colorControlActivatedSemi">#33f9a825</color>
+
+    <color name="text_primary_dark">#DE000000</color>
+    <color name="text_description_dark">#8b000000</color>
+    <color name="text_white">#ffffffff</color>
+    <color name="text_title">#de000000</color>
+    <color name="text_description">#8b000000</color>
+
+    <color name="chat_window_bg_color">#ffededed</color>
+    <color name="photo_stub_color">#aed581</color>
+    <color name="self_message_blob_background">#aed581</color>
+
 </resources>

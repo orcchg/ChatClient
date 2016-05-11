@@ -35,4 +35,16 @@ public class MessageVO {
             return new MessageVO(this);
         }
     }
+
+    public String getLogin() {
+        return mLogin;
+    }
+
+    public String getMessage() {
+        return mMessage;
+    }
+
+    public long getTimestamp() {
+        return mTimestamp;
+    }
 }
