@@ -1,5 +1,6 @@
 package com.orcchg.chatclient.ui.chat;
 
+import com.orcchg.chatclient.data.DataManager;
 import com.orcchg.chatclient.data.Mapper;
 import com.orcchg.chatclient.data.model.Message;
 import com.orcchg.chatclient.data.viewobject.MessageMapper;
@@ -17,10 +18,12 @@ import timber.log.Timber;
 
 public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
-    ChatAdapter mChatAdapter;
+    DataManager mDataManager;  // TODO: inject
     List<MessageVO> mMessagesList;
+    ChatAdapter mChatAdapter;
 
-    ChatPresenter() {
+    ChatPresenter(DataManager dataManager) {
+        mDataManager = dataManager;
         mMessagesList = new ArrayList<>();
         mChatAdapter = new ChatAdapter(mMessagesList);
     }

@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.viewobject.MessageVO;
 import com.orcchg.chatclient.data.viewobject.SystemMessageVO;
@@ -22,7 +23,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     @Override
     protected ChatPresenter createPresenter() {
-        return new ChatPresenter();
+        ChatClientApplication application = (ChatClientApplication) getApplication();
+        return new ChatPresenter(application.getDataManager());
     }
 
     /* Lifecycle */

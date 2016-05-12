@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="refPhotoStub" format="reference" />
+    <attr name="refForegroundSelectorColor" format="reference" />
+    <attr name="refSelfMessageBlobBackgroundColor" format="reference" />
+</resources>

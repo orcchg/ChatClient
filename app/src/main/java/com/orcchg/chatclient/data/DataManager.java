@@ -1,53 +1,36 @@
 package com.orcchg.chatclient.data;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
+import com.orcchg.chatclient.data.model.LoginForm;
+import com.orcchg.chatclient.data.model.RegistrationForm;
+import com.orcchg.chatclient.data.model.Status;
+import com.orcchg.chatclient.data.remote.RestAdapter;
+import com.orcchg.chatclient.data.remote.ServerBridge;
 
-import timber.log.Timber;
+import rx.Observable;
 
 public class DataManager {
-    private static final String IP_ADDRESS = "194.190.63.108";
-    private static final int PORT = 80;
-    private static final int BUFFER_SIZE = 4096;
 
-    private WorkerThread mWorker;
+    private RestAdapter mRestAdapter;  // TODO: inject
+    private ServerBridge mServer;  // TODO: inject
 
-    public void startConnection() {
-        mWorker = new WorkerThread();
-        mWorker.start();
+    public DataManager(RestAdapter restAdapter, ServerBridge server) {
+        mRestAdapter = restAdapter;
+        mServer = server;
     }
 
-    public void closeConnection() {
-        mWorker.terminate();
+    public Observable<LoginForm> getLoginForm() {
+        return mRestAdapter.getLoginForm();
     }
 
-    /* Internals */
-    // --------------------------------------------------------------------------------------------
-    private static class WorkerThread extends Thread {
-        private Socket mSocket;
-        private BufferedReader mInput;
-        private boolean mIsStopped;
+    public Observable<Status> sendLoginForm(LoginForm form) {
+        return mRestAdapter.sendLoginForm(form);
+    }
 
-        @Override
-        public void run() {
-            try {
-                mSocket = new Socket(IP_ADDRESS, PORT);
-                mInput = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
-                char[] buffer = new char[BUFFER_SIZE];
-                while (!mIsStopped && mInput.read(buffer) >= 0) {
-                    Timber.v("Raw response: " + new String(buffer));
-                }
-                mInput.close();
-                mSocket.close();
-            } catch (IOException e) {
-                Timber.e(e.getMessage());
-            }
-        }
+    public Observable<RegistrationForm> getRegistrationForm() {
+        return mRestAdapter.getRegistrationForm();
+    }
 
-        private void terminate() {
-            mIsStopped = true;
-        }
+    public Observable<Status> sendRegistrationForm(RegistrationForm form) {
+        return mRestAdapter.sendRegistrationForm(form);
     }
 }

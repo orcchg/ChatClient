@@ -21,9 +21,9 @@ import rx.Observable;
 
 public interface RestAdapter {
 
-    String ENDPOINT = "http://194.190.63.108/";
+    String ENDPOINT = "http://" + ServerBridge.IP_ADDRESS + ":" + ServerBridge.PORT + "/";
 
-    public static class Creator {
+    class Creator {
         public static RestAdapter create() {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
