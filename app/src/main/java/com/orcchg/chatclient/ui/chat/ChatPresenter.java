@@ -61,7 +61,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
             @Override
             public void onNext(MessageVO viewObject) {
-                Timber.d("Next: " + viewObject.getLogin());
+                Timber.d("Next: %s", viewObject.getLogin());
                 mMessagesList.add(viewObject);
             }
         };

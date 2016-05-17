@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -29,9 +30,13 @@ import android.widget.TextView;
 import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.ui.base.BaseActivity;
+import com.orcchg.chatclient.ui.chat.ChatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -58,10 +63,11 @@ public class AuthActivity extends BaseActivity<AuthPresenter> implements AuthMvp
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
+    @Bind(R.id.email) AutoCompleteTextView mEmailView;
+    @Bind(R.id.password) EditText mPasswordView;
+    @Bind(R.id.email_sign_in_button) Button mEmailSignInButton;
+    @Bind(R.id.login_form) View mProgressView;
+    @Bind(R.id.login_progress) View mLoginFormView;
 
     @Override
     protected AuthPresenter createPresenter() {
@@ -75,11 +81,11 @@ public class AuthActivity extends BaseActivity<AuthPresenter> implements AuthMvp
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
+
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -91,17 +97,12 @@ public class AuthActivity extends BaseActivity<AuthPresenter> implements AuthMvp
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
-//                startActivity(new Intent(AuthActivity.this, ChatActivity.class));
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
 
     private void populateAutoComplete() {
@@ -200,7 +201,6 @@ public class AuthActivity extends BaseActivity<AuthPresenter> implements AuthMvp
         }
     }
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
@@ -342,6 +342,7 @@ public class AuthActivity extends BaseActivity<AuthPresenter> implements AuthMvp
             showProgress(false);
 
             if (success) {
+                startActivity(new Intent(AuthActivity.this, ChatActivity.class));
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
