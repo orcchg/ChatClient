@@ -13,7 +13,9 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class ChatPresenter extends BasePresenter<ChatMvpView> {
@@ -35,13 +37,16 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     void loadMessages() {
         final Mapper<Message, MessageVO> mapper = new MessageMapper();
 
-        Observable.from(MockProvider.createMessages()).flatMap(new Func1<Message, Observable<MessageVO>>() {
-            @Override
-            public Observable<MessageVO> call(Message message) {
-                MessageVO viewObject = mapper.map(message);
-                return Observable.just(viewObject);
-            }
-        }).subscribe(createObserver());
+        Observable.from(MockProvider.createMessages())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .flatMap(new Func1<Message, Observable<MessageVO>>() {
+                @Override
+                public Observable<MessageVO> call(Message message) {
+                    MessageVO viewObject = mapper.map(message);
+                    return Observable.just(viewObject);
+                }
+            }).subscribe(createObserver());
     }
 
     private Observer<MessageVO> createObserver() {
