@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
+import com.orcchg.chatclient.data.viewobject.AuthFormVO;
 import com.orcchg.chatclient.ui.base.BaseActivity;
 import com.orcchg.chatclient.ui.chat.ChatActivity;
 
@@ -40,9 +41,6 @@ import butterknife.ButterKnife;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-/**
- * A login screen that offers login via email/password.
- */
 public class AuthActivity extends BaseActivity<AuthPresenter> implements AuthMvpView, LoaderCallbacks<Cursor> {
 
     /**
@@ -104,6 +102,32 @@ public class AuthActivity extends BaseActivity<AuthPresenter> implements AuthMvp
             }
         });
     }
+
+    /* Presentation layer */
+    // --------------------------------------------------------------------------------------------
+    @Override
+    public void showAuthForm(AuthFormVO viewObject) {
+        String email = viewObject.getEmail();
+        mEmailView.setText(TextUtils.isEmpty(email) ? viewObject.getLogin() : email);
+        mPasswordView.setText(viewObject.getPassword());
+    }
+
+    @Override
+    public String getLogin() {
+        return mEmailView.getText().toString();
+    }
+
+    @Override
+    public String getEmail() {
+        return mEmailView.getText().toString();
+    }
+
+    @Override
+    public String getPassword() {
+        return mPasswordView.getText().toString();
+    }
+
+    // -----------------
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
