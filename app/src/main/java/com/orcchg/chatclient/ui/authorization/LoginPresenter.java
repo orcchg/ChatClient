@@ -4,11 +4,9 @@ import com.orcchg.chatclient.data.ApiStatusFactory;
 import com.orcchg.chatclient.data.DataManager;
 import com.orcchg.chatclient.data.Mapper;
 import com.orcchg.chatclient.data.model.LoginForm;
-import com.orcchg.chatclient.data.model.RegistrationForm;
 import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.data.viewobject.AuthFormVO;
 import com.orcchg.chatclient.data.viewobject.LoginFormMapper;
-import com.orcchg.chatclient.data.viewobject.RegistrationFormMapper;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 
 import rx.Observable;
@@ -17,11 +15,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class AuthPresenter extends BasePresenter<AuthMvpView> {
+public class LoginPresenter extends BasePresenter<LoginMvpView> {
 
     DataManager mDataManager;  // TODO: inject
 
-    AuthPresenter(DataManager dataManager) {
+    LoginPresenter(DataManager dataManager) {
         mDataManager = dataManager;
     }
 
@@ -48,36 +46,6 @@ public class AuthPresenter extends BasePresenter<AuthMvpView> {
         LoginForm form = new LoginForm(login, password);
 
         mDataManager.sendLoginForm(form)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(processStatus());
-    }
-
-    /* Registration */
-    // --------------------------------------------------------------------------------------------
-    void requestRegistrationForm() {
-        final Mapper<RegistrationForm, AuthFormVO> mapper = new RegistrationFormMapper();
-
-        mDataManager.getRegistrationForm()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .flatMap(new Func1<RegistrationForm, Observable<AuthFormVO>>() {
-                @Override
-                public Observable<AuthFormVO> call(RegistrationForm registrationForm) {
-                    AuthFormVO viewObject = mapper.map(registrationForm);
-                    return Observable.just(viewObject);
-                }
-            })
-            .subscribe(processAuthForm());
-    }
-
-    void sendRegistrationForm() {
-        String login = getMvpView().getLogin();
-        String email = getMvpView().getEmail();
-        String password = getMvpView().getPassword();
-        RegistrationForm form = new RegistrationForm(login, email, password);
-
-        mDataManager.sendRegistrationForm(form)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(processStatus());

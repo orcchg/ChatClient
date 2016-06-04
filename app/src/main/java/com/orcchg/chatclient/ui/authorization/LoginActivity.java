@@ -41,36 +41,18 @@ import butterknife.ButterKnife;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class AuthActivity extends BaseActivity<AuthPresenter> implements AuthMvpView, LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginMvpView, LoaderCallbacks<Cursor> {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
-
-    // UI references.
     @Bind(R.id.email) AutoCompleteTextView mEmailView;
     @Bind(R.id.password) EditText mPasswordView;
     @Bind(R.id.email_sign_in_button) Button mEmailSignInButton;
-    @Bind(R.id.login_form) View mProgressView;
-    @Bind(R.id.login_progress) View mLoginFormView;
+    @Bind(R.id.login_form) View mLoginFormView;
+    @Bind(R.id.login_progress) View mProgressView;
 
     @Override
-    protected AuthPresenter createPresenter() {
+    protected LoginPresenter createPresenter() {
         ChatClientApplication application = (ChatClientApplication) getApplication();
-        return new AuthPresenter(application.getDataManager());
+        return new LoginPresenter(application.getDataManager());
     }
 
     /* Lifecycle */
@@ -81,8 +63,7 @@ public class AuthActivity extends BaseActivity<AuthPresenter> implements AuthMvp
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        // Set up the login form.
-        populateAutoComplete();
+        populateAutoComplete();  // set up the login form.
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -126,6 +107,79 @@ public class AuthActivity extends BaseActivity<AuthPresenter> implements AuthMvp
     public String getPassword() {
         return mPasswordView.getText().toString();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Id to identity READ_CONTACTS permission request.
+     */
+    private static final int REQUEST_READ_CONTACTS = 0;
+
+    /**
+     * A dummy authentication store containing known user names and passwords.
+     * TODO: remove after connecting to a real authentication system.
+     */
+    private static final String[] DUMMY_CREDENTIALS = new String[]{
+            "foo@example.com:hello", "bar@example.com:world"
+    };
+    /**
+     * Keep track of the login task to ensure we can cancel it if requested.
+     */
+    private UserLoginTask mAuthTask = null;
+
+    // UI references.
+
+
+
+
+
 
     // -----------------
 
@@ -317,7 +371,7 @@ public class AuthActivity extends BaseActivity<AuthPresenter> implements AuthMvp
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(AuthActivity.this,
+                new ArrayAdapter<>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
@@ -366,7 +420,7 @@ public class AuthActivity extends BaseActivity<AuthPresenter> implements AuthMvp
             showProgress(false);
 
             if (success) {
-                startActivity(new Intent(AuthActivity.this, ChatActivity.class));
+                startActivity(new Intent(LoginActivity.this, ChatActivity.class));
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
