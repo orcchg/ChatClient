@@ -28,6 +28,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Bind(R.id.progress) View mProgressView;
     @Bind(R.id.error) View mErrorView;
     @Bind(R.id.retry_button) Button mRetryButton;
+    
+    private View mFocusedView;
 
     @Override
     protected LoginPresenter createPresenter() {
@@ -93,6 +95,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     public void onComplete() {
         Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
         mErrorView.setVisibility(View.GONE);
+        if (mFocusedView != null) mFocusedView.requestFocus();
     }
 
     @Override
@@ -112,7 +115,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Override
     public void onWrongPassword() {
         mPasswordView.setError(getString(R.string.error_incorrect_password));
-        mPasswordView.requestFocus();
+        mFocusedView = mPasswordView;
     }
 
     @Override
@@ -166,6 +169,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
             focusView = mEmailView;
             cancel = true;
         }
+
+        mFocusedView = focusView;
 
         if (cancel) {
             focusView.requestFocus();

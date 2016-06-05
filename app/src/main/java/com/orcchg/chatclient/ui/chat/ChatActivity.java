@@ -3,13 +3,13 @@ package com.orcchg.chatclient.ui.chat;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
-import com.orcchg.chatclient.data.viewobject.MessageVO;
-import com.orcchg.chatclient.data.viewobject.SystemMessageVO;
+import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.ui.base.BaseActivity;
 
 import butterknife.Bind;
@@ -26,7 +26,9 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     protected ChatPresenter createPresenter() {
         ChatClientApplication application = (ChatClientApplication) getApplication();
-        return new ChatPresenter(application.getDataManager());
+        long id = getIntent().getLongExtra(EXTRA_USER_ID, Status.UNKNOWN_ID);
+        String name = getIntent().getStringExtra(EXTRA_USER_NAME);
+        return new ChatPresenter(application.getDataManager(), id, name);
     }
 
     /* Lifecycle */
@@ -39,38 +41,55 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
         mMessagesView.setLayoutManager(new LinearLayoutManager(this));
         mMessagesView.setAdapter(mPresenter.getChatAdapter());
+
+        mSendMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.sendMessage();
+            }
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mPresenter.loadMessages();
+        start();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mPresenter.logout();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.unsubscribe();
+        super.onDestroy();
     }
 
     /* Presentation layer */
     // --------------------------------------------------------------------------------------------
     @Override
-    public void showMessage(MessageVO message) {
-
-    }
-
-    @Override
-    public void showSystemMessage(SystemMessageVO systemMessage) {
-
-    }
-
-    @Override
     public void onComplete() {
-
     }
 
     @Override
     public void onError() {
-
     }
 
     @Override
     public void onLoading() {
+    }
 
+    @Override
+    public String getMessage() {
+        return mMessagesEditView.getText().toString();
+    }
+
+    /* Actions */
+    // --------------------------------------------------------------------------------------------
+    private void start() {
+        // TODO: probably load prev messages ?
     }
 }

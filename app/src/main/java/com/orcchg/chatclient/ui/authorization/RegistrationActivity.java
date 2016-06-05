@@ -29,6 +29,8 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     @Bind(R.id.error) View mErrorView;
     @Bind(R.id.retry_button) Button mRetryButton;
 
+    private View mFocusedView;
+
     @Override
     protected RegistrationPresenter createPresenter() {
         ChatClientApplication application = (ChatClientApplication) getApplication();
@@ -94,6 +96,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     public void onComplete() {
         Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
         mErrorView.setVisibility(View.GONE);
+        if (mFocusedView != null) mFocusedView.requestFocus();
     }
 
     @Override
@@ -113,13 +116,13 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     @Override
     public void onAlreadyLoggedIn() {
         mLoginView.setError(getString(R.string.error_already_logged_in));
-        mLoginView.requestFocus();
+        mFocusedView = mLoginView;
     }
 
     @Override
     public void onAlreadyRegistered() {
         mLoginView.setError(getString(R.string.error_already_registered));
-        mLoginView.requestFocus();
+        mFocusedView = mLoginView;
     }
 
     @Override
@@ -180,6 +183,8 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
             focusView = mEmailView;
             cancel = true;
         }
+
+        mFocusedView = focusView;
 
         if (cancel) {
             focusView.requestFocus();

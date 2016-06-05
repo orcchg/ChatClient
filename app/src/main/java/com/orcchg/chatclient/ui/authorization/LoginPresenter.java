@@ -114,6 +114,8 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
             @Override
             public void onNext(Status status) {
                 Timber.d("onNext (Status)");
+                String errorMessage = "";
+                boolean flag = false;
                 @ApiStatusFactory.Status int code = ApiStatusFactory.getStatusByCode(status.getCode());
                 switch (code) {
                     case ApiStatusFactory.STATUS_SUCCESS:
@@ -136,20 +138,22 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                         activity2.startActivity(intent2);
                         break;
                     case ApiStatusFactory.STATUS_ALREADY_REGISTERED:
-                        Timber.e("Server's responded with forbidden error: already registered");
+                        Timber.w("Server's responded with forbidden error: already registered");
                         break;
                     case ApiStatusFactory.STATUS_ALREADY_LOGGED_IN:
                         getMvpView().onAlreadyLoggedIn();
                         break;
                     case ApiStatusFactory.STATUS_INVALID_FORM:
-                        String message = "Client's requested with invalid form";
-                        Timber.e(message);
-                        throw new RuntimeException(message);
+                        errorMessage = "Client's requested with invalid form";
+                        flag = true;
                     case ApiStatusFactory.STATUS_INVALID_QUERY:
-                        Timber.e("Server's responded with forbidden error: invalid query");
-                        break;
+                        if (!flag) {
+                            errorMessage = "Client's requested with invalid query";
+                        }
+                        Timber.e(errorMessage);
+                        throw new RuntimeException(errorMessage);
                     case ApiStatusFactory.STATUS_UNAUTHORIZED:
-                        Timber.e("Server's responded with forbidden error: unauthorized");
+                        Timber.w("Server's responded with forbidden error: unauthorized");
                         break;
                     case ApiStatusFactory.STATUS_UNKNOWN:
                     default:

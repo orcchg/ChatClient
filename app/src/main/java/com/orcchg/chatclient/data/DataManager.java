@@ -1,6 +1,7 @@
 package com.orcchg.chatclient.data;
 
 import com.orcchg.chatclient.data.model.LoginForm;
+import com.orcchg.chatclient.data.model.Message;
 import com.orcchg.chatclient.data.model.RegistrationForm;
 import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.data.remote.RestAdapter;
@@ -18,6 +19,8 @@ public class DataManager {
         mServer = server;
     }
 
+    /* Authentication */
+    // --------------------------------------------------------------------------------------------
     public Observable<LoginForm> getLoginForm() {
         return mRestAdapter.getLoginForm();
     }
@@ -32,5 +35,17 @@ public class DataManager {
 
     public Observable<Status> sendRegistrationForm(RegistrationForm form) {
         return mRestAdapter.sendRegistrationForm(form);
+    }
+
+    /* Chat */
+    // --------------------------------------------------------------------------------------------
+    public Observable<Status> sendMessage(Message message) {
+        return mRestAdapter.sendMessage(message);
+    }
+
+    /* Access */
+    // --------------------------------------------------------------------------------------------
+    public Observable<Status> logout(long id, String name) {
+        return mRestAdapter.logout(id, name);
     }
 }
