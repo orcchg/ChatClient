@@ -122,7 +122,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
                 switch (code) {
                     case ApiStatusFactory.STATUS_SUCCESS:
                         Timber.i("Successfully registered");
-                        String userName = getMvpView().getLogin();
+                        String userName = status.getPayload();
                         Activity activity1 = (Activity) getMvpView();
                         Intent intent1 = new Intent(activity1, ChatActivity.class);
                         intent1.putExtra(ChatActivity.EXTRA_USER_ID, status.getId());

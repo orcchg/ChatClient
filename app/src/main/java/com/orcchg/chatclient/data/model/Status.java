@@ -8,6 +8,7 @@ public class Status {
     @SerializedName("code") private int mCode;
     @SerializedName("id") private long mId;
     @SerializedName("token") private String mToken;
+    @SerializedName("payload") private String mPayload;
 
     public int getCode() {
         return mCode;
@@ -19,5 +20,9 @@ public class Status {
 
     public String getToken() {
         return mToken;
+    }
+
+    public String getPayload() {
+        return mPayload;
     }
 }

@@ -120,7 +120,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                 switch (code) {
                     case ApiStatusFactory.STATUS_SUCCESS:
                         Timber.i("Successfully logged in");
-                        String userName = getMvpView().getLogin();
+                        String userName = status.getPayload();
                         Activity activity1 = (Activity) getMvpView();
                         Intent intent1 = new Intent(activity1, ChatActivity.class);
                         intent1.putExtra(ChatActivity.EXTRA_USER_ID, status.getId());
