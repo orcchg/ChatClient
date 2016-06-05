@@ -5,6 +5,8 @@ import com.orcchg.chatclient.ui.base.MvpView;
 
 public interface RegistrationMvpView extends MvpView {
     void showAuthForm(AuthFormVO viewObject);
+    void onAlreadyLoggedIn();
+    void onAlreadyRegistered();
 
     String getLogin();
     String getEmail();

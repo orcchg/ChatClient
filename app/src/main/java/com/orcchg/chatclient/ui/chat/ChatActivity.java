@@ -16,6 +16,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvpView {
+    public static final String EXTRA_USER_ID = "extra_user_id";
+    public static final String EXTRA_USER_NAME = "extra_user_name";
 
     @Bind(R.id.rv_messages) RecyclerView mMessagesView;
     @Bind(R.id.et_message) EditText mMessagesEditView;

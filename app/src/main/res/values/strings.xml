@@ -9,11 +9,12 @@
     <string name="action_sign_in_or_register">Sign in or register</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_up">Sign up</string>
+    <string name="error_already_logged_in">This user has already logged in</string>
+    <string name="error_already_registered">This user has already registered</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
 
     <!-- Chat -->
     <string name="chat_label">Chat</string>

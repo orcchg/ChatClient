@@ -12,6 +12,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -41,24 +42,24 @@ public interface RestAdapter {
         }
     }
 
-    @GET("/login/")
+    @GET("/login")
     Observable<LoginForm> getLoginForm();
 
-    @POST("/login/")
-    Observable<Status> sendLoginForm(LoginForm form);
+    @POST("/login")
+    Observable<Status> sendLoginForm(@Body LoginForm form);
 
-    @GET("/register/")
+    @GET("/register")
     Observable<RegistrationForm> getRegistrationForm();
 
-    @POST("/register/")
-    Observable<Status> sendRegistrationForm(RegistrationForm form);
+    @POST("/register")
+    Observable<Status> sendRegistrationForm(@Body RegistrationForm form);
 
-    @POST("/message/")
-    Observable<Status> sendMessage(Message message);
+    @POST("/message")
+    Observable<Status> sendMessage(@Body Message message);
 
-    @DELETE("/logout/")
+    @DELETE("/logout")
     Observable<Status> logout(@Query("id") long id, @Query("name") String name);
 
-    @PUT("/switch_channel/")
+    @PUT("/switch_channel")
     Observable<Status> switchChannel(@Query("id") long id, @Query("channel") int channel, @Query("name") String name);
 }

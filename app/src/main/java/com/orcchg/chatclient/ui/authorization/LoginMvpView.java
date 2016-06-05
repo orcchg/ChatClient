@@ -5,6 +5,8 @@ import com.orcchg.chatclient.ui.base.MvpView;
 
 public interface LoginMvpView extends MvpView {
     void showAuthForm(AuthFormVO viewObject);
+    void onWrongPassword();
+    void onAlreadyLoggedIn();
 
     String getLogin();
     String getPassword();

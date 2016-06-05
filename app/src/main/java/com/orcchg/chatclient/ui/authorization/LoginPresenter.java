@@ -1,5 +1,9 @@
 package com.orcchg.chatclient.ui.authorization;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.util.Log;
+
 import com.orcchg.chatclient.data.ApiStatusFactory;
 import com.orcchg.chatclient.data.DataManager;
 import com.orcchg.chatclient.data.Mapper;
@@ -8,19 +12,33 @@ import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.data.viewobject.AuthFormVO;
 import com.orcchg.chatclient.data.viewobject.LoginFormMapper;
 import com.orcchg.chatclient.ui.base.BasePresenter;
+import com.orcchg.chatclient.ui.chat.ChatActivity;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class LoginPresenter extends BasePresenter<LoginMvpView> {
 
     DataManager mDataManager;  // TODO: inject
+    private Subscription mSubscriptionGet;
+    private Subscription mSubscriptionSend;
 
     LoginPresenter(DataManager dataManager) {
         mDataManager = dataManager;
+    }
+
+    boolean hasRequestedLoginForm() {
+        return mSubscriptionGet != null && !mSubscriptionGet.isUnsubscribed();
+    }
+
+    void unsubscribe() {
+        mSubscriptionGet.unsubscribe();
+        mSubscriptionSend.unsubscribe();
     }
 
     /* Login */
@@ -28,7 +46,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     void requestLoginForm() {
         final Mapper<LoginForm, AuthFormVO> mapper = new LoginFormMapper();
 
-        mDataManager.getLoginForm()
+        mSubscriptionGet = mDataManager.getLoginForm()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .flatMap(new Func1<LoginForm, Observable<AuthFormVO>>() {
@@ -45,7 +63,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
         String password = getMvpView().getPassword();
         LoginForm form = new LoginForm(login, password);
 
-        mDataManager.sendLoginForm(form)
+        mSubscriptionSend = mDataManager.sendLoginForm(form)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(processStatus());
@@ -60,6 +78,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
 
             @Override
             public void onError(Throwable e) {
+                Timber.e("Error: %s", Log.getStackTraceString(e));
             }
 
             @Override
@@ -85,28 +104,39 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                 @ApiStatusFactory.Status int code = ApiStatusFactory.getStatusByCode(status.getCode());
                 switch (code) {
                     case ApiStatusFactory.STATUS_SUCCESS:
-                        // TODO: success logged in, registered + logged in --> start chat
+                        Timber.i("Successfully logged in");
+                        String userName = getMvpView().getLogin();
+                        Activity activity1 = (Activity) getMvpView();
+                        Intent intent1 = new Intent(activity1, ChatActivity.class);
+                        intent1.putExtra(ChatActivity.EXTRA_USER_ID, status.getId());
+                        intent1.putExtra(ChatActivity.EXTRA_USER_NAME, userName);
+                        activity1.startActivity(intent1);
                         break;
                     case ApiStatusFactory.STATUS_WRONG_PASSWORD:
-                        // TODO: retry password in login form
+                        Timber.d("Wrong password");
+                        getMvpView().onWrongPassword();
                         break;
                     case ApiStatusFactory.STATUS_NOT_REGISTERED:
-                        // TODO: login failed --> go to registration
+                        Timber.d("Not registered");
+                        Activity activity2 = (Activity) getMvpView();
+                        Intent intent2 = new Intent(activity2, RegistrationActivity.class);
+                        activity2.startActivity(intent2);
                         break;
                     case ApiStatusFactory.STATUS_ALREADY_REGISTERED:
-                        // TODO: warning in registration form
+                        Timber.e("Server's responded with forbidden error: already registered");
                         break;
                     case ApiStatusFactory.STATUS_ALREADY_LOGGED_IN:
-                        // TODO: warning in login form
+                        getMvpView().onAlreadyLoggedIn();
                         break;
                     case ApiStatusFactory.STATUS_INVALID_FORM:
-                        // TODO: system error
-                        break;
+                        String message = "Client's requested with invalid form";
+                        Timber.e(message);
+                        throw new RuntimeException(message);
                     case ApiStatusFactory.STATUS_INVALID_QUERY:
-                        // TODO: system error
+                        Timber.e("Server's responded with forbidden error: invalid query");
                         break;
                     case ApiStatusFactory.STATUS_UNAUTHORIZED:
-                        // TODO: system error, unreachable from auth screen
+                        Timber.e("Server's responded with forbidden error: unauthorized");
                         break;
                     case ApiStatusFactory.STATUS_UNKNOWN:
                     default:
