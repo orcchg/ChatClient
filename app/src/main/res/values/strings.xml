@@ -6,6 +6,7 @@
     <string name="prompt_login">Login</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
+    <string name="action_retry">Retry</string>
     <string name="action_sign_in_or_register">Sign in or register</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_up">Sign up</string>
@@ -15,6 +16,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_network">Network error. Please, try again later.</string>
 
     <!-- Chat -->
     <string name="chat_label">Chat</string>

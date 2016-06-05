@@ -26,6 +26,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Bind(R.id.sign_in_button) Button mSignInButton;
     @Bind(R.id.form_container_scroll) View mFormContainer;
     @Bind(R.id.progress) View mProgressView;
+    @Bind(R.id.error) View mErrorView;
+    @Bind(R.id.retry_button) Button mRetryButton;
 
     @Override
     protected LoginPresenter createPresenter() {
@@ -52,6 +54,13 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
             }
         });
 
+        mRetryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                start();
+            }
+        });
+
         mSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,7 +72,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Override
     protected void onStart() {
         super.onStart();
-        mPresenter.requestLoginForm();
+        start();
     }
 
     @Override
@@ -78,6 +87,26 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     public void showAuthForm(AuthFormVO viewObject) {
         mEmailView.setText(viewObject.getLogin());
         mPasswordView.setText(viewObject.getPassword());
+    }
+
+    @Override
+    public void onComplete() {
+        Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
+        mErrorView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onError() {
+        Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
+        mFormContainer.setVisibility(View.GONE);
+        mProgressView.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onLoading() {
+        Utility.showProgress(getResources(), mFormContainer, mProgressView, true);
+        mErrorView.setVisibility(View.GONE);
     }
 
     @Override
@@ -104,6 +133,10 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
+    private void start() {
+        mPresenter.requestLoginForm();
+    }
+
     private void attemptLogin() {
         if (mPresenter.hasRequestedLoginForm()) {
             return;
@@ -137,7 +170,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         if (cancel) {
             focusView.requestFocus();
         } else {
-            Utility.showProgress(getResources(), mFormContainer, mProgressView, true);
             mPresenter.sendLoginForm();
         }
     }

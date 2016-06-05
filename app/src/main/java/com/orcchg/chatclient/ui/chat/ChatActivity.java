@@ -58,4 +58,19 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     public void showSystemMessage(SystemMessageVO systemMessage) {
 
     }
+
+    @Override
+    public void onComplete() {
+
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void onLoading() {
+
+    }
 }

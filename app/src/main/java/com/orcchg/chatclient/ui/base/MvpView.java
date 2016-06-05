@@ -6,4 +6,8 @@ package com.orcchg.chatclient.ui.base;
  * that then usually will be implemented by an Activity or Fragment.
  */
 public interface MvpView {
+
+    void onComplete();
+    void onError();
+    void onLoading();
 }

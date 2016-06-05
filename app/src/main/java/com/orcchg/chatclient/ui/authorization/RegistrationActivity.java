@@ -26,6 +26,8 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     @Bind(R.id.sign_up_button) Button mSignUpButton;
     @Bind(R.id.form_container_scroll) View mFormContainer;
     @Bind(R.id.progress) View mProgressView;
+    @Bind(R.id.error) View mErrorView;
+    @Bind(R.id.retry_button) Button mRetryButton;
 
     @Override
     protected RegistrationPresenter createPresenter() {
@@ -52,6 +54,13 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
             }
         });
 
+        mRetryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                start();
+            }
+        });
+
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,7 +72,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     @Override
     protected void onStart() {
         super.onStart();
-        mPresenter.requestRegistrationForm();
+        start();
     }
 
     @Override
@@ -79,6 +88,26 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
         mLoginView.setText(viewObject.getLogin());
         mEmailView.setText(viewObject.getEmail());
         mPasswordView.setText(viewObject.getPassword());
+    }
+
+    @Override
+    public void onComplete() {
+        Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
+        mErrorView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onError() {
+        Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
+        mFormContainer.setVisibility(View.GONE);
+        mProgressView.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onLoading() {
+        Utility.showProgress(getResources(), mFormContainer, mProgressView, true);
+        mErrorView.setVisibility(View.GONE);
     }
 
     @Override
@@ -110,6 +139,10 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
+    private void start() {
+        mPresenter.requestRegistrationForm();
+    }
+
     private void attemptRegister() {
         if (mPresenter.hasRequestedRegistrationForm()) {
             return;
@@ -151,7 +184,6 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
         if (cancel) {
             focusView.requestFocus();
         } else {
-            Utility.showProgress(getResources(), mFormContainer, mProgressView, true);
             mPresenter.sendRegistrationForm();
         }
     }

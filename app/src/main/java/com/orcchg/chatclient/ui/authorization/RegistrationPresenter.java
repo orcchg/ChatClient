@@ -37,13 +37,15 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     }
 
     void unsubscribe() {
-        mSubscriptionGet.unsubscribe();
-        mSubscriptionSend.unsubscribe();
+        if (mSubscriptionGet != null) mSubscriptionGet.unsubscribe();
+        if (mSubscriptionSend != null) mSubscriptionSend.unsubscribe();
     }
 
     /* Registration */
     // --------------------------------------------------------------------------------------------
     void requestRegistrationForm() {
+        getMvpView().onLoading();
+
         final Mapper<RegistrationForm, AuthFormVO> mapper = new RegistrationFormMapper();
 
         mSubscriptionGet = mDataManager.getRegistrationForm()
@@ -60,6 +62,8 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     }
 
     void sendRegistrationForm() {
+        getMvpView().onLoading();
+
         String login = getMvpView().getLogin();
         String email = getMvpView().getEmail();
         String password = getMvpView().getPassword();
@@ -76,15 +80,19 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
         return new Observer<AuthFormVO>() {
             @Override
             public void onCompleted() {
+                Timber.d("onCompleted (Form)");
+                getMvpView().onComplete();
             }
 
             @Override
             public void onError(Throwable e) {
-                Timber.e("Error: %s", Log.getStackTraceString(e));
+                Timber.e("Error (Form): %s", Log.getStackTraceString(e));
+                getMvpView().onError();
             }
 
             @Override
             public void onNext(AuthFormVO viewObject) {
+                Timber.d("onNext (Form)");
                 getMvpView().showAuthForm(viewObject);
             }
         };
@@ -95,14 +103,19 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
         return new Observer<Status>() {
             @Override
             public void onCompleted() {
+                Timber.d("onCompleted (Status)");
+                getMvpView().onComplete();
             }
 
             @Override
             public void onError(Throwable e) {
+                Timber.e("Error (Status): %s", Log.getStackTraceString(e));
+                getMvpView().onError();
             }
 
             @Override
             public void onNext(Status status) {
+                Timber.d("onNext (Status)");
                 @ApiStatusFactory.Status int code = ApiStatusFactory.getStatusByCode(status.getCode());
                 switch (code) {
                     case ApiStatusFactory.STATUS_SUCCESS:
@@ -138,6 +151,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
                         break;
                     case ApiStatusFactory.STATUS_UNKNOWN:
                     default:
+                        Timber.d("Unknown status");
                         break;
                 }
             }

@@ -10,13 +10,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ui.authorization.LoginActivity">
 
-    <ProgressBar
-        android:id="@+id/progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+    <include layout="@layout/progress_view" />
+    <include layout="@layout/error_view" />
 
     <ScrollView
         android:id="@+id/form_container_scroll"
@@ -37,7 +32,7 @@
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_login_or_email"
+                    android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true"/>
