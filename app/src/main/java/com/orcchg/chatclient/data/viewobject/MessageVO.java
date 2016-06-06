@@ -1,20 +1,27 @@
 package com.orcchg.chatclient.data.viewobject;
 
 public class MessageVO {
+    private long mId;
     private String mLogin;
     private String mMessage;
     private long mTimestamp;
 
     public MessageVO(Builder builder) {
+        mId = builder.mId;
         mLogin = builder.mLogin;
         mMessage = builder.mMessage;
         mTimestamp = builder.mTimestamp;
     }
 
     public static class Builder {
+        private final long mId;
         private String mLogin;
         private String mMessage;
         private long mTimestamp;
+
+        public Builder(long id) {
+            mId = id;
+        }
 
         public Builder setLogin(String login) {
             mLogin = login;
@@ -34,6 +41,10 @@ public class MessageVO {
         public MessageVO build() {
             return new MessageVO(this);
         }
+    }
+
+    public long getId() {
+        return mId;
     }
 
     public String getLogin() {

@@ -52,11 +52,11 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     ChatPresenter(DataManager dataManager, long id, String name) {
         mDataManager = dataManager;
-        mMessagesList = new ArrayList<>();
-        mChatAdapter = new ChatAdapter(mMessagesList);
-
         mUserId = id;
         mUserName = name;
+
+        mMessagesList = new ArrayList<>();
+        mChatAdapter = new ChatAdapter(mUserId, mMessagesList);
     }
 
     ChatAdapter getChatAdapter() {

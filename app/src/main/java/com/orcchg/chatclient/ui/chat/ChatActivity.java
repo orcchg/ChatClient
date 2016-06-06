@@ -44,9 +44,9 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
         mSendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                mMessagesEditView.setText("");  // clean up
+            public void onClick(View view) {
                 mPresenter.sendMessage();
+                mMessagesEditView.setText("");  // clean up
             }
         });
     }
@@ -92,5 +92,6 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     // --------------------------------------------------------------------------------------------
     private void start() {
         // TODO: probably load prev messages ?
+        mPresenter.loadMessages();
     }
 }

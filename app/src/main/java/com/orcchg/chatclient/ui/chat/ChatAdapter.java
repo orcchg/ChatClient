@@ -14,9 +14,11 @@ import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatBaseViewHolder> {
 
+    private final long mUserId;
     private final List<MessageVO> mMessagesList;
 
-    public ChatAdapter(@NonNull List<MessageVO> messagesList) {
+    public ChatAdapter(long id, @NonNull List<MessageVO> messagesList) {
+        mUserId = id;
         mMessagesList = messagesList;
     }
 
@@ -24,7 +26,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatBaseViewHolder> {
     public ChatBaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // TODO: separate according to viewType
         View view = LayoutInflater.from(parent.getContext()).inflate(ChatMessageViewHolder.sLayoutId, parent, false);
-        ChatBaseViewHolder holder = new ChatMessageViewHolder(view);
+        ChatBaseViewHolder holder = new ChatMessageViewHolder(view, mUserId);
         return holder;
     }
 

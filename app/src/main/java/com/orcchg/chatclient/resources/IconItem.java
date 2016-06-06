@@ -83,7 +83,7 @@ public abstract class IconItem extends FrameLayout {
         protected WeakReference<IconItem> mIconItemRef;
 
         protected ProgressListener(@NonNull IconItem iconItem) {
-            mIconItemRef = new WeakReference<IconItem>(iconItem);
+            mIconItemRef = new WeakReference<>(iconItem);
         }
 
         @Override

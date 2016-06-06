@@ -6,7 +6,7 @@ import com.orcchg.chatclient.data.model.Message;
 public class MessageMapper implements Mapper<Message, MessageVO> {
     @Override
     public MessageVO map(Message object) {
-        return new MessageVO.Builder()
+        return new MessageVO.Builder(object.getId())
                 .setLogin(object.getLogin())
                 .setMessage(object.getMessage())
                 .setTimestamp(object.getTimestamp())

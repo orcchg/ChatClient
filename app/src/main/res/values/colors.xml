@@ -6,6 +6,7 @@
     <color name="colorPrimaryDarkSemi">#99558B2F</color>
     <color name="colorAccent">#ffd600</color>
     <color name="colorAccentSemi">#33ffd600</color>
+    <color name="colorAccentQuatro">#26ffd600</color>
     <color name="colorControlActivated">#f9a825</color>
     <color name="colorControlActivatedSemi">#33f9a825</color>
 
