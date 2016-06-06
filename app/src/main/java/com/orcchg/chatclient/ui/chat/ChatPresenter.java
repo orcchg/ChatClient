@@ -71,6 +71,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     /* Chat */
     // --------------------------------------------------------------------------------------------
     void loadMessages() {
+        getMvpView().onLoading();
+
         final Mapper<Message, MessageVO> mapper = new MessageMapper();
 
         Observable.from(MockProvider.createMessages())
@@ -104,6 +106,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     void logout() {
+        getMvpView().onLoading();
         mSubscriptionLogout = mDataManager.logout(mUserId, mUserName)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -117,14 +120,13 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             public void onCompleted() {
                 Timber.d("onComplete (Message)");
                 mChatAdapter.notifyDataSetChanged();
-                checkViewAttached();
-//                getMvpView().showCustomers(false);
+                getMvpView().onComplete();
             }
 
             @Override
             public void onError(Throwable e) {
                 Timber.e("Error (Message): %s", Log.getStackTraceString(e));
-//                getMvpView().showError();
+                getMvpView().onError();
             }
 
             @Override

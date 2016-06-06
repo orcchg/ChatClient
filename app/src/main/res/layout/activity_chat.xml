@@ -5,6 +5,9 @@
     android:background="@color/chat_window_bg_color"
     android:orientation="vertical">
 
+    <include layout="@layout/progress_view_linear" />
+    <include layout="@layout/error_view" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_messages"
         android:layout_width="match_parent"
@@ -12,6 +15,7 @@
         android:layout_weight="1"/>
 
     <LinearLayout
+        android:id="@+id/action_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"

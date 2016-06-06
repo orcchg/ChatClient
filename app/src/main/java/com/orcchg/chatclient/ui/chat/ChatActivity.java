@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -19,9 +20,13 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     public static final String EXTRA_USER_ID = "extra_user_id";
     public static final String EXTRA_USER_NAME = "extra_user_name";
 
+    @Bind(R.id.action_container) View mActionContainer;
     @Bind(R.id.rv_messages) RecyclerView mMessagesView;
     @Bind(R.id.et_message) EditText mMessagesEditView;
     @Bind(R.id.btn_send_message) ImageButton mSendMessageButton;
+    @Bind(R.id.progress) View mProgressView;
+    @Bind(R.id.error) View mErrorView;
+    @Bind(R.id.retry_button) Button mRetryButton;
 
     @Override
     protected ChatPresenter createPresenter() {
@@ -41,6 +46,13 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
         mMessagesView.setLayoutManager(new LinearLayoutManager(this));
         mMessagesView.setAdapter(mPresenter.getChatAdapter());
+
+        mRetryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                start();
+            }
+        });
 
         mSendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,14 +85,28 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     // --------------------------------------------------------------------------------------------
     @Override
     public void onComplete() {
+        if (mMessagesView.getVisibility() != View.VISIBLE) {
+            mActionContainer.setVisibility(View.VISIBLE);
+            mMessagesView.setVisibility(View.VISIBLE);
+            mErrorView.setVisibility(View.GONE);
+            mProgressView.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onError() {
+        mActionContainer.setVisibility(View.GONE);
+        mMessagesView.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.VISIBLE);
+        mProgressView.setVisibility(View.GONE);
     }
 
     @Override
     public void onLoading() {
+        mActionContainer.setVisibility(View.GONE);
+        mMessagesView.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.GONE);
+        mProgressView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -92,6 +118,5 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     // --------------------------------------------------------------------------------------------
     private void start() {
         // TODO: probably load prev messages ?
-        mPresenter.loadMessages();
     }
 }
