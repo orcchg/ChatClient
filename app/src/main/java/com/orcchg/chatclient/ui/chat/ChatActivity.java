@@ -77,6 +77,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     @Override
     protected void onDestroy() {
+        mPresenter.closeDirectConnection();
         mPresenter.unsubscribe();
         super.onDestroy();
     }
@@ -117,6 +118,6 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     /* Actions */
     // --------------------------------------------------------------------------------------------
     private void start() {
-        // TODO: probably load prev messages ?
+        mPresenter.startDirectConnection();
     }
 }

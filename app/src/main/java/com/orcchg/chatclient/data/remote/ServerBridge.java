@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import timber.log.Timber;
-
 public class ServerBridge {
 
     public static final String IP_ADDRESS = "194.190.63.108";
@@ -15,8 +13,20 @@ public class ServerBridge {
 
     private WorkerThread mWorker;
 
+    public interface ConnectionCallback {
+        void onComplete();
+        void onNext(Response response);
+        void onError(Throwable e);
+    }
+
+    private ConnectionCallback mCallback;
+
+    public void setConnectionCallback(ConnectionCallback callback) {
+        mCallback = callback;
+    }
+
     public void startConnection() {
-        mWorker = new WorkerThread();
+        mWorker = new WorkerThread(mCallback);
         mWorker.start();
     }
 
@@ -30,6 +40,11 @@ public class ServerBridge {
         private Socket mSocket;
         private BufferedReader mInput;
         private boolean mIsStopped;
+        private final ConnectionCallback mCallback;
+
+        WorkerThread(ConnectionCallback callback) {
+            mCallback = callback;
+        }
 
         @Override
         public void run() {
@@ -38,12 +53,14 @@ public class ServerBridge {
                 mInput = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
                 char[] buffer = new char[BUFFER_SIZE];
                 while (!mIsStopped && mInput.read(buffer) >= 0) {
-                    Timber.v("Raw response: " + new String(buffer));
+                    Response response = Response.obtain(buffer);
+                    if (mCallback != null) mCallback.onNext(response);
                 }
                 mInput.close();
                 mSocket.close();
+                if (mCallback != null) mCallback.onComplete();
             } catch (IOException e) {
-                Timber.e(e.getMessage());
+                if (mCallback != null) mCallback.onError(e);
             }
         }
 

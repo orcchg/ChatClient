@@ -19,6 +19,20 @@ public class DataManager {
         mServer = server;
     }
 
+    /* Direct connection bridge */
+    // --------------------------------------------------------------------------------------------
+    public void setConnectionCallback(ServerBridge.ConnectionCallback callback) {
+        mServer.setConnectionCallback(callback);
+    }
+
+    public void connect() {
+        mServer.startConnection();
+    }
+
+    public void disconnect() {
+        mServer.closeConnection();
+    }
+
     /* Authentication */
     // --------------------------------------------------------------------------------------------
     public Observable<LoginForm> getLoginForm() {
