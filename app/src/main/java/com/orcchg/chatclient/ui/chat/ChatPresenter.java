@@ -9,7 +9,7 @@ import com.orcchg.chatclient.data.DataManager;
 import com.orcchg.chatclient.data.Mapper;
 import com.orcchg.chatclient.data.model.Message;
 import com.orcchg.chatclient.data.model.Status;
-import com.orcchg.chatclient.data.remote.Response;
+import com.orcchg.chatclient.data.parser.Response;
 import com.orcchg.chatclient.data.remote.ServerBridge;
 import com.orcchg.chatclient.data.viewobject.MessageMapper;
 import com.orcchg.chatclient.data.viewobject.MessageVO;
@@ -72,15 +72,6 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     /* Chat */
     // --------------------------------------------------------------------------------------------
-    void startDirectConnection() {
-        mDataManager.setConnectionCallback(mConnectionCallback);
-        mDataManager.connect();
-    }
-
-    void closeDirectConnection() {
-        mDataManager.disconnect();
-    }
-
     void loadMessages() {
         getMvpView().onLoading();
 

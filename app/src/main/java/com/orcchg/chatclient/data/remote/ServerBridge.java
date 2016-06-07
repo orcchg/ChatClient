@@ -1,5 +1,7 @@
 package com.orcchg.chatclient.data.remote;
 
+import com.orcchg.chatclient.data.parser.Response;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,7 +55,7 @@ public class ServerBridge {
                 mInput = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
                 char[] buffer = new char[BUFFER_SIZE];
                 while (!mIsStopped && mInput.read(buffer) >= 0) {
-                    Response response = Response.obtain(buffer);
+                    Response response = Response.parse(buffer);
                     if (mCallback != null) mCallback.onNext(response);
                 }
                 mInput.close();
