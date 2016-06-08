@@ -15,6 +15,7 @@ import com.orcchg.chatclient.data.viewobject.MessageMapper;
 import com.orcchg.chatclient.data.viewobject.MessageVO;
 import com.orcchg.chatclient.mock.MockProvider;
 import com.orcchg.chatclient.ui.base.BasePresenter;
+import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,13 +64,11 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         if (mSubscriptionLogout != null) mSubscriptionLogout.unsubscribe();
     }
 
-    void openConnection() {
+    void setDirectConnectionCallback() {
         mDataManager.setConnectionCallback(createConnectionCallback());
-        mDataManager.connect();
     }
 
-    void closeConnection() {
-        mDataManager.disconnect();
+    void removeDirectConnectionCallback() {
         mDataManager.setConnectionCallback(null);
     }
 
@@ -197,7 +196,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                         break;
                     case Status.ACTION_SWITCH_CHANNEL:
                         Timber.i("Successfully switched channel");
-                        // TODO: switch channel
+                        onChannelSwitched();
                         break;
                     case Status.ACTION_UNKNOWN:
                     default:
@@ -227,7 +226,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 Timber.e(errorMessage);
                 throw new RuntimeException(errorMessage);
             case ApiStatusFactory.STATUS_UNAUTHORIZED:
-                // TODO: not logged in
+                onUnauthorized();
                 break;
             case ApiStatusFactory.STATUS_UNKNOWN:
             default:
@@ -266,55 +265,55 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         });
     }
 
+    private void onChannelSwitched() {
+        // TODO: switch channel in view
+    }
+
+    private void onUnauthorized() {
+        // TODO: show error
+    }
+
     /* Direct connection */
     // --------------------------------------------------------------------------------------------
     private ServerBridge.ConnectionCallback createConnectionCallback() {
-        return new ServerBridge.ConnectionCallback() {
-            @Override
-            public void onComplete() {
-                mDataManager.setConnectionCallback(null);
-                getMvpView().onComplete();
-            }
-
+        return new SimpleConnectionCallback<ChatPresenter>(this) {
             @Override
             public void onNext(Response response) {
-                if (response != null) {
-                    try {
-                        JSONObject json = new JSONObject(response.getBody());
-                        if (json.has("code")) {
-                            Timber.d("Code response: %s", response.getBody());
-                            Status status = Status.fromJson(response.getBody());
-                            processStatus(status, status.getAction());
-                            return;
+                ChatPresenter presenter = getPresenterRef().get();
+                if (presenter != null) {
+                    if (response != null) {
+                        try {
+                            JSONObject json = new JSONObject(response.getBody());
+                            if (json.has("code")) {
+                                Timber.d("Code response: %s", response.getBody());
+                                Status status = Status.fromJson(response.getBody());
+                                presenter.processStatus(status, status.getAction());
+                                return;
+                            }
+
+                            if (json.has("system")) {
+                                Timber.d("System message: %s", response.getBody());
+                                SystemMessage systemMessage = SystemMessage.fromJson(response.getBody());
+                                presenter.showSystemMessage(systemMessage.getMessage());
+                                return;
+                            }
+
+                            if (json.has("message")) {
+                                Timber.d("Message: %s", response.getBody());
+                                Message message = Message.fromJson(response.getBody());
+                                presenter.showMessage(message.getMessage());
+                                return;
+                            }
+
+                            Timber.w("Something doesn't like a message has been received. Skip");
+
+                        } catch (JSONException e) {
+                            Timber.e("Json error in response: %s", Log.getStackTraceString(e));
                         }
-
-                        if (json.has("system")) {
-                            Timber.d("System message: %s", response.getBody());
-                            SystemMessage systemMessage = SystemMessage.fromJson(response.getBody());
-                            showSystemMessage(systemMessage.getMessage());
-                            return;
-                        }
-
-                        if (json.has("message")) {
-                            Timber.d("Message: %s", response.getBody());
-                            Message message = Message.fromJson(response.getBody());
-                            showMessage(message.getMessage());
-                            return;
-                        }
-
-                        Timber.w("Something doesn't like a message has been received. Skip");
-
-                    } catch (JSONException e) {
-                        Timber.e("Json error in response: %s", Log.getStackTraceString(e));
                     }
+                } else {
+                    Timber.v("Presenter has already been GC'ed");
                 }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Timber.e("Error (Direct connection): %s", Log.getStackTraceString(e));
-                mDataManager.setConnectionCallback(null);
-                getMvpView().onError();
             }
         };
     }

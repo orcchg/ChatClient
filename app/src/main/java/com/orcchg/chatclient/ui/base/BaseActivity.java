@@ -27,4 +27,9 @@ public abstract class BaseActivity<P extends Presenter> extends AppCompatActivit
         mPresenter.detachView();
         mPresenter = null;
     }
+
+    @Override
+    public void postOnUiThread(Runnable runnable) {
+        runOnUiThread(runnable);
+    }
 }

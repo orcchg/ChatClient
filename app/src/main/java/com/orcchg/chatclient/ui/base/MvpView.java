@@ -10,4 +10,6 @@ public interface MvpView {
     void onComplete();
     void onError();
     void onLoading();
+
+    void postOnUiThread(Runnable runnable);
 }

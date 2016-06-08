@@ -1,5 +1,8 @@
 package com.orcchg.chatclient.data.remote;
 
+import android.util.Log;
+import android.util.MalformedJsonException;
+
 import com.orcchg.chatclient.data.parser.Response;
 
 import java.io.BufferedReader;
@@ -8,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.text.ParseException;
+
+import timber.log.Timber;
 
 public class ServerBridge {
 
@@ -65,13 +70,18 @@ public class ServerBridge {
                         Response response = Response.parse(buffer);
                         if (mCallback != null) mCallback.onNext(response);
                     } catch (ParseException e) {
+                        Timber.e("Parse error: %s", Log.getStackTraceString(e));
+                        if (mCallback != null) mCallback.onError(e);
+                    } catch (MalformedJsonException e) {
+                        Timber.e("Response has malformed json body: %s", Log.getStackTraceString(e));
                         if (mCallback != null) mCallback.onError(e);
                     }
                 }
                 mInput.close();
                 mSocket.close();
                 if (mCallback != null) mCallback.onComplete();
-            } catch (IOException e) {  // MalformedJsonException also
+            } catch (IOException e) {
+                Timber.e("Connection error: %s", Log.getStackTraceString(e));
                 if (mCallback != null) mCallback.onError(e);
             }
         }

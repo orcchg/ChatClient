@@ -76,8 +76,13 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        mPresenter.removeDirectConnectionCallback();
+    }
+
+    @Override
     protected void onDestroy() {
-        mPresenter.closeConnection();
         mPresenter.unsubscribe();
         super.onDestroy();
     }
@@ -118,11 +123,6 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     /* Actions */
     // --------------------------------------------------------------------------------------------
     private void start() {
-        mPresenter.openConnection();
-    }
-
-    @Override
-    public void postOnUiThread(Runnable runnable) {
-        runOnUiThread(runnable);
+        mPresenter.setDirectConnectionCallback();
     }
 }

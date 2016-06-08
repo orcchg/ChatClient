@@ -78,6 +78,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        mPresenter.removeDirectConnectionCallback();
+    }
+
+    @Override
     protected void onDestroy() {
         mPresenter.unsubscribe();
         super.onDestroy();
@@ -137,6 +143,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     /* Actions */
     // --------------------------------------------------------------------------------------------
     private void start() {
+        mPresenter.setDirectConnectionCallback();
         mPresenter.requestLoginForm();
     }
 

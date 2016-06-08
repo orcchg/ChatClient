@@ -78,6 +78,12 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        mPresenter.removeDirectConnectionCallback();
+    }
+
+    @Override
     protected void onDestroy() {
         mPresenter.unsubscribe();
         super.onDestroy();
@@ -143,6 +149,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     /* Actions */
     // --------------------------------------------------------------------------------------------
     private void start() {
+        mPresenter.setDirectConnectionCallback();
         mPresenter.requestRegistrationForm();
     }
 

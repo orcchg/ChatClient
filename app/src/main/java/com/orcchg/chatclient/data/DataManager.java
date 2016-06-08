@@ -25,11 +25,11 @@ public class DataManager {
         mServer.setConnectionCallback(callback);
     }
 
-    public void connect() {
+    public void openDirectConnection() {
         mServer.openConnection();
     }
 
-    public void disconnect() {
+    public void closeDirectConnection() {
         mServer.closeConnection();
     }
 
@@ -39,19 +39,49 @@ public class DataManager {
         return mRestAdapter.getLoginForm();
     }
 
+    public void getLoginFormDirect() {
+        StringBuilder line = new StringBuilder("GET /login HTTP/1.1\r\n")
+                .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
+        mServer.sendRequest(line.toString());
+    }
+
     public Observable<Status> sendLoginForm(LoginForm form) {
         return mRestAdapter.sendLoginForm(form);
+    }
+
+    public void sendLoginFormDirect(LoginForm form) {
+        String json = form.toJson();
+        StringBuilder line = new StringBuilder("POST /login HTTP/1.1\r\n")
+                .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n")
+                .append("Content-Type: application/json\r\n")
+                .append("Content-Length: ").append(json.length()).append("\r\n\r\n")
+                .append(json);
+        mServer.sendRequest(line.toString());
     }
 
     public Observable<RegistrationForm> getRegistrationForm() {
         return mRestAdapter.getRegistrationForm();
     }
 
+    public void getRegistrationFormDirect() {
+        StringBuilder line = new StringBuilder("GET /register HTTP/1.1\r\n")
+                .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
+        mServer.sendRequest(line.toString());
+    }
+
     public Observable<Status> sendRegistrationForm(RegistrationForm form) {
         return mRestAdapter.sendRegistrationForm(form);
     }
 
-    // direct methods are not needed
+    public void sendRegistrationFormDirect(RegistrationForm form) {
+        String json = form.toJson();
+        StringBuilder line = new StringBuilder("POST /register HTTP/1.1\r\n")
+                .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n")
+                .append("Content-Type: application/json\r\n")
+                .append("Content-Length: ").append(json.length()).append("\r\n\r\n")
+                .append(json);
+        mServer.sendRequest(line.toString());
+    }
 
     /* Chat */
     // --------------------------------------------------------------------------------------------
