@@ -1,5 +1,7 @@
 package com.orcchg.chatclient.data.parser;
 
+import android.util.MalformedJsonException;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ public class Request {
 
     /* Parse */
     // --------------------------------------------------------------------------------------------
-    public static Request parse(String line) throws ParseException {
+    public static Request parse(String line) throws ParseException, MalformedJsonException {
         String[] tokens = line.split("\\r?\\n");
         if (tokens.length <= 0) {
             String error = "Parse error: invalid line: " + line;
@@ -57,12 +59,21 @@ public class Request {
         }
 
         String ending = "";
-        StringBuilder body = new StringBuilder();
+        StringBuilder bodyBuilder = new StringBuilder();
         while (index < tokens.length) {
             String bodyLine = tokens[index].replaceAll("\r+", "");
-            body.append(ending).append(bodyLine);
+            bodyBuilder.append(ending).append(bodyLine);
             ending = "\n";
             ++index;
+        }
+
+        String body = bodyBuilder.toString();
+        int i1 = body.lastIndexOf("\"}");
+        if (i1 > 0) {
+            body = body.substring(0, i1 + 2);
+        } else {
+            String error = "Malformed json body: " + line;
+            throw new MalformedJsonException(error);
         }
 
         Request request = new Request();

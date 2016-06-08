@@ -240,8 +240,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     private void showLastMessage() {
         mMessagesList.add(mLastMessage);
         mLastMessage = null;
-
-        mChatAdapter.notifyItemInserted(mMessagesList.size());
+        notifyViewChanged();
     }
 
     private void showMessage(String message) {
@@ -251,11 +250,20 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 .build();
 
         mMessagesList.add(viewObject);
-        mChatAdapter.notifyItemInserted(mMessagesList.size());
+        notifyViewChanged();
     }
 
     private void showSystemMessage(String message) {
         showMessage(message);
+    }
+
+    private void notifyViewChanged() {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mChatAdapter.notifyItemInserted(mMessagesList.size());
+            }
+        });
     }
 
     /* Direct connection */

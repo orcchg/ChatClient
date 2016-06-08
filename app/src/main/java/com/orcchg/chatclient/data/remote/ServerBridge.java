@@ -71,7 +71,7 @@ public class ServerBridge {
                 mInput.close();
                 mSocket.close();
                 if (mCallback != null) mCallback.onComplete();
-            } catch (IOException e) {
+            } catch (IOException e) {  // MalformedJsonException also
                 if (mCallback != null) mCallback.onError(e);
             }
         }

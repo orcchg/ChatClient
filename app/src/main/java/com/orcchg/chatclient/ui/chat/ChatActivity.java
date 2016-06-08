@@ -120,4 +120,9 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     private void start() {
         mPresenter.openConnection();
     }
+
+    @Override
+    public void postOnUiThread(Runnable runnable) {
+        runOnUiThread(runnable);
+    }
 }
