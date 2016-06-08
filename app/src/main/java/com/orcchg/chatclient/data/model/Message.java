@@ -1,5 +1,6 @@
 package com.orcchg.chatclient.data.model;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 public class Message {
@@ -103,5 +104,15 @@ public class Message {
 
     public void setMessage(String mMessage) {
         this.mMessage = mMessage;
+    }
+
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    public static Message fromJson(String json) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, Message.class);
     }
 }

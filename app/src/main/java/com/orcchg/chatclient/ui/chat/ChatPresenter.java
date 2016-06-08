@@ -1,7 +1,6 @@
 package com.orcchg.chatclient.ui.chat;
 
 import android.app.Activity;
-import android.support.annotation.IntDef;
 import android.util.Log;
 
 import com.orcchg.chatclient.data.ApiStatusFactory;
@@ -9,6 +8,7 @@ import com.orcchg.chatclient.data.DataManager;
 import com.orcchg.chatclient.data.Mapper;
 import com.orcchg.chatclient.data.model.Message;
 import com.orcchg.chatclient.data.model.Status;
+import com.orcchg.chatclient.data.model.SystemMessage;
 import com.orcchg.chatclient.data.parser.Response;
 import com.orcchg.chatclient.data.remote.ServerBridge;
 import com.orcchg.chatclient.data.viewobject.MessageMapper;
@@ -16,8 +16,9 @@ import com.orcchg.chatclient.data.viewobject.MessageVO;
 import com.orcchg.chatclient.mock.MockProvider;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,14 +31,6 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class ChatPresenter extends BasePresenter<ChatMvpView> {
-
-    private static final int ACTION_UNKNOWN = -1;
-    private static final int ACTION_MESSAGE = 0;
-    private static final int ACTION_LOGOUT = 1;
-    private static final int ACTION_SWITCH_CHANNEL = 2;
-    @IntDef({ACTION_UNKNOWN, ACTION_MESSAGE, ACTION_LOGOUT, ACTION_SWITCH_CHANNEL})
-    @Retention(RetentionPolicy.SOURCE)
-    private @interface Action {}
 
     DataManager mDataManager;  // TODO: inject
     List<MessageVO> mMessagesList;
@@ -68,6 +61,16 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     void unsubscribe() {
         if (mSubscriptionSend != null) mSubscriptionSend.unsubscribe();
         if (mSubscriptionLogout != null) mSubscriptionLogout.unsubscribe();
+    }
+
+    void openConnection() {
+        mDataManager.setConnectionCallback(createConnectionCallback());
+        mDataManager.connect();
+    }
+
+    void closeConnection() {
+        mDataManager.disconnect();
+        mDataManager.setConnectionCallback(null);
     }
 
     /* Chat */
@@ -101,18 +104,26 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         final Mapper<Message, MessageVO> mapper = new MessageMapper();
         mLastMessage = mapper.map(message);
 
-        mSubscriptionSend = mDataManager.sendMessage(message)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(processStatus(ACTION_MESSAGE));
+//        mSubscriptionSend = mDataManager.sendMessage(message)
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(processStatus(ACTION_MESSAGE));
+        mDataManager.sendMessageDirect(message);
     }
 
     void logout() {
         getMvpView().onLoading();
-        mSubscriptionLogout = mDataManager.logout(mUserId, mUserName)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(processStatus(ACTION_LOGOUT));
+//        mSubscriptionLogout = mDataManager.logout(mUserId, mUserName)
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(processStatus(ACTION_LOGOUT));
+        mDataManager.logoutDirect(mUserId, mUserName);
+    }
+
+    void switchChannel(int channel) {
+        getMvpView().onLoading();
+        mCurrentChannel = channel;
+        mDataManager.switchChannelDirect(mUserId, mCurrentChannel, mUserName);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -140,7 +151,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     // --------------------------------------------------------------------------------------------
-    private Observer<Status> processStatus(final @Action int action) {
+    private Observer<Status> processStatus(final @Status.Action int action) {
         return new Observer<Status>() {
             @Override
             public void onCompleted() {
@@ -157,64 +168,72 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             @Override
             public void onNext(Status status) {
                 Timber.d("onNext (Status)");
-                String errorMessage = "";
-                boolean flag = false;
-                @ApiStatusFactory.Status int code = ApiStatusFactory.getStatusByCode(status.getCode());
-                switch (code) {
-                    case ApiStatusFactory.STATUS_SUCCESS:
-                        switch (action) {
-                            case ACTION_MESSAGE:
-                                Timber.i("Successfully sent message");
-                                showLastMessage();
-                                break;
-                            case ACTION_LOGOUT:
-                                Timber.i("Successfully logged out");
-                                Activity activity = (Activity) getMvpView();
-                                if (!activity.isFinishing()) {
-                                    activity.finish();
-                                }
-                                break;
-                            case ACTION_SWITCH_CHANNEL:
-                                Timber.i("Successfully switched channel");
-                                // TODO: switch channel
-                                break;
-                            case ACTION_UNKNOWN:
-                            default:
-                                Timber.d("Unknown action on Success");
-                                break;
-                        }
-                        break;
-                    case ApiStatusFactory.STATUS_WRONG_PASSWORD:
-                        Timber.w("Server's responded with forbidden error: wrong password");
-                        break;
-                    case ApiStatusFactory.STATUS_NOT_REGISTERED:
-                        Timber.w("Server's responded with forbidden error: not registered");
-                        break;
-                    case ApiStatusFactory.STATUS_ALREADY_REGISTERED:
-                        Timber.w("Server's responded with forbidden error: already registered");
-                        break;
-                    case ApiStatusFactory.STATUS_ALREADY_LOGGED_IN:
-                        Timber.w("Server's responded with forbidden error: already logged in");
-                        break;
-                    case ApiStatusFactory.STATUS_INVALID_FORM:
-                        errorMessage = "Client's requested with invalid form";
-                        flag = true;
-                    case ApiStatusFactory.STATUS_INVALID_QUERY:
-                        if (!flag) {
-                            errorMessage = "Client's requested with invalid query";
-                        }
-                        Timber.e(errorMessage);
-                        throw new RuntimeException(errorMessage);
-                    case ApiStatusFactory.STATUS_UNAUTHORIZED:
-                        // TODO: not logged in
-                        break;
-                    case ApiStatusFactory.STATUS_UNKNOWN:
-                    default:
-                        Timber.d("Unknown status");
-                        break;
-                }
+                processStatus(status, action);
             }
         };
+    }
+
+    private void processStatus(Status status, final @Status.Action int action) {
+        String errorMessage = "";
+        boolean flag = false;
+        @ApiStatusFactory.Status int code = ApiStatusFactory.getStatusByCode(status.getCode());
+        switch (code) {
+            case ApiStatusFactory.STATUS_SUCCESS:
+                switch (action) {
+                    case Status.ACTION_LOGIN:
+                    case Status.ACTION_REGISTER:
+                        Timber.d("Action not processed: %s", Integer.toString(action));
+                        break;
+                    case Status.ACTION_MESSAGE:
+                        Timber.i("Successfully sent message");
+                        showLastMessage();
+                        break;
+                    case Status.ACTION_LOGOUT:
+                        Timber.i("Successfully logged out");
+                        Activity activity = (Activity) getMvpView();
+                        if (!activity.isFinishing()) {
+                            activity.finish();
+                        }
+                        break;
+                    case Status.ACTION_SWITCH_CHANNEL:
+                        Timber.i("Successfully switched channel");
+                        // TODO: switch channel
+                        break;
+                    case Status.ACTION_UNKNOWN:
+                    default:
+                        Timber.d("Unknown action on Success");
+                        break;
+                }
+                break;
+            case ApiStatusFactory.STATUS_WRONG_PASSWORD:
+                Timber.w("Server's responded with forbidden error: wrong password");
+                break;
+            case ApiStatusFactory.STATUS_NOT_REGISTERED:
+                Timber.w("Server's responded with forbidden error: not registered");
+                break;
+            case ApiStatusFactory.STATUS_ALREADY_REGISTERED:
+                Timber.w("Server's responded with forbidden error: already registered");
+                break;
+            case ApiStatusFactory.STATUS_ALREADY_LOGGED_IN:
+                Timber.w("Server's responded with forbidden error: already logged in");
+                break;
+            case ApiStatusFactory.STATUS_INVALID_FORM:
+                errorMessage = "Client's requested with invalid form";
+                flag = true;
+            case ApiStatusFactory.STATUS_INVALID_QUERY:
+                if (!flag) {
+                    errorMessage = "Client's requested with invalid query";
+                }
+                Timber.e(errorMessage);
+                throw new RuntimeException(errorMessage);
+            case ApiStatusFactory.STATUS_UNAUTHORIZED:
+                // TODO: not logged in
+                break;
+            case ApiStatusFactory.STATUS_UNKNOWN:
+            default:
+                Timber.d("Unknown status");
+                break;
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -225,23 +244,70 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         mChatAdapter.notifyItemInserted(mMessagesList.size());
     }
 
+    private void showMessage(String message) {
+        MessageVO viewObject = new MessageVO.Builder(mUserId)
+                .setMessage(message)
+                .setTimestamp(System.currentTimeMillis())
+                .build();
+
+        mMessagesList.add(viewObject);
+        mChatAdapter.notifyItemInserted(mMessagesList.size());
+    }
+
+    private void showSystemMessage(String message) {
+        showMessage(message);
+    }
+
     /* Direct connection */
     // --------------------------------------------------------------------------------------------
-    private ServerBridge.ConnectionCallback mConnectionCallback = new ServerBridge.ConnectionCallback() {
-        @Override
-        public void onComplete() {
-            mDataManager.setConnectionCallback(null);
-        }
+    private ServerBridge.ConnectionCallback createConnectionCallback() {
+        return new ServerBridge.ConnectionCallback() {
+            @Override
+            public void onComplete() {
+                mDataManager.setConnectionCallback(null);
+                getMvpView().onComplete();
+            }
 
-        @Override
-        public void onNext(Response response) {
-            // TODO:
-        }
+            @Override
+            public void onNext(Response response) {
+                if (response != null) {
+                    try {
+                        JSONObject json = new JSONObject(response.getBody());
+                        if (json.has("code")) {
+                            Timber.d("Code response: %s", response.getBody());
+                            Status status = Status.fromJson(response.getBody());
+                            processStatus(status, status.getAction());
+                            return;
+                        }
 
-        @Override
-        public void onError(Throwable e) {
-            Timber.e(e.getMessage());
-            mDataManager.setConnectionCallback(null);
-        }
-    };
+                        if (json.has("system")) {
+                            Timber.d("System message: %s", response.getBody());
+                            SystemMessage systemMessage = SystemMessage.fromJson(response.getBody());
+                            showSystemMessage(systemMessage.getMessage());
+                            return;
+                        }
+
+                        if (json.has("message")) {
+                            Timber.d("Message: %s", response.getBody());
+                            Message message = Message.fromJson(response.getBody());
+                            showMessage(message.getMessage());
+                            return;
+                        }
+
+                        Timber.w("Something doesn't like a message has been received. Skip");
+
+                    } catch (JSONException e) {
+                        Timber.e("Json error in response: %s", Log.getStackTraceString(e));
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.e("Error (Direct connection): %s", Log.getStackTraceString(e));
+                mDataManager.setConnectionCallback(null);
+                getMvpView().onError();
+            }
+        };
+    }
 }

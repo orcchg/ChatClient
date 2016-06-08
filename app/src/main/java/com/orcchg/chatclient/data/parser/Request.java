@@ -4,20 +4,29 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Response {
+public class Request {
 
-    public static class Codeline {
+    public static class Startline {
+        String method;
+        String path;
         int version;
-        int code;
-        String message;
+
+        @Override
+        public String toString() {
+            return new StringBuilder(method)
+                    .append(' ').append(path)
+                    .append(' ').append("HTTP/1.")
+                    .append(version).append("\r\n")
+                    .toString();
+        }
     }
 
-    private Codeline mCodeline;
+    private Startline mStartline;
     private List<Header> mHeaders;
     private String mBody;
 
-    public Codeline getCodeline() {
-        return mCodeline;
+    public Startline getStartline() {
+        return mStartline;
     }
 
     public List<Header> getHeaders() {
@@ -30,18 +39,14 @@ public class Response {
 
     /* Parse */
     // --------------------------------------------------------------------------------------------
-    public static Response parse(char[] buffer) throws ParseException {
-        return parse(new String(buffer));
-    }
-
-    public static Response parse(String line) throws ParseException {
+    public static Request parse(String line) throws ParseException {
         String[] tokens = line.split("\\r?\\n");
         if (tokens.length <= 0) {
             String error = "Parse error: invalid line: " + line;
             throw new ParseException(error, 0);
         }
 
-        Codeline codeline = parseCodeline(tokens[0]);
+        Startline startline = parseStartLine(tokens[0]);
         List<Header> headers = new ArrayList<>();
 
         int index = 1;
@@ -60,26 +65,25 @@ public class Response {
             ++index;
         }
 
-        Response response = new Response();
-        response.mCodeline = codeline;
-        response.mHeaders = headers;
-        response.mBody = body.toString();
-        return response;
+        Request request = new Request();
+        request.mStartline = startline;
+        request.mHeaders = headers;
+        request.mBody = body.toString();
+        return request;
     }
 
-    public static Codeline parseCodeline(String line) throws ParseException {
+    public static Startline parseStartLine(String line) throws ParseException {
         line = line.replaceAll("\\s+", " ").trim();
-        int i1 = line.indexOf("HTTP");
-        int i2 = line.indexOf(' ', i1 + 8);
-        int i3 = line.indexOf(' ', i2 + 1);
-        if (i1 < 0 || i2 < 0 || i3 < 0) {
-            String error = "Parse error: invalid code line: " + line;
+        int i1 = line.indexOf(' ');
+        int i2 = line.indexOf("HTTP", i1 + 1);
+        if (i1 < 0 || i2 < 0) {
+            String error = "Parse error: invalid start line: " + line;
             throw new ParseException(error, 0);
         }
-        Codeline codeline = new Codeline();
-        codeline.version = Integer.parseInt(line.substring(i1 + 7, i1 + 8));
-        codeline.code = Integer.parseInt(line.substring(i2 + 1, i3));
-        codeline.message = line.substring(i3 + 1);
-        return codeline;
+        Startline startline = new Startline();
+        startline.method = line.substring(0, i1);
+        startline.path = line.substring(i1 + 1, i2 - 1);
+        startline.version = Integer.parseInt(line.substring(i2 + 7));
+        return startline;
     }
 }

@@ -26,7 +26,7 @@ public class DataManager {
     }
 
     public void connect() {
-        mServer.startConnection();
+        mServer.openConnection();
     }
 
     public void disconnect() {
@@ -51,15 +51,45 @@ public class DataManager {
         return mRestAdapter.sendRegistrationForm(form);
     }
 
+    // direct methods are not needed
+
     /* Chat */
     // --------------------------------------------------------------------------------------------
     public Observable<Status> sendMessage(Message message) {
         return mRestAdapter.sendMessage(message);
     }
 
+    public void sendMessageDirect(Message message) {
+        String json = message.toJson();
+        StringBuilder line = new StringBuilder("POST /message HTTP/1.1\r\n")
+                .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n")
+                .append("Content-Type: application/json\r\n")
+                .append("Content-Length: ").append(json.length()).append("\r\n\r\n")
+                .append(json);
+        mServer.sendRequest(line.toString());
+    }
+
     /* Access */
     // --------------------------------------------------------------------------------------------
     public Observable<Status> logout(long id, String name) {
         return mRestAdapter.logout(id, name);
+    }
+
+    public void logoutDirect(long id, String name) {
+        StringBuilder line = new StringBuilder("DELETE /logout?id=")
+                .append(id).append("&name=").append(name).append("HTTP/1.1\r\n")
+                .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
+        mServer.sendRequest(line.toString());
+    }
+
+    public Observable<Status> switchChannel(long id, int channel, String name) {
+        return mRestAdapter.switchChannel(id, channel, name);
+    }
+
+    public void switchChannelDirect(long id, int channel, String name) {
+        StringBuilder line = new StringBuilder("PUT //switch_channel?id=")
+                .append(id).append("&channel=").append(channel).append("&name=").append(name).append("HTTP/1.1\r\n")
+                .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
+        mServer.sendRequest(line.toString());
     }
 }

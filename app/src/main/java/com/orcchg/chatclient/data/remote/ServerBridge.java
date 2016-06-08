@@ -5,7 +5,9 @@ import com.orcchg.chatclient.data.parser.Response;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.text.ParseException;
 
 public class ServerBridge {
 
@@ -27,13 +29,17 @@ public class ServerBridge {
         mCallback = callback;
     }
 
-    public void startConnection() {
+    public void openConnection() {
         mWorker = new WorkerThread(mCallback);
         mWorker.start();
     }
 
     public void closeConnection() {
         mWorker.terminate();
+    }
+
+    public void sendRequest(String request) {
+        mWorker.sendRequest(request);
     }
 
     /* Internals */
@@ -55,8 +61,12 @@ public class ServerBridge {
                 mInput = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
                 char[] buffer = new char[BUFFER_SIZE];
                 while (!mIsStopped && mInput.read(buffer) >= 0) {
-                    Response response = Response.parse(buffer);
-                    if (mCallback != null) mCallback.onNext(response);
+                    try {
+                        Response response = Response.parse(buffer);
+                        if (mCallback != null) mCallback.onNext(response);
+                    } catch (ParseException e) {
+                        if (mCallback != null) mCallback.onError(e);
+                    }
                 }
                 mInput.close();
                 mSocket.close();
@@ -68,6 +78,15 @@ public class ServerBridge {
 
         private void terminate() {
             mIsStopped = true;
+        }
+
+        public void sendRequest(String request) {
+            try {
+                OutputStream output = mSocket.getOutputStream();
+                output.write(request.getBytes());
+            } catch (IOException e) {
+                if (mCallback != null) mCallback.onError(e);
+            }
         }
     }
 }

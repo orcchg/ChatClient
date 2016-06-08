@@ -25,7 +25,7 @@ public class Header {
 
     @Override
     public String toString() {
-        return new StringBuilder("Header{").append(mKey).append(": ").append(mValue).toString();
+        return new StringBuilder(mKey).append(':').append(mValue).append("\r\n").toString();
     }
 
     /* Parse */
@@ -35,7 +35,7 @@ public class Header {
         int colon = line.indexOf(':');
         if (colon < 0) {
             String error = "Parse error: invalid header: " + line;
-            throw new ParseException(error, colon);
+            throw new ParseException(error, 0);
         }
         String[] tokens = line.split(":");
         return new Header(tokens[0].trim(), tokens[1].trim());

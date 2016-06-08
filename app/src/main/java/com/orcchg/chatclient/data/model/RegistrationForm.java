@@ -1,5 +1,6 @@
 package com.orcchg.chatclient.data.model;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 public class RegistrationForm extends LoginForm {
@@ -16,5 +17,15 @@ public class RegistrationForm extends LoginForm {
 
     public void setEmail(String mEmail) {
         this.mEmail = mEmail;
+    }
+
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    public static RegistrationForm fromJson(String json) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, RegistrationForm.class);
     }
 }
