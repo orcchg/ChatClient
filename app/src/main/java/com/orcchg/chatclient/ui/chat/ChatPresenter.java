@@ -72,6 +72,10 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         mDataManager.setConnectionCallback(null);
     }
 
+    void closeDirectConnection() {
+        mDataManager.closeDirectConnection();
+    }
+
     /* Chat */
     // --------------------------------------------------------------------------------------------
     void loadMessages() {

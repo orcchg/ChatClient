@@ -83,6 +83,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     @Override
     protected void onDestroy() {
+        mPresenter.closeDirectConnection(); // TODO: find proper place
         mPresenter.unsubscribe();
         super.onDestroy();
     }
