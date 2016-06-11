@@ -63,6 +63,8 @@ public class MessageView extends FrameLayout {
     public void setSide(@MessageDrawable.Side int side) {
         @ColorInt int color = Color.WHITE;
         switch (side) {
+            case MessageDrawable.NO_SIDE:
+                color = ViewUtils.getAttributeColor(getContext(), R.attr.refSystemMessageBlobBackgroundColor);
             case MessageDrawable.TOP_LEFT:
                 mContainer.setPadding(mLeftSideRootPaddings[0], mLeftSideRootPaddings[2], mLeftSideRootPaddings[3], mLeftSideRootPaddings[5]);
                 mSubContainer.setLayoutParams(mLeftSideSubParams);

@@ -3,4 +3,5 @@
     <attr name="refPhotoStub" format="reference" />
     <attr name="refForegroundSelectorColor" format="reference" />
     <attr name="refSelfMessageBlobBackgroundColor" format="reference" />
+    <attr name="refSystemMessageBlobBackgroundColor" format="reference" />
 </resources>

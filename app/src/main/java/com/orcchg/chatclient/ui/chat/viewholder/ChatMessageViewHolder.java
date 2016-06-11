@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.orcchg.chatclient.R;
+import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.data.viewobject.MessageVO;
 import com.orcchg.chatclient.resources.MessageDrawable;
 import com.orcchg.chatclient.resources.MessageView;
@@ -37,6 +38,11 @@ public class ChatMessageViewHolder extends ChatBaseViewHolder<MessageVO> {
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             params.addRule(RelativeLayout.ALIGN_PARENT_END);
             mMessageView.setSide(MessageDrawable.TOP_RIGHT);
+            mMessageView.getTitle().setVisibility(View.GONE);
+            mPhotoView.setVisibility(View.GONE);
+        } else if (viewObject.getId() == Status.SYSTEM_ID) {
+            params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            mMessageView.setSide(MessageDrawable.NO_SIDE);
             mMessageView.getTitle().setVisibility(View.GONE);
             mPhotoView.setVisibility(View.GONE);
         } else {

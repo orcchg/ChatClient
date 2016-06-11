@@ -44,10 +44,12 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     }
 
     void setDirectConnectionCallback() {
+        Timber.v("setDirectConnectionCallback");
         mDataManager.setConnectionCallback(createConnectionCallback());
     }
 
     void removeDirectConnectionCallback() {
+        Timber.v("removeDirectConnectionCallback");
         mDataManager.setConnectionCallback(null);
     }
 
@@ -146,6 +148,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
                 intent1.putExtra(ChatActivity.EXTRA_USER_ID, status.getId());
                 intent1.putExtra(ChatActivity.EXTRA_USER_NAME, userName);
                 activity1.startActivity(intent1);
+                activity1.finish();
                 break;
             case ApiStatusFactory.STATUS_WRONG_PASSWORD:
                 Timber.w("Server's responded with forbidden error: wrong password");

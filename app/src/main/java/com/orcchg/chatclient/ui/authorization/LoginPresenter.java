@@ -44,14 +44,17 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     }
 
     void openDirectConnection() {
+        Timber.v("openDirectConnection");
         mDataManager.openDirectConnection();
     }
 
     void setDirectConnectionCallback() {
+        Timber.v("setDirectConnectionCallback");
         mDataManager.setConnectionCallback(createConnectionCallback());
     }
 
     void removeDirectConnectionCallback() {
+        Timber.v("removeDirectConnectionCallback");
         mDataManager.setConnectionCallback(null);
     }
 
@@ -148,6 +151,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                 intent1.putExtra(ChatActivity.EXTRA_USER_ID, status.getId());
                 intent1.putExtra(ChatActivity.EXTRA_USER_NAME, userName);
                 activity1.startActivity(intent1);
+                activity1.finish();
                 break;
             case ApiStatusFactory.STATUS_WRONG_PASSWORD:
                 Timber.d("Wrong password");
@@ -158,6 +162,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                 Activity activity2 = (Activity) getMvpView();
                 Intent intent2 = new Intent(activity2, RegistrationActivity.class);
                 activity2.startActivity(intent2);
+                activity2.finish();
                 break;
             case ApiStatusFactory.STATUS_ALREADY_REGISTERED:
                 Timber.w("Server's responded with forbidden error: already registered");

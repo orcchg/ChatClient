@@ -35,6 +35,7 @@ public class ServerBridge {
 
     public void setConnectionCallback(ConnectionCallback callback) {
         mCallback = callback;
+        if (mWorker != null) mWorker.setConnectionCallback(mCallback);
     }
 
     public void openConnection() {
@@ -56,7 +57,7 @@ public class ServerBridge {
         private Socket mSocket;
         private BufferedReader mInput;
         private boolean mIsStopped;
-        private final ConnectionCallback mCallback;
+        private ConnectionCallback mCallback;
 
         WorkerThread(ConnectionCallback callback) {
             mCallback = callback;
@@ -99,6 +100,10 @@ public class ServerBridge {
 
         private void terminate() {
             mIsStopped = true;
+        }
+
+        private void setConnectionCallback(ConnectionCallback callback) {
+            mCallback = callback;
         }
 
         public void sendRequest(String request) {

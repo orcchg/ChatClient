@@ -9,6 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public class Status {
+    public static final long SYSTEM_ID = -1;
     public static final long UNKNOWN_ID = 0;
 
     public static final int ACTION_UNKNOWN = -1;

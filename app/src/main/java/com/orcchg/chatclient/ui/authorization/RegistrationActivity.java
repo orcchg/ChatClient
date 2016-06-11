@@ -72,14 +72,14 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         start();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         mPresenter.removeDirectConnectionCallback();
     }
 

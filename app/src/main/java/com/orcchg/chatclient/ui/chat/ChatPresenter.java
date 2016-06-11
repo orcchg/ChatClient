@@ -65,14 +65,17 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     void setDirectConnectionCallback() {
+        Timber.v("setDirectConnectionCallback");
         mDataManager.setConnectionCallback(createConnectionCallback());
     }
 
     void removeDirectConnectionCallback() {
+        Timber.v("removeDirectConnectionCallback");
         mDataManager.setConnectionCallback(null);
     }
 
     void closeDirectConnection() {
+        Timber.v("closeDirectConnection");
         mDataManager.closeDirectConnection();
     }
 
@@ -104,7 +107,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             .setMessage(messageString)
             .build();
 
-        final Mapper<Message, MessageVO> mapper = new MessageMapper();
+        Mapper<Message, MessageVO> mapper = new MessageMapper();
         mLastMessage = mapper.map(message);
 
 //        mSubscriptionSend = mDataManager.sendMessage(message)
@@ -149,6 +152,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             public void onNext(MessageVO viewObject) {
                 Timber.d("onNext (Message): %s", viewObject.getLogin());
                 mMessagesList.add(viewObject);
+                getMvpView().scrollListTo(mMessagesList.size());
             }
         };
     }
@@ -246,24 +250,26 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         notifyViewChanged();
     }
 
-    private void showMessage(String message) {
-        MessageVO viewObject = new MessageVO.Builder(mUserId)
-                .setMessage(message)
-                .setTimestamp(System.currentTimeMillis())
-                .build();
-
+    private void showMessage(Message message) {
+        Mapper<Message, MessageVO> mapper = new MessageMapper();
+        MessageVO viewObject = mapper.map(message);
         mMessagesList.add(viewObject);
         notifyViewChanged();
     }
 
     private void showSystemMessage(String message) {
-        showMessage(message);
+        MessageVO viewObject = new MessageVO.Builder(Status.SYSTEM_ID)
+                .setMessage(message)
+                .build();
+        mMessagesList.add(viewObject);
+        notifyViewChanged();
     }
 
     private void notifyViewChanged() {
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
+                getMvpView().scrollListTo(mMessagesList.size());
                 mChatAdapter.notifyItemInserted(mMessagesList.size());
             }
         });
@@ -305,7 +311,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                             if (json.has("message")) {
                                 Timber.d("Message: %s", response.getBody());
                                 Message message = Message.fromJson(response.getBody());
-                                presenter.showMessage(message.getMessage());
+                                presenter.showMessage(message);
                                 return;
                             }
 

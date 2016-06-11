@@ -44,7 +44,10 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
-        mMessagesView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
+//        linearLayoutManager.setReverseLayout(true);
+        mMessagesView.setLayoutManager(linearLayoutManager);
         mMessagesView.setAdapter(mPresenter.getChatAdapter());
 
         mRetryButton.setOnClickListener(new View.OnClickListener() {
@@ -64,8 +67,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         start();
     }
 
@@ -76,8 +79,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         mPresenter.removeDirectConnectionCallback();
     }
 
@@ -125,5 +128,10 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     // --------------------------------------------------------------------------------------------
     private void start() {
         mPresenter.setDirectConnectionCallback();
+    }
+
+    @Override
+    public void scrollListTo(int position) {
+        mMessagesView.scrollToPosition(position);
     }
 }

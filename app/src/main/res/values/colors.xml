@@ -19,6 +19,7 @@
     <color name="chat_window_bg_color">#ffededed</color>
     <color name="photo_stub_color">#aed581</color>
     <color name="self_message_blob_background">#aed581</color>
+    <color name="system_message_blob_background">#ffee58</color>
     <color name="substrate">#66f3f3f3</color>
 
 </resources>
