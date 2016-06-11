@@ -22,6 +22,11 @@ public class SimpleConnectionCallback<P extends BasePresenter> implements Server
     }
 
     @Override
+    public void onSuccess() {
+        // override in subclasses
+    }
+
+    @Override
     public void onComplete() {
         Timber.d("Completed (Direct connection)");
         final P presenter = mPresenterRef.get();

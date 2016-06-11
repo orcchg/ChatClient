@@ -144,7 +144,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     // --------------------------------------------------------------------------------------------
     private void start() {
         mPresenter.setDirectConnectionCallback();
-        mPresenter.requestLoginForm();
+        mPresenter.openDirectConnection();
     }
 
     private void attemptLogin() {

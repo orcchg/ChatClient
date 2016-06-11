@@ -150,7 +150,6 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     // --------------------------------------------------------------------------------------------
     private void start() {
         mPresenter.setDirectConnectionCallback();
-        mPresenter.requestRegistrationForm();
     }
 
     private void attemptRegister() {

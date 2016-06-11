@@ -9,8 +9,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.text.ParseException;
+import java.util.Arrays;
 
 import timber.log.Timber;
 
@@ -23,6 +25,7 @@ public class ServerBridge {
     private WorkerThread mWorker;
 
     public interface ConnectionCallback {
+        void onSuccess();
         void onComplete();
         void onNext(Response response);
         void onError(Throwable e);
@@ -61,13 +64,17 @@ public class ServerBridge {
 
         @Override
         public void run() {
+            Timber.d("Server thread has started");
             try {
                 mSocket = new Socket(IP_ADDRESS, PORT);
                 mInput = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
                 char[] buffer = new char[BUFFER_SIZE];
+                Arrays.fill(buffer, '\0');
+                if (mCallback != null) mCallback.onSuccess();
                 while (!mIsStopped && mInput.read(buffer) >= 0) {
                     try {
                         Response response = Response.parse(buffer);
+                        Arrays.fill(buffer, '\0');
                         if (mCallback != null) mCallback.onNext(response);
                     } catch (ParseException e) {
                         Timber.e("Parse error: %s", Log.getStackTraceString(e));
@@ -80,6 +87,10 @@ public class ServerBridge {
                 mInput.close();
                 mSocket.close();
                 if (mCallback != null) mCallback.onComplete();
+            } catch (ConnectException e) {
+                Timber.e("%s", e.getMessage());
+                Timber.w("%s", Log.getStackTraceString(e));
+                if (mCallback != null) mCallback.onError(e);
             } catch (IOException e) {
                 Timber.e("Connection error: %s", Log.getStackTraceString(e));
                 if (mCallback != null) mCallback.onError(e);
@@ -91,6 +102,7 @@ public class ServerBridge {
         }
 
         public void sendRequest(String request) {
+            Timber.d("Sending request: %s", request);
             try {
                 OutputStream output = mSocket.getOutputStream();
                 output.write(request.getBytes());

@@ -6,14 +6,19 @@ import android.util.Log;
 
 import com.orcchg.chatclient.data.ApiStatusFactory;
 import com.orcchg.chatclient.data.DataManager;
+import com.orcchg.chatclient.data.Mapper;
 import com.orcchg.chatclient.data.model.RegistrationForm;
 import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.data.parser.Response;
 import com.orcchg.chatclient.data.remote.ServerBridge;
 import com.orcchg.chatclient.data.viewobject.AuthFormVO;
+import com.orcchg.chatclient.data.viewobject.RegistrationFormMapper;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.ui.chat.ChatActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import rx.Observer;
 import rx.Subscription;
@@ -48,8 +53,8 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
 
     /* Registration */
     // --------------------------------------------------------------------------------------------
-    void requestRegistrationForm() {
-        getMvpView().onLoading();
+    private void requestRegistrationForm() {
+        onLoading();
 
 //        final Mapper<RegistrationForm, AuthFormVO> mapper = new RegistrationFormMapper();
 //
@@ -68,7 +73,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     }
 
     void sendRegistrationForm() {
-        getMvpView().onLoading();
+        onLoading();
 
         String login = getMvpView().getLogin();
         String email = getMvpView().getEmail();
@@ -178,15 +183,81 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     private ServerBridge.ConnectionCallback createConnectionCallback() {
         return new SimpleConnectionCallback<RegistrationPresenter>(this) {
             @Override
+            public void onSuccess() {
+                super.onSuccess();
+                requestRegistrationForm();
+            }
+
+            @Override
             public void onNext(Response response) {
                 super.onNext(response);
                 RegistrationPresenter presenter = getPresenterRef().get();
                 if (presenter != null) {
+                    try {
+                        JSONObject json = new JSONObject(response.getBody());
+                        if (json.has("code")) {
+                            Timber.d("Code response: %s", response.getBody());
+                            Status status = Status.fromJson(response.getBody());
+                            presenter.processStatus(status);
+                            return;
+                        }
 
+                        Timber.d("Form response: %s", response.getBody());
+                        RegistrationForm form = RegistrationForm.fromJson(response.getBody());
+                        Mapper<RegistrationForm, AuthFormVO> mapper = new RegistrationFormMapper();
+                        AuthFormVO viewObject = mapper.map(form);
+                        presenter.showForm(viewObject);
+                        presenter.onComplete();
+                        return;
+
+                    } catch (JSONException e) {
+                        Timber.e("Server has responed with malformed json body: %s", response.getBody());
+                        Timber.e("%s", e.getMessage());
+                        Timber.w("%s", Log.getStackTraceString(e));
+                        presenter.onError();
+                    }
                 } else {
                     Timber.v("Presenter has already been GC'ed");
                 }
             }
         };
+    }
+
+    /* View state */
+    // --------------------------------------------------------------------------------------------
+    private void onComplete() {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onComplete();
+            }
+        });
+    }
+
+    private void onLoading() {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onLoading();
+            }
+        });
+    }
+
+    private void onError() {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onError();
+            }
+        });
+    }
+
+    private void showForm(final AuthFormVO viewObject) {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().showAuthForm(viewObject);
+            }
+        });
     }
 }

@@ -22,8 +22,6 @@ public class ChatClientApplication extends Application {
         mRestAdapter = RestAdapter.Creator.create();
         mServer = new ServerBridge();
         mDataManager = new DataManager(mRestAdapter, mServer);
-
-        mDataManager.openDirectConnection();
     }
 
     public DataManager getDataManager() {
