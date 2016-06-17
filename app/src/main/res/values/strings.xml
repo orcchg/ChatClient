@@ -19,5 +19,7 @@
     <string name="error_network">Network error. Please, try again later.</string>
 
     <!-- Chat -->
+    <string name="login_label">Login</string>
+    <string name="registration_label">Registration</string>
     <string name="chat_label">Chat</string>
 </resources>
