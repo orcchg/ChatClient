@@ -28,6 +28,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Bind(R.id.error) View mErrorView;
     @Bind(R.id.retry_button) Button mRetryButton;
 
+    private LinearLayoutManager mLayoutManager;
+
     @Override
     protected ChatPresenter createPresenter() {
         ChatClientApplication application = (ChatClientApplication) getApplication();
@@ -44,10 +46,9 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setStackFromEnd(true);
-//        linearLayoutManager.setReverseLayout(true);
-        mMessagesView.setLayoutManager(linearLayoutManager);
+        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setStackFromEnd(true);
+        mMessagesView.setLayoutManager(mLayoutManager);
         mMessagesView.setAdapter(mPresenter.getChatAdapter());
 
         mRetryButton.setOnClickListener(new View.OnClickListener() {
@@ -132,6 +133,6 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     @Override
     public void scrollListTo(int position) {
-        mMessagesView.scrollToPosition(position);
+        mLayoutManager.scrollToPosition(position);
     }
 }

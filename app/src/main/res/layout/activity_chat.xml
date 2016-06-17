@@ -8,11 +8,16 @@
     <include layout="@layout/progress_view_linear" />
     <include layout="@layout/error_view" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_messages"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_messages"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/action_container"
@@ -24,8 +29,6 @@
         android:paddingEnd="8dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
         android:background="@color/colorAccentQuatro"
         android:orientation="horizontal">
 

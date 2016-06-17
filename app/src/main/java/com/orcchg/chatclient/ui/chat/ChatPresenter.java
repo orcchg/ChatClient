@@ -269,7 +269,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
-                getMvpView().scrollListTo(mMessagesList.size());
+                getMvpView().scrollListTo(mMessagesList.size() - 1);
                 mChatAdapter.notifyItemInserted(mMessagesList.size());
             }
         });
