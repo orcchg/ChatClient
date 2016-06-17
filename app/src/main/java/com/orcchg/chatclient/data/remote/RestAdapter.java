@@ -58,8 +58,8 @@ public interface RestAdapter {
     Observable<Status> sendMessage(@Body Message message);
 
     @DELETE("/logout")
-    Observable<Status> logout(@Query("id") long id, @Query("name") String name);
+    Observable<Status> logout(@Query("id") long id, @Query("login") String name);
 
     @PUT("/switch_channel")
-    Observable<Status> switchChannel(@Query("id") long id, @Query("channel") int channel, @Query("name") String name);
+    Observable<Status> switchChannel(@Query("id") long id, @Query("channel") int channel, @Query("login") String name);
 }

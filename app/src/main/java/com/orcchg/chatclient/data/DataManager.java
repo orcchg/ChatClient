@@ -107,7 +107,7 @@ public class DataManager {
 
     public void logoutDirect(long id, String name) {
         StringBuilder line = new StringBuilder("DELETE /logout?id=")
-                .append(id).append("&name=").append(name).append("HTTP/1.1\r\n")
+                .append(id).append("&login=").append(name).append(" HTTP/1.1\r\n")
                 .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
         mServer.sendRequest(line.toString());
     }
@@ -118,7 +118,7 @@ public class DataManager {
 
     public void switchChannelDirect(long id, int channel, String name) {
         StringBuilder line = new StringBuilder("PUT //switch_channel?id=")
-                .append(id).append("&channel=").append(channel).append("&name=").append(name).append("HTTP/1.1\r\n")
+                .append(id).append("&channel=").append(channel).append("&login=").append(name).append(" HTTP/1.1\r\n")
                 .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
         mServer.sendRequest(line.toString());
     }
