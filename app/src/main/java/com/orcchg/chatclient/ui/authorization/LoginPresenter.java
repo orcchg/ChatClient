@@ -152,7 +152,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                 break;
             case ApiStatusFactory.STATUS_WRONG_PASSWORD:
                 Timber.d("Wrong password");
-                getMvpView().onWrongPassword();
+                onWrongPassword();
                 break;
             case ApiStatusFactory.STATUS_NOT_REGISTERED:
                 Timber.d("Not registered");
@@ -165,7 +165,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                 Timber.w("Server's responded with forbidden error: already registered");
                 break;
             case ApiStatusFactory.STATUS_ALREADY_LOGGED_IN:
-                getMvpView().onAlreadyLoggedIn();
+                onAlreadyLoggedIn();
                 break;
             case ApiStatusFactory.STATUS_INVALID_FORM:
                 errorMessage = "Client's requested with invalid form";
@@ -265,6 +265,25 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
             @Override
             public void run() {
                 getMvpView().showAuthForm(viewObject);
+            }
+        });
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private void onWrongPassword() {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onWrongPassword();
+            }
+        });
+    }
+
+    private void onAlreadyLoggedIn() {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onAlreadyLoggedIn();
             }
         });
     }

@@ -153,10 +153,10 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
                 Timber.w("Server's responded with forbidden error: not registered");
                 break;
             case ApiStatusFactory.STATUS_ALREADY_REGISTERED:
-                getMvpView().onAlreadyRegistered();
+                onAlreadyRegistered();
                 break;
             case ApiStatusFactory.STATUS_ALREADY_LOGGED_IN:
-                getMvpView().onAlreadyLoggedIn();
+                onAlreadyLoggedIn();
                 break;
             case ApiStatusFactory.STATUS_INVALID_FORM:
                 errorMessage = "Client's requested with invalid form";
@@ -256,6 +256,25 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
             @Override
             public void run() {
                 getMvpView().showAuthForm(viewObject);
+            }
+        });
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private void onAlreadyRegistered() {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onAlreadyRegistered();
+            }
+        });
+    }
+
+    private void onAlreadyLoggedIn() {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onAlreadyLoggedIn();
             }
         });
     }
