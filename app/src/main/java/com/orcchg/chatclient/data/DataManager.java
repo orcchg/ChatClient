@@ -1,5 +1,6 @@
 package com.orcchg.chatclient.data;
 
+import com.orcchg.chatclient.data.model.Check;
 import com.orcchg.chatclient.data.model.LoginForm;
 import com.orcchg.chatclient.data.model.Message;
 import com.orcchg.chatclient.data.model.RegistrationForm;
@@ -119,6 +120,30 @@ public class DataManager {
     public void switchChannelDirect(long id, int channel, String name) {
         StringBuilder line = new StringBuilder("PUT //switch_channel?id=")
                 .append(id).append("&channel=").append(channel).append("&login=").append(name).append(" HTTP/1.1\r\n")
+                .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
+        mServer.sendRequest(line.toString());
+    }
+
+    /* Checking */
+    // --------------------------------------------------------------------------------------------
+    public Observable<Check> isLoggedIn(String name) {
+        return mRestAdapter.isLoggedIn(name);
+    }
+
+    public void isLoggedInDirect(String name) {
+        StringBuilder line = new StringBuilder("GET /is_logged_in?login=")
+                .append(name).append(" HTTP/1.1\r\n")
+                .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
+        mServer.sendRequest(line.toString());
+    }
+
+    public Observable<Check> isRegistered(String name) {
+        return mRestAdapter.isRegistered(name);
+    }
+
+    public void isRegisteredDirect(String name) {
+        StringBuilder line = new StringBuilder("GET /is_registered?login=")
+                .append(name).append(" HTTP/1.1\r\n")
                 .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
         mServer.sendRequest(line.toString());
     }

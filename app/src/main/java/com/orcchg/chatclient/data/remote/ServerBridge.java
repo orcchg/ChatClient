@@ -35,7 +35,11 @@ public class ServerBridge {
 
     public void setConnectionCallback(ConnectionCallback callback) {
         mCallback = callback;
-        if (mWorker != null) mWorker.setConnectionCallback(mCallback);
+        if (mWorker != null) {
+            mWorker.setConnectionCallback(mCallback);
+        } else {
+            Timber.w("Worker thread is null");
+        }
     }
 
     public void openConnection() {
@@ -44,11 +48,19 @@ public class ServerBridge {
     }
 
     public void closeConnection() {
-        mWorker.terminate();
+        if (mWorker != null) {
+            mWorker.terminate();
+        } else {
+            Timber.w("Worker thread is null");
+        }
     }
 
     public void sendRequest(String request) {
-        mWorker.sendRequest(request);
+        if (mWorker != null) {
+            mWorker.sendRequest(request);
+        } else {
+            Timber.w("Worker thread is null");
+        }
     }
 
     /* Internals */

@@ -24,7 +24,7 @@ import timber.log.Timber;
 
 public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
 
-    DataManager mDataManager;  // TODO: inject
+    private DataManager mDataManager;  // TODO: inject
     private Subscription mSubscriptionGet;
     private Subscription mSubscriptionSend;
 
@@ -49,6 +49,11 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     void removeDirectConnectionCallback() {
         Timber.v("removeDirectConnectionCallback");
         mDataManager.setConnectionCallback(null);
+    }
+
+    void closeDirectConnection() {
+        Timber.v("closeDirectConnection");
+        mDataManager.closeDirectConnection();
     }
 
     /* Registration */
@@ -210,7 +215,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
                         return;
 
                     } catch (JSONException e) {
-                        Timber.e("Server has responed with malformed json body: %s", response.getBody());
+                        Timber.e("Server has responded with malformed json body: %s", response.getBody());
                         Timber.e("%s", e.getMessage());
                         Timber.w("%s", Log.getStackTraceString(e));
                         presenter.onError();
@@ -249,6 +254,10 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
                 getMvpView().onError();
             }
         });
+    }
+
+    void onRetry() {
+        requestRegistrationForm();
     }
 
     private void showForm(final AuthFormVO viewObject) {

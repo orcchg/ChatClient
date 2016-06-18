@@ -75,6 +75,17 @@
                     android:textColor="?attr/colorAccent"
                     android:textStyle="bold"
                     style="?android:textAppearanceSmall"/>
+
+                <Button
+                    android:id="@+id/sign_up_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/sign_in_button"
+                    android:background="?selectableItemBackground"
+                    android:text="@string/action_sign_up"
+                    android:textColor="?attr/colorPrimaryDark"
+                    android:textStyle="bold"
+                    style="?android:textAppearanceSmall"/>
             </RelativeLayout>
 
         </LinearLayout>

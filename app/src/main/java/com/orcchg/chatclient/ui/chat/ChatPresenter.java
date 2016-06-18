@@ -37,9 +37,9 @@ import timber.log.Timber;
 
 public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
-    DataManager mDataManager;  // TODO: inject
-    List<MessageVO> mMessagesList;
-    ChatAdapter mChatAdapter;
+    private DataManager mDataManager;  // TODO: inject
+    private List<MessageVO> mMessagesList;
+    private ChatAdapter mChatAdapter;
 
     private final long mUserId;
     private final String mUserName;
@@ -193,6 +193,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 switch (action) {
                     case Status.ACTION_LOGIN:
                     case Status.ACTION_REGISTER:
+                    case Status.ACTION_IS_LOGGED_IN:
+                    case Status.ACTION_IS_REGISTERED:
                         Timber.d("Action not processed: %s", Integer.toString(action));
                         break;
                     case Status.ACTION_MESSAGE:
@@ -247,6 +249,12 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 Timber.d("Unknown status");
                 break;
         }
+    }
+
+    /* View state */
+    // --------------------------------------------------------------------------------------------
+    void onRetry() {
+        // TODO: impl
     }
 
     // --------------------------------------------------------------------------------------------

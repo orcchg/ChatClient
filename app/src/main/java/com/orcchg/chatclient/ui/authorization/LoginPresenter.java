@@ -25,7 +25,7 @@ import timber.log.Timber;
 
 public class LoginPresenter extends BasePresenter<LoginMvpView> {
 
-    DataManager mDataManager;  // TODO: inject
+    private DataManager mDataManager;  // TODO: inject
     private Subscription mSubscriptionGet;
     private Subscription mSubscriptionSend;
 
@@ -42,11 +42,6 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
         if (mSubscriptionSend != null) mSubscriptionSend.unsubscribe();
     }
 
-    void openDirectConnection() {
-        Timber.v("openDirectConnection");
-        mDataManager.openDirectConnection();
-    }
-
     void setDirectConnectionCallback() {
         Timber.v("setDirectConnectionCallback");
         mDataManager.setConnectionCallback(createConnectionCallback());
@@ -55,6 +50,11 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     void removeDirectConnectionCallback() {
         Timber.v("removeDirectConnectionCallback");
         mDataManager.setConnectionCallback(null);
+    }
+
+    void closeDirectConnection() {
+        Timber.v("closeDirectConnection");
+        mDataManager.closeDirectConnection();
     }
 
     /* Login */
@@ -219,7 +219,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                         return;
 
                     } catch (JSONException e) {
-                        Timber.e("Server has responed with malformed json body: %s", response.getBody());
+                        Timber.e("Server has responded with malformed json body: %s", response.getBody());
                         Timber.e("%s", e.getMessage());
                         Timber.w("%s", Log.getStackTraceString(e));
                         presenter.onError();
@@ -258,6 +258,10 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                 getMvpView().onError();
             }
         });
+    }
+
+    void onRetry() {
+        requestLoginForm();
     }
 
     private void showForm(final AuthFormVO viewObject) {

@@ -57,7 +57,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         mRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                start();
+                mPresenter.onRetry();
             }
         });
 
@@ -73,19 +73,19 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     protected void onResume() {
         super.onResume();
-        start();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        mPresenter.logout();
+        mPresenter.setDirectConnectionCallback();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mPresenter.removeDirectConnectionCallback();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mPresenter.logout();
     }
 
     @Override
@@ -130,10 +130,6 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
-    private void start() {
-        mPresenter.setDirectConnectionCallback();
-    }
-
     @Override
     public void scrollListTo(int position) {
         mLayoutManager.scrollToPosition(position);

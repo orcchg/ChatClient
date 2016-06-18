@@ -59,7 +59,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
         mRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                start();
+                mPresenter.onRetry();
             }
         });
 
@@ -74,13 +74,19 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     @Override
     protected void onResume() {
         super.onResume();
-        start();
+        mPresenter.setDirectConnectionCallback();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mPresenter.removeDirectConnectionCallback();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mPresenter.closeDirectConnection();
     }
 
     @Override
@@ -148,10 +154,6 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
-    private void start() {
-        mPresenter.setDirectConnectionCallback();
-    }
-
     private void attemptRegister() {
         if (mPresenter.hasRequestedRegistrationForm()) {
             return;

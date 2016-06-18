@@ -1,5 +1,6 @@
 package com.orcchg.chatclient.ui.authorization;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -24,6 +25,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Bind(R.id.email) AutoCompleteTextView mEmailView;
     @Bind(R.id.password) EditText mPasswordView;
     @Bind(R.id.sign_in_button) Button mSignInButton;
+    @Bind(R.id.sign_up_button) Button mSignUpButton;
     @Bind(R.id.form_container_scroll) View mFormContainer;
     @Bind(R.id.progress) View mProgressView;
     @Bind(R.id.error) View mErrorView;
@@ -59,7 +61,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         mRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                start();
+                mPresenter.onRetry();
             }
         });
 
@@ -69,18 +71,31 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
                 attemptLogin();
             }
         });
+
+        mSignUpButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openRegistration();
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        start();
+        mPresenter.setDirectConnectionCallback();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mPresenter.removeDirectConnectionCallback();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mPresenter.closeDirectConnection();
     }
 
     @Override
@@ -142,11 +157,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
-    private void start() {
-        mPresenter.setDirectConnectionCallback();
-        mPresenter.openDirectConnection();
-    }
-
     private void attemptLogin() {
         if (mPresenter.hasRequestedLoginForm()) {
             return;
@@ -184,6 +194,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         } else {
             mPresenter.sendLoginForm();
         }
+    }
+
+    private void openRegistration() {
+        Intent intent = new Intent(this, RegistrationActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
 

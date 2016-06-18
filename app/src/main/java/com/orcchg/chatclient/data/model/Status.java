@@ -18,13 +18,17 @@ public class Status {
     public static final int ACTION_MESSAGE = 2;
     public static final int ACTION_LOGOUT = 3;
     public static final int ACTION_SWITCH_CHANNEL = 4;
+    public static final int ACTION_IS_LOGGED_IN = 5;
+    public static final int ACTION_IS_REGISTERED = 6;
     @IntDef({
         ACTION_UNKNOWN,
         ACTION_LOGIN,
         ACTION_REGISTER,
         ACTION_MESSAGE,
         ACTION_LOGOUT,
-        ACTION_SWITCH_CHANNEL
+        ACTION_SWITCH_CHANNEL,
+        ACTION_IS_LOGGED_IN,
+        ACTION_IS_REGISTERED
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Action {}

@@ -2,6 +2,7 @@ package com.orcchg.chatclient.data.remote;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.orcchg.chatclient.data.model.Check;
 import com.orcchg.chatclient.data.model.LoginForm;
 import com.orcchg.chatclient.data.model.Message;
 import com.orcchg.chatclient.data.model.RegistrationForm;
@@ -62,4 +63,10 @@ public interface RestAdapter {
 
     @PUT("/switch_channel")
     Observable<Status> switchChannel(@Query("id") long id, @Query("channel") int channel, @Query("login") String name);
+
+    @GET("/is_logged_in")
+    Observable<Check> isLoggedIn(@Query("login") String name);
+
+    @GET("/is_registered")
+    Observable<Check> isRegistered(@Query("login") String name);
 }

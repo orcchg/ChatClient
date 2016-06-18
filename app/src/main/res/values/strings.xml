@@ -3,7 +3,6 @@
 
     <!-- Shared prefs -->
     <string name="shared_prefs_file_key">com.orcchg.chatclient.SHARED_PREFS_FILE_KEY</string>
-    <string name="shared_prefs_is_logged_id">SP_IS_LOGGED_IN_KEY</string>
     <string name="shared_prefs_user_id_key">SP_USER_ID_KEY</string>
     <string name="shared_prefs_user_login_key">SP_USER_LOGIN_KEY</string>
 
