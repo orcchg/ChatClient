@@ -6,4 +6,5 @@ public interface ChatMvpView extends MvpView {
     String getMessage();
 
     void scrollListTo(int position);
+    void showSnackbar(String message, int duration);
 }

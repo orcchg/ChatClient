@@ -1,7 +1,6 @@
 package com.orcchg.chatclient.ui.authorization;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.util.Log;
 
 import com.orcchg.chatclient.data.ApiStatusFactory;
@@ -15,7 +14,6 @@ import com.orcchg.chatclient.data.viewobject.AuthFormVO;
 import com.orcchg.chatclient.data.viewobject.RegistrationFormMapper;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
-import com.orcchg.chatclient.ui.chat.ChatActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -142,12 +140,10 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
         switch (code) {
             case ApiStatusFactory.STATUS_SUCCESS:
                 Timber.i("Successfully registered");
+                long id = status.getId();
                 String userName = status.getPayload();
                 Activity activity1 = (Activity) getMvpView();
-                Intent intent1 = new Intent(activity1, ChatActivity.class);
-                intent1.putExtra(ChatActivity.EXTRA_USER_ID, status.getId());
-                intent1.putExtra(ChatActivity.EXTRA_USER_NAME, userName);
-                activity1.startActivity(intent1);
+                Utility.logInAndOpenChat(activity1, id, userName);
                 activity1.finish();
                 break;
             case ApiStatusFactory.STATUS_WRONG_PASSWORD:

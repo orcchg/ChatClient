@@ -1,8 +1,11 @@
 package com.orcchg.chatclient.ui.chat;
 
 import android.app.Activity;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.ApiStatusFactory;
 import com.orcchg.chatclient.data.DataManager;
 import com.orcchg.chatclient.data.Mapper;
@@ -16,6 +19,7 @@ import com.orcchg.chatclient.data.viewobject.MessageVO;
 import com.orcchg.chatclient.mock.MockProvider;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
+import com.orcchg.chatclient.util.SharedUtility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -199,11 +203,13 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                         Timber.i("Successfully logged out");
                         Activity activity = (Activity) getMvpView();
                         if (!activity.isFinishing()) {
+                            Toast.makeText(activity, R.string.logout_toast_message, Toast.LENGTH_SHORT).show();
+                            SharedUtility.logOut(activity);
                             activity.finish();
                         }
                         break;
                     case Status.ACTION_SWITCH_CHANNEL:
-                        Timber.i("Successfully switched channel");
+                        Timber.i("Successfully switched channel to: " + mCurrentChannel);
                         onChannelSwitched();
                         break;
                     case Status.ACTION_UNKNOWN:
@@ -276,11 +282,27 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void onChannelSwitched() {
-        // TODO: switch channel in view
+        Activity activity = (Activity) getMvpView();
+        final String message = String.format(activity.getResources().getString(R.string.switch_channel_toast_message), mCurrentChannel);
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().showSnackbar(message, Snackbar.LENGTH_SHORT);
+            }
+        });
     }
 
+    /**
+     * User has attempted to send message or switch channel without being previously authorized.
+     */
     private void onUnauthorized() {
-        // TODO: show error
+        Timber.e("Unauthorized access");
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onError();
+            }
+        });
     }
 
     /* Direct connection */

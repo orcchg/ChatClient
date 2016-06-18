@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">ChatClient</string>
-    
-    <!-- Auth -->
+
+    <!-- Shared prefs -->
+    <string name="shared_prefs_file_key">com.orcchg.chatclient.SHARED_PREFS_FILE_KEY</string>
+    <string name="shared_prefs_is_logged_id">SP_IS_LOGGED_IN_KEY</string>
+    <string name="shared_prefs_user_id_key">SP_USER_ID_KEY</string>
+    <string name="shared_prefs_user_login_key">SP_USER_LOGIN_KEY</string>
+
     <string name="prompt_login_or_email">Login or email</string>
     <string name="prompt_login">Login</string>
     <string name="prompt_email">Email</string>
@@ -18,8 +23,9 @@
     <string name="error_field_required">This field is required</string>
     <string name="error_network">Network error. Please, try again later.</string>
 
-    <!-- Chat -->
     <string name="login_label">Login</string>
     <string name="registration_label">Registration</string>
     <string name="chat_label">Chat</string>
+    <string name="logout_toast_message">You\'ve just logged out</string>
+    <string name="switch_channel_toast_message">Channel\'ve been switched to %s</string>
 </resources>

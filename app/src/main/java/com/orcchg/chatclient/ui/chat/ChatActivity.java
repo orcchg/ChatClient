@@ -1,9 +1,11 @@
 package com.orcchg.chatclient.ui.chat;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -20,6 +22,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     public static final String EXTRA_USER_ID = "extra_user_id";
     public static final String EXTRA_USER_NAME = "extra_user_name";
 
+    @Bind(R.id.root_container) ViewGroup mRootContainer;
     @Bind(R.id.action_container) View mActionContainer;
     @Bind(R.id.rv_messages) RecyclerView mMessagesView;
     @Bind(R.id.et_message) EditText mMessagesEditView;
@@ -134,5 +137,10 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     public void scrollListTo(int position) {
         mLayoutManager.scrollToPosition(position);
+    }
+
+    @Override
+    public void showSnackbar(String message, int duration) {
+        Snackbar.make(mRootContainer, message, duration).show();
     }
 }

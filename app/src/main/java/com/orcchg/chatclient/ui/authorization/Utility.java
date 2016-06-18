@@ -3,9 +3,14 @@ package com.orcchg.chatclient.ui.authorization;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.view.View;
+
+import com.orcchg.chatclient.ui.chat.ChatActivity;
+import com.orcchg.chatclient.util.SharedUtility;
 
 public class Utility {
 
@@ -49,5 +54,13 @@ public class Utility {
             progressView.setVisibility(show ? View.VISIBLE : View.GONE);
             formContainer.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+    }
+
+    static void logInAndOpenChat(Activity activity, long id, String userName) {
+        SharedUtility.logIn(activity, id, userName);
+        Intent intent = new Intent(activity, ChatActivity.class);
+        intent.putExtra(ChatActivity.EXTRA_USER_ID, id);
+        intent.putExtra(ChatActivity.EXTRA_USER_NAME, userName);
+        activity.startActivity(intent);
     }
 }
