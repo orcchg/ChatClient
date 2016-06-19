@@ -68,6 +68,12 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         if (mSubscriptionLogout != null) mSubscriptionLogout.unsubscribe();
     }
 
+    // --------------------------------------------------------------------------------------------
+    void openDirectConnection() {
+        Timber.v("openDirectConnection");
+        mDataManager.openDirectConnection();
+    }
+
     void setDirectConnectionCallback() {
         Timber.v("setDirectConnectionCallback");
         mDataManager.setConnectionCallback(createConnectionCallback());
@@ -254,7 +260,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     /* View state */
     // --------------------------------------------------------------------------------------------
     void onRetry() {
-        // TODO: impl
+        setDirectConnectionCallback();
+        openDirectConnection();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -317,6 +324,13 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     // --------------------------------------------------------------------------------------------
     private ServerBridge.ConnectionCallback createConnectionCallback() {
         return new SimpleConnectionCallback<ChatPresenter>(this) {
+            @Override
+            public void onSuccess() {
+                super.onSuccess();
+                Timber.v("Connection has been established");
+                // no-op
+            }
+
             @Override
             public void onNext(Response response) {
                 ChatPresenter presenter = getPresenterRef().get();

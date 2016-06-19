@@ -4,7 +4,9 @@ import android.support.annotation.IntDef;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
 
+import java.io.StringReader;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -67,6 +69,8 @@ public class Status {
 
     public static Status fromJson(String json) {
         Gson gson = new Gson();
-        return gson.fromJson(json, Status.class);
+        JsonReader reader = new JsonReader(new StringReader(json));
+        reader.setLenient(true);
+        return gson.fromJson(reader, Status.class);
     }
 }

@@ -2,6 +2,9 @@ package com.orcchg.chatclient.data.model;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
+
+import java.io.StringReader;
 
 public class LoginForm {
     @SerializedName("login") protected String mLogin;
@@ -35,6 +38,8 @@ public class LoginForm {
 
     public static LoginForm fromJson(String json) {
         Gson gson = new Gson();
-        return gson.fromJson(json, LoginForm.class);
+        JsonReader reader = new JsonReader(new StringReader(json));
+        reader.setLenient(true);
+        return gson.fromJson(reader, LoginForm.class);
     }
 }

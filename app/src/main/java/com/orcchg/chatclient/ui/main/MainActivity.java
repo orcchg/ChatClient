@@ -49,8 +49,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.setDirectConnectionCallback();
-        mPresenter.openDirectConnection();
+        mPresenter.onRetry();
     }
 
     @Override

@@ -41,6 +41,12 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
         if (mSubscriptionSend != null) mSubscriptionSend.unsubscribe();
     }
 
+    // --------------------------------------------------------------------------------------------
+    void openDirectConnection() {
+        Timber.v("openDirectConnection");
+        mDataManager.openDirectConnection();
+    }
+
     void setDirectConnectionCallback() {
         Timber.v("setDirectConnectionCallback");
         mDataManager.setConnectionCallback(createConnectionCallback());
@@ -257,7 +263,8 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     }
 
     void onRetry() {
-        requestRegistrationForm();
+        setDirectConnectionCallback();
+        openDirectConnection();
     }
 
     private void showForm(final AuthFormVO viewObject) {

@@ -31,7 +31,28 @@ public class ServerBridge {
         void onError(Throwable e);
     }
 
+    private interface InternalCallback {
+        void onConnectionReset();
+        void onThreadStopped();
+    }
+
     private ConnectionCallback mCallback;
+    private InternalCallback mInternalCallback;
+
+    public ServerBridge() {
+        mInternalCallback = new InternalCallback() {
+            @Override
+            public void onConnectionReset() {
+                Timber.w("Connection reset");
+                closeConnection();
+            }
+
+            @Override
+            public void onThreadStopped() {
+                mWorker = null;
+            }
+        };
+    }
 
     public void setConnectionCallback(ConnectionCallback callback) {
         mCallback = callback;
@@ -43,8 +64,13 @@ public class ServerBridge {
     }
 
     public void openConnection() {
-        mWorker = new WorkerThread(mCallback);
-        mWorker.start();
+        if (mWorker == null) {
+            mWorker = new WorkerThread(mCallback, mInternalCallback);
+            mWorker.start();
+        } else {
+            Timber.w("Worker thread is running, connection is alive");
+            if (mCallback != null) mCallback.onSuccess();
+        }
     }
 
     public void closeConnection() {
@@ -70,9 +96,11 @@ public class ServerBridge {
         private BufferedReader mInput;
         private boolean mIsStopped;
         private ConnectionCallback mCallback;
+        private InternalCallback mInternalCallback;
 
-        WorkerThread(ConnectionCallback callback) {
+        WorkerThread(ConnectionCallback callback, InternalCallback internalCallback) {
             mCallback = callback;
+            mInternalCallback = internalCallback;
         }
 
         @Override
@@ -82,19 +110,22 @@ public class ServerBridge {
                 mSocket = new Socket(IP_ADDRESS, PORT);
                 mInput = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
                 char[] buffer = new char[BUFFER_SIZE];
-                Arrays.fill(buffer, '\0');
+                Arrays.fill(buffer, (char) 0);
+                Timber.i("Connection has been established !");
                 if (mCallback != null) mCallback.onSuccess();
                 while (!mIsStopped && mInput.read(buffer) >= 0) {
                     try {
                         Response response = Response.parse(buffer);
-                        Arrays.fill(buffer, '\0');
+                        Arrays.fill(buffer, (char) 0);  // clean-up
                         if (mCallback != null) mCallback.onNext(response);
                     } catch (ParseException e) {
                         Timber.e("Parse error: %s", Log.getStackTraceString(e));
                         if (mCallback != null) mCallback.onError(e);
+                        if (mInternalCallback != null) mInternalCallback.onConnectionReset();
                     } catch (MalformedJsonException e) {
                         Timber.e("Response has malformed json body: %s", Log.getStackTraceString(e));
                         if (mCallback != null) mCallback.onError(e);
+                        if (mInternalCallback != null) mInternalCallback.onConnectionReset();
                     }
                 }
                 mInput.close();
@@ -104,10 +135,14 @@ public class ServerBridge {
                 Timber.e("%s", e.getMessage());
                 Timber.w("%s", Log.getStackTraceString(e));
                 if (mCallback != null) mCallback.onError(e);
+                if (mInternalCallback != null) mInternalCallback.onConnectionReset();
             } catch (IOException e) {
                 Timber.e("Connection error: %s", Log.getStackTraceString(e));
                 if (mCallback != null) mCallback.onError(e);
+                if (mInternalCallback != null) mInternalCallback.onConnectionReset();
             }
+
+            if (mInternalCallback != null) mInternalCallback.onThreadStopped();
         }
 
         private void terminate() {

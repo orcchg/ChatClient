@@ -184,6 +184,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
     }
 
     void onRetry() {
-        checkForLogin();
+        setDirectConnectionCallback();
+        openDirectConnection();
     }
 }

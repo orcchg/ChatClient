@@ -42,6 +42,12 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
         if (mSubscriptionSend != null) mSubscriptionSend.unsubscribe();
     }
 
+    // --------------------------------------------------------------------------------------------
+    void openDirectConnection() {
+        Timber.v("openDirectConnection");
+        mDataManager.openDirectConnection();
+    }
+
     void setDirectConnectionCallback() {
         Timber.v("setDirectConnectionCallback");
         mDataManager.setConnectionCallback(createConnectionCallback());
@@ -261,7 +267,8 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     }
 
     void onRetry() {
-        requestLoginForm();
+        setDirectConnectionCallback();
+        openDirectConnection();
     }
 
     private void showForm(final AuthFormVO viewObject) {

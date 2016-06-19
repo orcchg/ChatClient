@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class Request {
 
     public static class Startline {
@@ -42,6 +44,7 @@ public class Request {
     /* Parse */
     // --------------------------------------------------------------------------------------------
     public static Request parse(String line) throws ParseException, MalformedJsonException {
+        Timber.v("Line to parse: %s", line);
         String[] tokens = line.split("\\r?\\n");
         if (tokens.length <= 0) {
             String error = "Parse error: invalid line: " + line;
@@ -68,7 +71,7 @@ public class Request {
         }
 
         String body = bodyBuilder.toString();
-        int i1 = body.lastIndexOf("\"}");
+        int i1 = body.lastIndexOf("}");
         if (i1 > 0) {
             body = body.substring(0, i1 + 2);
         } else {
@@ -84,6 +87,7 @@ public class Request {
     }
 
     public static Startline parseStartLine(String line) throws ParseException {
+        Timber.v("Line to parse: %s", line);
         line = line.replaceAll("\\s+", " ").trim();
         int i1 = line.indexOf(' ');
         int i2 = line.indexOf("HTTP", i1 + 1);

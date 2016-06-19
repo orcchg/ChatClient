@@ -2,6 +2,9 @@ package com.orcchg.chatclient.data.model;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
+
+import java.io.StringReader;
 
 public class Message {
     @SerializedName("id") private long mId;
@@ -113,6 +116,8 @@ public class Message {
 
     public static Message fromJson(String json) {
         Gson gson = new Gson();
-        return gson.fromJson(json, Message.class);
+        JsonReader reader = new JsonReader(new StringReader(json));
+        reader.setLenient(true);
+        return gson.fromJson(reader, Message.class);
     }
 }

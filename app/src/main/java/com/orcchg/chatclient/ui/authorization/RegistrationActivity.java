@@ -74,7 +74,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.setDirectConnectionCallback();
+        mPresenter.onRetry();
     }
 
     @Override
