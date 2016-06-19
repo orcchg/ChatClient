@@ -3,6 +3,7 @@ package com.orcchg.chatclient.resources;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -111,25 +112,27 @@ public class MessageView extends FrameLayout {
     protected void initLayoutParams() {
         mLeftSideRootPaddings = new int[] {
                 mContainer.getPaddingLeft(),
-                mContainer.getPaddingStart(),
+                mContainer.getPaddingLeft(),  //  mContainer.getPaddingStart()
                 mContainer.getPaddingTop(),
                 mContainer.getPaddingRight(),
-                mContainer.getPaddingEnd(),
+                mContainer.getPaddingRight(),  //  mContainer.getPaddingEnd()
                 mContainer.getPaddingBottom()};
 
         mRightSideRootPaddings = new int [] {
                 mContainer.getPaddingRight(),
-                mContainer.getPaddingEnd(),
+                mContainer.getPaddingRight(),  //  mContainer.getPaddingEnd()
                 mContainer.getPaddingTop(),
                 mContainer.getPaddingLeft(),
-                mContainer.getPaddingStart(),
+                mContainer.getPaddingLeft(),  //  mContainer.getPaddingStart()
                 mContainer.getPaddingBottom()};
 
         mLeftSideSubParams = (LayoutParams) mSubContainer.getLayoutParams();
         mRightSideSubParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mRightSideSubParams.leftMargin = mLeftSideSubParams.rightMargin;
-        mRightSideSubParams.setMarginStart(mLeftSideSubParams.getMarginEnd());
         mRightSideSubParams.rightMargin = mLeftSideSubParams.leftMargin;
-        mRightSideSubParams.setMarginEnd(mLeftSideSubParams.getMarginStart());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            mRightSideSubParams.setMarginStart(mLeftSideSubParams.getMarginEnd());
+            mRightSideSubParams.setMarginEnd(mLeftSideSubParams.getMarginStart());
+        }
     }
 }

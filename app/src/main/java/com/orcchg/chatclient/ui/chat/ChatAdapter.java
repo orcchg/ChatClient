@@ -24,7 +24,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatBaseViewHolder> {
 
     @Override
     public ChatBaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // TODO: separate according to viewType
         View view = LayoutInflater.from(parent.getContext()).inflate(ChatMessageViewHolder.sLayoutId, parent, false);
         ChatBaseViewHolder holder = new ChatMessageViewHolder(view, mUserId);
         return holder;
