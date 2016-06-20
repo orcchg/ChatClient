@@ -2,6 +2,7 @@ package com.orcchg.chatclient.ui.authorization;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -14,9 +15,13 @@ import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.viewobject.AuthFormVO;
 import com.orcchg.chatclient.ui.base.BaseActivity;
+import com.orcchg.chatclient.util.crypting.Cryptor;
+
+import java.security.NoSuchAlgorithmException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class RegistrationActivity extends BaseActivity<RegistrationPresenter> implements RegistrationMvpView {
 
@@ -149,7 +154,13 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
 
     @Override
     public String getPassword() {
-        return mPasswordView.getText().toString();
+        String data = mPasswordView.getText().toString();
+        try {
+            return Cryptor.hash256(data);
+        } catch (NoSuchAlgorithmException e) {
+            Timber.e("Failed to encrypt password: %s", Log.getStackTraceString(e));
+        }
+        return data;
     }
 
     /* Actions */
