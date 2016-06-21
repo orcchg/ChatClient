@@ -15,6 +15,7 @@ import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.viewobject.AuthFormVO;
 import com.orcchg.chatclient.ui.base.BaseActivity;
+import com.orcchg.chatclient.util.FrameworkUtility;
 import com.orcchg.chatclient.util.crypting.Cryptor;
 
 import java.security.NoSuchAlgorithmException;
@@ -24,6 +25,7 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class RegistrationActivity extends BaseActivity<RegistrationPresenter> implements RegistrationMvpView {
+    public static final int REQUEST_CODE = FrameworkUtility.RequestCode.REGISTRATION_ACTIVITY;
 
     @Bind(R.id.login) AutoCompleteTextView mLoginView;
     @Bind(R.id.email) AutoCompleteTextView mEmailView;
@@ -77,14 +79,15 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
+        FrameworkUtility.setActive(REQUEST_CODE);
         mPresenter.onRetry();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         mPresenter.removeDirectConnectionCallback();
     }
 
@@ -97,6 +100,10 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     @Override
     protected void onDestroy() {
         mPresenter.unsubscribe();
+        FrameworkUtility.setInactive(REQUEST_CODE);
+        if (isFinishing() && FrameworkUtility.getActiveCount() == 0) {
+            mPresenter.closeDirectConnection();
+        }
         super.onDestroy();
     }
 

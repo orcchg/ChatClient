@@ -17,6 +17,7 @@ import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.viewobject.AuthFormVO;
 import com.orcchg.chatclient.ui.base.BaseActivity;
+import com.orcchg.chatclient.util.FrameworkUtility;
 import com.orcchg.chatclient.util.crypting.Cryptor;
 
 import java.security.NoSuchAlgorithmException;
@@ -26,6 +27,7 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginMvpView {
+    public static final int REQUEST_CODE = FrameworkUtility.RequestCode.LOGIN_ACTIVITY;
 
     @Bind(R.id.email) AutoCompleteTextView mEmailView;
     @Bind(R.id.password) EditText mPasswordView;
@@ -86,14 +88,15 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
+        FrameworkUtility.setActive(REQUEST_CODE);
         mPresenter.onRetry();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         mPresenter.removeDirectConnectionCallback();
     }
 
@@ -106,6 +109,10 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Override
     protected void onDestroy() {
         mPresenter.unsubscribe();
+        FrameworkUtility.setInactive(REQUEST_CODE);
+        if (isFinishing() && FrameworkUtility.getActiveCount() == 0) {
+            mPresenter.closeDirectConnection();
+        }
         super.onDestroy();
     }
 

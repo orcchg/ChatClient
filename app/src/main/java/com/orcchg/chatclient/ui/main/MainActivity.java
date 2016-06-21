@@ -8,11 +8,13 @@ import android.widget.Button;
 import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.ui.base.BaseActivity;
+import com.orcchg.chatclient.util.FrameworkUtility;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity<MainPresenter> implements MainMvpView {
+    public static final int REQUEST_CODE = FrameworkUtility.RequestCode.MAIN_ACTIVITY;
 
     @Bind(R.id.progress) View mProgressView;
     @Bind(R.id.error) View mErrorView;
@@ -43,18 +45,14 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     @Override
     protected void onStart() {
         super.onStart();
+        FrameworkUtility.setActive(REQUEST_CODE);
         mPresenter.init();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         mPresenter.onRetry();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         mPresenter.removeDirectConnectionCallback();
     }
 
@@ -62,6 +60,15 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     public void onBackPressed() {
         super.onBackPressed();
         mPresenter.closeDirectConnection();
+    }
+
+    @Override
+    protected void onDestroy() {
+        FrameworkUtility.setInactive(REQUEST_CODE);
+        if (isFinishing() && FrameworkUtility.getActiveCount() == 0) {
+            mPresenter.closeDirectConnection();
+        }
+        super.onDestroy();
     }
 
     /* Presentation layer */

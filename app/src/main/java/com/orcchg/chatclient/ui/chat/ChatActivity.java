@@ -14,11 +14,14 @@ import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.ui.base.BaseActivity;
+import com.orcchg.chatclient.util.FrameworkUtility;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvpView {
+    public static final int REQUEST_CODE = FrameworkUtility.RequestCode.CHAT_ACTIVITY;
+
     public static final String EXTRA_USER_ID = "extra_user_id";
     public static final String EXTRA_USER_NAME = "extra_user_name";
 
@@ -71,14 +74,15 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
+        FrameworkUtility.setActive(REQUEST_CODE);
         mPresenter.onRetry();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         mPresenter.removeDirectConnectionCallback();
     }
 
@@ -90,8 +94,11 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     @Override
     protected void onDestroy() {
-        mPresenter.closeDirectConnection(); // TODO: find proper place
         mPresenter.unsubscribe();
+        FrameworkUtility.setInactive(REQUEST_CODE);
+        if (isFinishing() && FrameworkUtility.getActiveCount() == 0) {
+            mPresenter.closeDirectConnection();
+        }
         super.onDestroy();
     }
 
