@@ -11,9 +11,21 @@ import timber.log.Timber;
 public class Request {
 
     public static class Startline {
-        String method;
-        String path;
-        int version;
+        private String method;
+        private String path;
+        private int version;
+
+        public String getMethod() {
+            return method;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public int getVersion() {
+            return version;
+        }
 
         @Override
         public String toString() {

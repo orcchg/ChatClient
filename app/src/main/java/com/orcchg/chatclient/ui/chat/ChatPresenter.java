@@ -336,6 +336,14 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 ChatPresenter presenter = getPresenterRef().get();
                 if (presenter != null) {
                     if (response != null) {
+                        if (response.getCodeline().getCode() == Response.TERMINATE_CODE) {
+                            Timber.d("Received terminate code from Server");
+                            Activity activity = (Activity) presenter.getMvpView();
+                            String terminate_string = activity.getResources().getString(R.string.terminate_message);
+                            presenter.showSystemMessage(terminate_string);
+                            return;
+                        }
+
                         try {
                             JSONObject json = new JSONObject(response.getBody());
                             if (json.has("code")) {

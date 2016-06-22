@@ -9,11 +9,33 @@ import java.util.List;
 import timber.log.Timber;
 
 public class Response {
+    public static final int TERMINATE_CODE = 99;
 
     public static class Codeline {
-        int version;
-        int code;
-        String message;
+        private int version;
+        private int code;
+        private String message;
+
+        public int getVersion() {
+            return version;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder("HTTP/1.")
+                    .append(version).append(' ')
+                    .append(code).append(' ')
+                    .append(message).append("\r\n")
+                    .toString();
+        }
     }
 
     private Codeline mCodeline;

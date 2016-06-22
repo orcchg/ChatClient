@@ -31,6 +31,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FrameworkUtility.setActive(REQUEST_CODE);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -43,16 +44,15 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        FrameworkUtility.setActive(REQUEST_CODE);
+    protected void onResume() {
+        super.onResume();
         mPresenter.init();
         mPresenter.onRetry();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         mPresenter.removeDirectConnectionCallback();
     }
 

@@ -49,6 +49,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FrameworkUtility.setActive(REQUEST_CODE);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
@@ -74,15 +75,14 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        FrameworkUtility.setActive(REQUEST_CODE);
+    protected void onResume() {
+        super.onResume();
         mPresenter.onRetry();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         mPresenter.removeDirectConnectionCallback();
     }
 
