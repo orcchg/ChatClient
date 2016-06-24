@@ -55,6 +55,7 @@ public class ServerBridge {
     }
 
     public void setConnectionCallback(ConnectionCallback callback) {
+        Timber.d("setConnectionCallback");
         mCallback = callback;
         if (mWorker != null) {
             mWorker.setConnectionCallback(mCallback);
@@ -64,6 +65,7 @@ public class ServerBridge {
     }
 
     public void openConnection() {
+        Timber.d("openConnection");
         if (mWorker == null) {
             mWorker = new WorkerThread(mCallback, mInternalCallback);
             mWorker.start();
@@ -74,6 +76,7 @@ public class ServerBridge {
     }
 
     public void closeConnection() {
+        Timber.d("closeConnection");
         if (mWorker != null) {
             mWorker.terminate();
         } else {
@@ -82,6 +85,7 @@ public class ServerBridge {
     }
 
     public void sendRequest(String request) {
+        Timber.d("sendRequest: %s", request);
         if (mWorker != null) {
             mWorker.sendRequest(request);
         } else {
@@ -128,6 +132,7 @@ public class ServerBridge {
                         if (mInternalCallback != null) mInternalCallback.onConnectionReset();
                     }
                 }
+                Timber.d("Thread is stopping");
                 mInput.close();
                 mSocket.close();
                 if (mCallback != null) mCallback.onComplete();
@@ -154,7 +159,6 @@ public class ServerBridge {
         }
 
         public void sendRequest(String request) {
-            Timber.d("Sending request: %s", request);
             try {
                 OutputStream output = mSocket.getOutputStream();
                 output.write(request.getBytes());

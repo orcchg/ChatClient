@@ -147,12 +147,14 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
     @Override
     public void onWrongPassword() {
+        Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
         mPasswordView.setError(getString(R.string.error_incorrect_password));
         mFocusedView = mPasswordView;
     }
 
     @Override
     public void onAlreadyLoggedIn() {
+        Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
         mEmailView.setError(getString(R.string.error_already_logged_in));
         mEmailView.requestFocus();
     }

@@ -139,14 +139,16 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
 
     @Override
     public void onAlreadyLoggedIn() {
-        mLoginView.setError(getString(R.string.error_already_logged_in));
-        mFocusedView = mLoginView;
+        Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
+        mEmailView.setError(getString(R.string.error_already_logged_in));
+        mFocusedView = mEmailView;
     }
 
     @Override
     public void onAlreadyRegistered() {
-        mLoginView.setError(getString(R.string.error_already_registered));
-        mFocusedView = mLoginView;
+        Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
+        mEmailView.setError(getString(R.string.error_already_registered));
+        mFocusedView = mEmailView;
     }
 
     @Override
