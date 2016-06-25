@@ -1,5 +1,6 @@
 package com.orcchg.chatclient.ui.chat.viewholder;
 
+import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -36,7 +37,9 @@ public class ChatMessageViewHolder extends ChatBaseViewHolder<MessageVO> {
         boolean fromSelf = viewObject.getId() == mUserId;
         if (fromSelf) {
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_END);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                params.addRule(RelativeLayout.ALIGN_PARENT_END);
+            }
             mMessageView.setSide(MessageDrawable.TOP_RIGHT);
             mMessageView.getTitle().setVisibility(View.GONE);
             mPhotoView.setVisibility(View.GONE);
@@ -47,7 +50,9 @@ public class ChatMessageViewHolder extends ChatBaseViewHolder<MessageVO> {
             mPhotoView.setVisibility(View.GONE);
         } else {
             params.addRule(RelativeLayout.RIGHT_OF, R.id.space);
-            params.addRule(RelativeLayout.END_OF, R.id.space);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                params.addRule(RelativeLayout.END_OF, R.id.space);
+            }
             mMessageView.setSide(MessageDrawable.TOP_LEFT);
             mMessageView.getTitle().setVisibility(View.VISIBLE);
             mPhotoView.setVisibility(View.VISIBLE);
