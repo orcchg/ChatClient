@@ -9,6 +9,7 @@ import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.ui.base.BaseActivity;
 import com.orcchg.chatclient.util.FrameworkUtility;
+import com.orcchg.chatclient.util.WindowUtility;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,6 +33,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FrameworkUtility.setActive(REQUEST_CODE);
+        WindowUtility.logScreenParams(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 

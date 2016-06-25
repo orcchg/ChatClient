@@ -14,8 +14,8 @@ import java.lang.annotation.RetentionPolicy;
 
 public class MessageDrawable extends Drawable {
     private static final float RADIUS_FACTOR = 8.0f;
-    private static final int TRIANGLE_WIDTH = 24;
-    private static final int TRIANGLE_HEIGHT = 24;
+    private final int TRIANGLE_WIDTH;
+    private final int TRIANGLE_HEIGHT;
 
     public static final int NO_SIDE = -1;
     public static final int TOP_LEFT = 0;
@@ -31,11 +31,21 @@ public class MessageDrawable extends Drawable {
     private Paint mPaint;
 
     public MessageDrawable() {
-        this(Color.WHITE);
+        this(24, 24, Color.WHITE);
     }
 
     public MessageDrawable(@ColorInt int color) {
+        this(24, 24, color);
+    }
+
+    public MessageDrawable(int triangleWidth, int triangleHeight) {
+        this(triangleWidth, triangleHeight, Color.WHITE);
+    }
+
+    public MessageDrawable(int triangleWidth, int triangleHeight, @ColorInt int color) {
         super();
+        TRIANGLE_WIDTH = triangleWidth;
+        TRIANGLE_HEIGHT = triangleHeight;
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(color);

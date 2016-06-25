@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ public class MessageView extends FrameLayout {
 
     private int[] mLeftSideRootPaddings, mRightSideRootPaddings;
     private LayoutParams mLeftSideSubParams, mRightSideSubParams;
+    private int TRIANGLE_WIDTH = 24, TRIANGLE_HEIGHT = 24;
 
     private @ColorInt int mTitleTextColor;
     private @ColorInt int mDescriptionTextColor;
@@ -79,7 +81,7 @@ public class MessageView extends FrameLayout {
                 break;
         }
 
-        MessageDrawable drawable = new MessageDrawable(color);
+        MessageDrawable drawable = new MessageDrawable(TRIANGLE_WIDTH, TRIANGLE_HEIGHT, color);
         drawable.setSide(side);
         mContainer.setBackgroundDrawable(drawable);
     }
@@ -94,6 +96,23 @@ public class MessageView extends FrameLayout {
     }
 
     protected void init(Context context) {
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        switch (metrics.densityDpi) {
+            case DisplayMetrics.DENSITY_XXHIGH:
+                TRIANGLE_WIDTH = 24;
+                TRIANGLE_HEIGHT = 24;
+                break;
+            case DisplayMetrics.DENSITY_LOW:
+            case DisplayMetrics.DENSITY_MEDIUM:
+                TRIANGLE_WIDTH = 8;
+                TRIANGLE_HEIGHT = 8;
+                break;
+            default:
+                TRIANGLE_WIDTH = 16;
+                TRIANGLE_HEIGHT = 16;
+                break;
+        }
+
         LayoutInflater inflater = LayoutInflater.from(context);
         View rootView = inflater.inflate(R.layout.message_item, this, true);
         mContainer = (ViewGroup) rootView.findViewById(R.id.message_container);
@@ -101,7 +120,7 @@ public class MessageView extends FrameLayout {
         mTitleView = (TextView) rootView.findViewById(R.id.title);
         mDescriptionView = (TextView) rootView.findViewById(R.id.description);
 
-        MessageDrawable drawable = new MessageDrawable();
+        MessageDrawable drawable = new MessageDrawable(TRIANGLE_WIDTH, TRIANGLE_HEIGHT);
         drawable.setSide(MessageDrawable.TOP_LEFT);
         mContainer.setBackgroundDrawable(drawable);
 
