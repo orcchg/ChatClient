@@ -123,6 +123,17 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     }
 
     @Override
+    public void onUnauthorizedError() {
+        onError();
+        mRetryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.openLoginActivity();
+            }
+        });
+    }
+
+    @Override
     public void onLoading() {
         mActionContainer.setVisibility(View.GONE);
         mMessagesView.setVisibility(View.GONE);

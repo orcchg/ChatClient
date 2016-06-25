@@ -1,6 +1,7 @@
 package com.orcchg.chatclient.ui.chat;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ import com.orcchg.chatclient.data.remote.ServerBridge;
 import com.orcchg.chatclient.data.viewobject.MessageMapper;
 import com.orcchg.chatclient.data.viewobject.MessageVO;
 import com.orcchg.chatclient.mock.MockProvider;
+import com.orcchg.chatclient.ui.authorization.LoginActivity;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.util.SharedUtility;
@@ -264,6 +266,13 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         openDirectConnection();
     }
 
+    void openLoginActivity() {
+        Activity activity = (Activity) getMvpView();
+        Intent intent = new Intent(activity, LoginActivity.class);
+        activity.startActivity(intent);
+        activity.finish();  // close chat
+    }
+
     // --------------------------------------------------------------------------------------------
     private void showLastMessage() {
         mMessagesList.add(mLastMessage);
@@ -315,7 +324,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
-                getMvpView().onError();
+                getMvpView().onUnauthorizedError();
             }
         });
     }
