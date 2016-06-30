@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.Menu;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.orcchg.chatclient.R;
@@ -387,5 +389,29 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 }
             }
         };
+    }
+
+    /* Chat menu */
+    // --------------------------------------------------------------------------------------------
+    void onMenuSwitchChannel() {
+
+    }
+
+    void onMenuLogout() {
+
+    }
+
+    void onMenuItemClick(int id) {
+
+    }
+
+    private void addPopupMenuItem(int id, String title) {
+        Menu menu = getMvpView().getPopupMenu().getMenu();
+        menu.add(ChatActivity.MENU_GROUP_ID_USERS, id, menu.size(), title);
+    }
+
+    private void removePopupMenuItem(int id) {
+        Menu menu = getMvpView().getPopupMenu().getMenu();
+        menu.removeItem(id);
     }
 }
