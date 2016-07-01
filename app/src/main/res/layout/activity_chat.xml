@@ -6,6 +6,7 @@
     android:background="@color/chat_window_bg_color"
     android:orientation="vertical">
 
+    <include layout="@layout/toolbar" />
     <include layout="@layout/progress_view_linear" />
     <include layout="@layout/error_view" />
 

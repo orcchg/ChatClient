@@ -28,6 +28,7 @@
     <string name="error_field_required">This field is required</string>
     <string name="error_network">Network error. Please, try again later.</string>
 
+    <string name="main_label">Processing&#8230;</string>
     <string name="login_label">Login</string>
     <string name="registration_label">Registration</string>
     <string name="chat_label">Chat</string>

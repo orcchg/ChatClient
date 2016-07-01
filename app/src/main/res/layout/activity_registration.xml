@@ -2,10 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
+    android:background="@android:color/white"
     android:orientation="vertical"
     tools:context=".ui.authorization.RegistrationActivity">
 
+    <include layout="@layout/toolbar" />
     <include layout="@layout/progress_view" />
     <include layout="@layout/error_view" />
 

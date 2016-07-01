@@ -3,8 +3,10 @@
     android:id="@+id/root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
+    <include layout="@layout/toolbar" />
     <include layout="@layout/progress_view_linear" />
     <include layout="@layout/error_view" />
 </LinearLayout>
