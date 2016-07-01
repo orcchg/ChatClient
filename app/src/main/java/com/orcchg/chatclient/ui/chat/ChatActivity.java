@@ -88,7 +88,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.onRetry();
+        mPresenter.onStart();
     }
 
     @Override

@@ -8,9 +8,25 @@ import java.io.StringReader;
 
 public class SystemMessage {
     @SerializedName("system") private String mMessage;
+    @SerializedName("action") private int mAction;
+    @SerializedName("id") private long mId;
+    @SerializedName("payload") private String mPayload;
 
     public String getMessage() {
         return mMessage;
+    }
+
+    @Status.Action
+    public int getAction() {
+        return mAction;
+    }
+
+    public long getId() {
+        return mId;
+    }
+
+    public String getPayload() {
+        return mPayload;
     }
 
     public String toJson() {

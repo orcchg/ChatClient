@@ -23,6 +23,7 @@ import com.orcchg.chatclient.mock.MockProvider;
 import com.orcchg.chatclient.ui.authorization.LoginActivity;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
+import com.orcchg.chatclient.ui.main.MainActivity;
 import com.orcchg.chatclient.util.SharedUtility;
 
 import org.json.JSONException;
@@ -263,12 +264,27 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     /* View state */
     // --------------------------------------------------------------------------------------------
-    void onRetry() {
+    void onStart() {
         setDirectConnectionCallback();
         openDirectConnection();
     }
 
+    /**
+     * Connection lost during chat - jump to Main screen
+     */
+    void onRetry() {
+        removeDirectConnectionCallback();
+        Activity activity = (Activity) getMvpView();
+        Intent intent = new Intent(activity, MainActivity.class);
+        activity.startActivity(intent);
+        activity.finish();  // close chat
+    }
+
+    /**
+     * Unauthorized attempt to do an action from chat (send message, switch channel, etc.)
+     */
     void openLoginActivity() {
+        removeDirectConnectionCallback();
         Activity activity = (Activity) getMvpView();
         Intent intent = new Intent(activity, LoginActivity.class);
         activity.startActivity(intent);
@@ -367,6 +383,15 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                             if (json.has("system")) {
                                 Timber.d("System message: %s", response.getBody());
                                 SystemMessage systemMessage = SystemMessage.fromJson(response.getBody());
+                                switch (systemMessage.getAction()) {
+                                    case Status.ACTION_LOGIN:
+                                    case Status.ACTION_SWITCH_CHANNEL:
+                                        presenter.addPopupMenuItem(systemMessage.getId(), systemMessage.getPayload());
+                                        break;
+                                    case Status.ACTION_LOGOUT:
+                                        presenter.removePopupMenuItem(systemMessage.getId());
+                                        break;
+                                }
                                 presenter.showSystemMessage(systemMessage.getMessage());
                                 return;
                             }
@@ -394,24 +419,34 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     /* Chat menu */
     // --------------------------------------------------------------------------------------------
     void onMenuSwitchChannel() {
-
+        switchChannel(0);  // TODO: switch channel
     }
 
     void onMenuLogout() {
+        logout();
+    }
+
+    void onMenuItemClick(long id) {
 
     }
 
-    void onMenuItemClick(int id) {
-
+    private void addPopupMenuItem(final long id, final String title) {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Menu menu = getMvpView().getPopupMenu().getMenu();
+                menu.add(ChatActivity.MENU_GROUP_ID_USERS, (int) id, menu.size(), title);
+            }
+        });
     }
 
-    private void addPopupMenuItem(int id, String title) {
-        Menu menu = getMvpView().getPopupMenu().getMenu();
-        menu.add(ChatActivity.MENU_GROUP_ID_USERS, id, menu.size(), title);
-    }
-
-    private void removePopupMenuItem(int id) {
-        Menu menu = getMvpView().getPopupMenu().getMenu();
-        menu.removeItem(id);
+    private void removePopupMenuItem(final long id) {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Menu menu = getMvpView().getPopupMenu().getMenu();
+                menu.removeItem((int) id);
+            }
+        });
     }
 }
