@@ -169,12 +169,14 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         Snackbar.make(mRootContainer, message, duration).show();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.chat_menu, menu);
+    /* Toolbar */
+    // --------------------------------------------------------------------------------------------
+    private void initToolbar() {
+        mToolbar.setTitle(R.string.chat_label);
+        mToolbar.inflateMenu(R.menu.chat_menu);
+        View anchorView = mToolbar.findViewById(R.id.chat_settings);
         int popupSize = 0;
-        mPopupMenu = new PopupMenu(this, menu.getItem(0).getActionView());
+        mPopupMenu = new PopupMenu(this, anchorView);
         mPopupMenu.getMenu().add(MENU_GROUP_ID_SYSTEM, MENU_ITEM_ID_SWITCH_CHANNEL, popupSize++, R.string.menu_chat_item_switch_channel);
         mPopupMenu.getMenu().add(MENU_GROUP_ID_SYSTEM, MENU_ITEM_ID_LOGOUT, popupSize++, R.string.menu_chat_item_logout);
 
@@ -194,18 +196,18 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                 }
             }
         });
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-        switch (item.getItemId()) {
-            case R.id.chat_settings:
-                mPopupMenu.show();
-                return true;
-        }
-        return false;
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.chat_settings:
+                        mPopupMenu.show();
+                        return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
