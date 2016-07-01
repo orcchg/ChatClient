@@ -3,6 +3,7 @@ package com.orcchg.chatclient.data;
 import com.orcchg.chatclient.data.model.Check;
 import com.orcchg.chatclient.data.model.LoginForm;
 import com.orcchg.chatclient.data.model.Message;
+import com.orcchg.chatclient.data.model.Peers;
 import com.orcchg.chatclient.data.model.RegistrationForm;
 import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.data.remote.RestAdapter;
@@ -144,6 +145,27 @@ public class DataManager {
     public void isRegisteredDirect(String name) {
         StringBuilder line = new StringBuilder("GET /is_registered?login=")
                 .append(name).append(" HTTP/1.1\r\n")
+                .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
+        mServer.sendRequest(line.toString());
+    }
+
+    public Observable<Peers> getAllPeers() {
+        return mRestAdapter.getAllPeers();
+    }
+
+    public void getAllPeersDirect() {
+        StringBuilder line = new StringBuilder("GET /all_peers HTTP/1.1\r\n")
+                .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
+        mServer.sendRequest(line.toString());
+    }
+
+    public Observable<Peers> getAllPeers(int channel) {
+        return mRestAdapter.getAllPeers(channel);
+    }
+
+    public void getAllPeersDirect(int channel) {
+        StringBuilder line = new StringBuilder("GET /all_peers?channel=")
+                .append(channel).append(" HTTP/1.1\r\n")
                 .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
         mServer.sendRequest(line.toString());
     }

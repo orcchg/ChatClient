@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.orcchg.chatclient.data.model.Check;
 import com.orcchg.chatclient.data.model.LoginForm;
 import com.orcchg.chatclient.data.model.Message;
+import com.orcchg.chatclient.data.model.Peers;
 import com.orcchg.chatclient.data.model.RegistrationForm;
 import com.orcchg.chatclient.data.model.Status;
 
@@ -69,4 +70,10 @@ public interface RestAdapter {
 
     @GET("/is_registered")
     Observable<Check> isRegistered(@Query("login") String name);
+
+    @GET("/all_peers")
+    Observable<Peers> getAllPeers();
+
+    @GET("/all_peers")
+    Observable<Peers> getAllPeers(@Query("channel") int channel);
 }

@@ -12,6 +12,8 @@ import com.orcchg.chatclient.data.ApiStatusFactory;
 import com.orcchg.chatclient.data.DataManager;
 import com.orcchg.chatclient.data.Mapper;
 import com.orcchg.chatclient.data.model.Message;
+import com.orcchg.chatclient.data.model.Peer;
+import com.orcchg.chatclient.data.model.Peers;
 import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.data.model.SystemMessage;
 import com.orcchg.chatclient.data.parser.Response;
@@ -110,6 +112,20 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                     return Observable.just(viewObject);
                 }
             }).subscribe(createObserver());
+    }
+
+    /**
+     * Request to get all logged in peers on {@param channel}.
+     *
+     * @param channel to get all peers on. In case of {@link Status#WRONG_CHANNEL}
+     *                retrieves all logged in peers.
+     */
+    void getAllPeers(int channel) {
+        if (channel == Status.WRONG_CHANNEL) {
+            mDataManager.getAllPeersDirect();
+        } else {
+            mDataManager.getAllPeersDirect(channel);
+        }
     }
 
     void sendMessage() {
@@ -363,7 +379,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             public void onSuccess() {
                 super.onSuccess();
                 Timber.v("Connection has been established");
-                // no-op
+                getAllPeers(Status.WRONG_CHANNEL);
             }
 
             @Override
@@ -411,6 +427,13 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                                 return;
                             }
 
+                            if (json.has("peers")) {
+                                Timber.d("Peers: %s", response.getBody());
+                                Peers peers = Peers.fromJson(response.getBody());
+                                presenter.fillPeersOnChannel(peers.getPeers(), peers.getChannel());
+                                return;
+                            }
+
                             Timber.w("Something doesn't like a message has been received. Skip");
 
                         } catch (JSONException e) {
@@ -436,7 +459,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     void onMenuItemClick(long id) {
-
+        // TODO: impl - dedicated message
     }
 
     private void addPopupMenuItem(final long id, final String title) {
@@ -457,5 +480,11 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 menu.removeItem((int) id);
             }
         });
+    }
+
+    private void fillPeersOnChannel(List<Peer> peers, int channel) {
+        for (Peer peer : peers) {
+            addPopupMenuItem(peer.getId(), peer.getLogin());
+        }
     }
 }
