@@ -2,6 +2,7 @@ package com.orcchg.chatclient.ui.authorization;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -29,6 +30,7 @@ import timber.log.Timber;
 public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.LOGIN_ACTIVITY;
 
+    @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.email) AutoCompleteTextView mEmailView;
     @Bind(R.id.password) EditText mPasswordView;
     @Bind(R.id.sign_in_button) Button mSignInButton;
@@ -54,6 +56,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         FrameworkUtility.setActive(REQUEST_CODE);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        initToolbar();
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -220,6 +223,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         Intent intent = new Intent(this, RegistrationActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    /* Toolbar */
+    // --------------------------------------------------------------------------------------------
+    private void initToolbar() {
+        mToolbar.setTitle(R.string.login_label);
     }
 }
 

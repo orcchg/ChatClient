@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +35,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     @Bind(R.id.root_container) ViewGroup mRootContainer;
     @Bind(R.id.action_container) View mActionContainer;
+    @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.rv_messages) RecyclerView mMessagesView;
     @Bind(R.id.et_message) EditText mMessagesEditView;
     @Bind(R.id.btn_send_message) ImageButton mSendMessageButton;
@@ -61,6 +62,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         FrameworkUtility.setActive(REQUEST_CODE);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+        initToolbar();
 
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setStackFromEnd(true);

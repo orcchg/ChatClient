@@ -2,6 +2,7 @@ package com.orcchg.chatclient.ui.main;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
@@ -17,6 +18,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends BaseActivity<MainPresenter> implements MainMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.MAIN_ACTIVITY;
 
+    @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.progress) View mProgressView;
     @Bind(R.id.error) View mErrorView;
     @Bind(R.id.retry_button) Button mRetryButton;
@@ -36,6 +38,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
         WindowUtility.logScreenParams(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        initToolbar();
 
         mRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,5 +94,11 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     public void onLoading() {
         mProgressView.setVisibility(View.VISIBLE);
         mErrorView.setVisibility(View.GONE);
+    }
+
+    /* Toolbar */
+    // --------------------------------------------------------------------------------------------
+    private void initToolbar() {
+        mToolbar.setTitle(R.string.main_label);
     }
 }

@@ -1,6 +1,7 @@
 package com.orcchg.chatclient.ui.authorization;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -27,6 +28,7 @@ import timber.log.Timber;
 public class RegistrationActivity extends BaseActivity<RegistrationPresenter> implements RegistrationMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.REGISTRATION_ACTIVITY;
 
+    @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.login) AutoCompleteTextView mLoginView;
     @Bind(R.id.email) AutoCompleteTextView mEmailView;
     @Bind(R.id.password) EditText mPasswordView;
@@ -52,6 +54,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
         FrameworkUtility.setActive(REQUEST_CODE);
         setContentView(R.layout.activity_registration);
         ButterKnife.bind(this);
+        initToolbar();
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -219,5 +222,11 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
         } else {
             mPresenter.sendRegistrationForm();
         }
+    }
+
+    /* Toolbar */
+    // --------------------------------------------------------------------------------------------
+    private void initToolbar() {
+        mToolbar.setTitle(R.string.registration_label);
     }
 }
