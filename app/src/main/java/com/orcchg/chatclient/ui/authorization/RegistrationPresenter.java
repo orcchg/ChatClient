@@ -181,6 +181,9 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
             case ApiStatusFactory.STATUS_UNAUTHORIZED:
                 Timber.w("Server's responded with forbidden error: unauthorized");
                 break;
+            case ApiStatusFactory.STATUS_WRONG_CHANNEL:
+                Timber.w("Server's responded with forbidden error: wrong channel");
+                break;
             case ApiStatusFactory.STATUS_UNKNOWN:
             default:
                 Timber.d("Unknown status");

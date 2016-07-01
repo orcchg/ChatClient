@@ -13,6 +13,8 @@ import java.lang.annotation.RetentionPolicy;
 public class Status {
     public static final long SYSTEM_ID = -1;
     public static final long UNKNOWN_ID = 0;
+    public static final int WRONG_CHANNEL = -1;
+    public static final int DEFAULT_CHANNEL = 0;
 
     public static final int ACTION_UNKNOWN = -1;
     public static final int ACTION_LOGIN = 0;
@@ -22,6 +24,7 @@ public class Status {
     public static final int ACTION_SWITCH_CHANNEL = 4;
     public static final int ACTION_IS_LOGGED_IN = 5;
     public static final int ACTION_IS_REGISTERED = 6;
+    public static final int ACTION_ALL_PEERS = 7;
     @IntDef({
         ACTION_UNKNOWN,
         ACTION_LOGIN,
@@ -30,7 +33,8 @@ public class Status {
         ACTION_LOGOUT,
         ACTION_SWITCH_CHANNEL,
         ACTION_IS_LOGGED_IN,
-        ACTION_IS_REGISTERED
+        ACTION_IS_REGISTERED,
+        ACTION_ALL_PEERS
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Action {}

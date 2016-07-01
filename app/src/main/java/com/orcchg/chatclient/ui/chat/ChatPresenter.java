@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Menu;
-import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.orcchg.chatclient.R;
@@ -48,7 +47,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     private final long mUserId;
     private final String mUserName;
-    private int mCurrentChannel;
+    private int mCurrentChannel = Status.DEFAULT_CHANNEL, mLastChannel = Status.DEFAULT_CHANNEL;
     private long mDestId;
     private MessageVO mLastMessage;
 
@@ -222,7 +221,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                         }
                         break;
                     case Status.ACTION_SWITCH_CHANNEL:
-                        Timber.i("Successfully switched channel to: " + mCurrentChannel);
+                        Timber.i("Successfully switched channel to: %s", mCurrentChannel);
                         onChannelSwitched();
                         break;
                     case Status.ACTION_UNKNOWN:
@@ -254,6 +253,9 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 throw new RuntimeException(errorMessage);
             case ApiStatusFactory.STATUS_UNAUTHORIZED:
                 onUnauthorized();
+                break;
+            case ApiStatusFactory.STATUS_WRONG_CHANNEL:
+                onWrongChannel();
                 break;
             case ApiStatusFactory.STATUS_UNKNOWN:
             default:
@@ -324,6 +326,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void onChannelSwitched() {
+        mLastChannel = mCurrentChannel;
         Activity activity = (Activity) getMvpView();
         final String message = String.format(activity.getResources().getString(R.string.switch_channel_toast_message), mCurrentChannel);
         getMvpView().postOnUiThread(new Runnable() {
@@ -345,6 +348,11 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 getMvpView().onUnauthorizedError();
             }
         });
+    }
+
+    private void onWrongChannel() {
+        showSystemMessage(String.format(ChatActivity.WRONG_CHANNEL_MESSAGE, mCurrentChannel));
+        mCurrentChannel = mLastChannel;
     }
 
     /* Direct connection */
@@ -419,7 +427,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     /* Chat menu */
     // --------------------------------------------------------------------------------------------
     void onMenuSwitchChannel() {
-        switchChannel(0);  // TODO: switch channel
+        // TODO: set current channel via dialog
+        switchChannel(mCurrentChannel);
     }
 
     void onMenuLogout() {

@@ -27,6 +27,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     public static final String EXTRA_USER_ID = "extra_user_id";
     public static final String EXTRA_USER_NAME = "extra_user_name";
+    static String WRONG_CHANNEL_MESSAGE;
 
     static final int MENU_GROUP_ID_SYSTEM = 0;
     static final int MENU_GROUP_ID_USERS = 1;
@@ -63,6 +64,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         initToolbar();
+
+        WRONG_CHANNEL_MESSAGE = getResources().getString(R.string.error_wrong_channel);
 
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setStackFromEnd(true);

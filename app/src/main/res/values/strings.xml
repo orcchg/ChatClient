@@ -27,6 +27,7 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_network">Network error. Please, try again later.</string>
+    <string name="error_wrong_channel">Can\'not switch to channel %s</string>
 
     <string name="main_label">Processing&#8230;</string>
     <string name="login_label">Login</string>

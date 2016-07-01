@@ -16,6 +16,7 @@ public class ApiStatusFactory {
     public static final int STATUS_INVALID_FORM = 5;
     public static final int STATUS_INVALID_QUERY = 6;
     public static final int STATUS_UNAUTHORIZED = 7;
+    public static final int STATUS_WRONG_CHANNEL = 8;
     @IntDef({
         STATUS_UNKNOWN,
         STATUS_SUCCESS,
@@ -25,7 +26,8 @@ public class ApiStatusFactory {
         STATUS_ALREADY_LOGGED_IN,
         STATUS_INVALID_FORM,
         STATUS_INVALID_QUERY,
-        STATUS_UNAUTHORIZED
+        STATUS_UNAUTHORIZED,
+        STATUS_WRONG_CHANNEL
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Status {}
