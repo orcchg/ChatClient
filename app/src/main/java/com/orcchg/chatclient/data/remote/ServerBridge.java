@@ -20,7 +20,7 @@ public class ServerBridge {
 
     public static final String IP_ADDRESS = "194.190.63.108";
     public static final int PORT = 80;
-    private static final int BUFFER_SIZE = 4096;
+    private static final int BUFFER_SIZE = 1024;
 
     private WorkerThread mWorker;
 
@@ -120,6 +120,7 @@ public class ServerBridge {
                 while (!mIsStopped && mInput.read(buffer) >= 0) {
                     try {
                         Response response = Response.parse(buffer);
+                        Timber.v("Parsed response:\n\n%s", response.toString());
                         Arrays.fill(buffer, (char) 0);  // clean-up
                         if (mCallback != null) mCallback.onNext(response);
                     } catch (ParseException e) {

@@ -53,6 +53,16 @@ public class Request {
         return mBody;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder(mStartline.toString());
+        for (Header header : mHeaders) {
+            builder.append(header.toString());
+        }
+        builder.append("\r\n").append(mBody);
+        return builder.toString();
+    }
+
     /* Parse */
     // --------------------------------------------------------------------------------------------
     public static Request parse(String line) throws ParseException, MalformedJsonException {
@@ -85,7 +95,7 @@ public class Request {
         String body = bodyBuilder.toString();
         int i1 = body.lastIndexOf("}");
         if (i1 > 0) {
-            body = body.substring(0, i1 + 2);
+            body = body.substring(0, i1 + 1);
         } else {
             String error = "Malformed json body: " + line;
             throw new MalformedJsonException(error);
