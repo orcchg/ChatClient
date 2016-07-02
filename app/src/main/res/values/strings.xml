@@ -10,6 +10,7 @@
     <string name="menu_chat_title">Actions</string>
     <string name="menu_chat_item_switch_channel">Switch channel</string>
     <string name="menu_chat_item_logout">Logout</string>
+    <string name="menu_chat_dedicated_message_to">Message to %s</string>
 
     <!-- Lexeme -->
     <string name="prompt_login_or_email">Login or email</string>
