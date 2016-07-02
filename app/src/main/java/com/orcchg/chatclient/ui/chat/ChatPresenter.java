@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.orcchg.chatclient.R;
@@ -51,7 +52,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     private final long mUserId;
     private final String mUserName;
     private int mCurrentChannel = Status.DEFAULT_CHANNEL, mLastChannel = Status.DEFAULT_CHANNEL;
-    private long mDestId;
+    private long mDestId = Status.UNKNOWN_ID;
     private MessageVO mLastMessage;
 
     private Subscription mSubscriptionSend;
@@ -485,8 +486,11 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         logout();
     }
 
-    void onMenuItemClick(long id) {
-        // TODO: impl - dedicated message
+    void onMenuItemClick(MenuItem item) {
+        item.setChecked(true);
+        mDestId = item.getItemId();
+        String title = String.format(ChatActivity.DEDICATED_MESSAGE, item.getTitle());
+        getMvpView().onDedicatedMessagePrepare(title);
     }
 
     private void addPopupMenuItem(final long id, final String title) {
@@ -495,6 +499,11 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             public void run() {
                 Menu menu = getMvpView().getPopupMenu().getMenu();
                 menu.add(ChatActivity.MENU_GROUP_ID_USERS, (int) id, menu.size(), title);
+                menu.setGroupCheckable(ChatActivity.MENU_GROUP_ID_USERS, true, true);
+                if (mDestId != Status.UNKNOWN_ID) {
+                    MenuItem item = menu.findItem((int) mDestId);
+                    item.setChecked(true);
+                }
             }
         });
     }
@@ -515,5 +524,16 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 addPopupMenuItem(peer.getId(), peer.getLogin());
             }
         }
+    }
+
+    /* Dedicated message mode */
+    // ------------------------------------------
+    void dropDedicatedMessageMode() {
+        mDestId = Status.UNKNOWN_ID;
+        Menu menu = getMvpView().getPopupMenu().getMenu();
+        for (int i = 0; i < menu.size(); ++i) {
+            menu.getItem(i).setChecked(false);
+        }
+        getMvpView().dropTitleUpdates();
     }
 }

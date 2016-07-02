@@ -28,6 +28,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     public static final String EXTRA_USER_ID = "extra_user_id";
     public static final String EXTRA_USER_NAME = "extra_user_name";
     static String WRONG_CHANNEL_MESSAGE;
+    static String DEDICATED_MESSAGE;
 
     static final int MENU_GROUP_ID_SYSTEM = 0;
     static final int MENU_GROUP_ID_USERS = 1;
@@ -66,6 +67,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         initToolbar();
 
         WRONG_CHANNEL_MESSAGE = getResources().getString(R.string.error_wrong_channel);
+        DEDICATED_MESSAGE = getResources().getString(R.string.menu_chat_dedicated_message_to);
 
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setStackFromEnd(true);
@@ -172,10 +174,35 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         Snackbar.make(mRootContainer, message, duration).show();
     }
 
+    @Override
+    public void dropTitleUpdates() {
+        mToolbar.setTitle(R.string.chat_label);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
+
+    @Override
+    public void onDedicatedMessagePrepare(String title) {
+        mToolbar.setTitle(title);
+        mToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.dropDedicatedMessageMode();
+            }
+        });
+    }
+
     /* Toolbar */
     // --------------------------------------------------------------------------------------------
     private void initToolbar() {
         mToolbar.setTitle(R.string.chat_label);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         mToolbar.inflateMenu(R.menu.chat_menu);
         View anchorView = mToolbar.findViewById(R.id.chat_settings);
         int popupSize = 0;
@@ -194,7 +221,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                         mPresenter.onMenuLogout();
                         return true;
                     default:
-                        mPresenter.onMenuItemClick(item.getItemId());
+                        mPresenter.onMenuItemClick(item);
                         return true;
                 }
             }
