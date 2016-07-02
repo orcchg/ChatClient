@@ -532,11 +532,16 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             @Override
             public void run() {
                 Menu menu = getMvpView().getPopupMenu().getMenu();
-                menu.add(ChatActivity.MENU_GROUP_ID_USERS, (int) id, menu.size(), title);
-                menu.setGroupCheckable(ChatActivity.MENU_GROUP_ID_USERS, true, true);
-                if (mDestId != Status.UNKNOWN_ID) {
-                    MenuItem item = menu.findItem((int) mDestId);
-                    item.setChecked(true);
+                MenuItem item1 = menu.findItem((int) id);
+                if (item1 == null) {
+                    menu.add(ChatActivity.MENU_GROUP_ID_USERS, (int) id, menu.size(), title);
+                    menu.setGroupCheckable(ChatActivity.MENU_GROUP_ID_USERS, true, true);
+                    if (mDestId != Status.UNKNOWN_ID) {
+                        MenuItem item2 = menu.findItem((int) mDestId);
+                        if (item2 != null) {
+                            item2.setChecked(true);
+                        }
+                    }
                 }
             }
         });
