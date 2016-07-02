@@ -1,12 +1,25 @@
 package com.orcchg.chatclient.data.model;
 
+import android.support.annotation.IntDef;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 
 import java.io.StringReader;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SystemMessage {
+    public static final int CHANNEL_MOVE_UNKNOWN = -1;
+    public static final int CHANNEL_MOVE_ENTER = 0;
+    public static final int CHANNEL_MOVE_EXIT = 1;
+    @IntDef({CHANNEL_MOVE_UNKNOWN, CHANNEL_MOVE_ENTER, CHANNEL_MOVE_EXIT})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ChannelMove {}
+
     @SerializedName("system") private String mMessage;
     @SerializedName("action") private int mAction;
     @SerializedName("id") private long mId;
@@ -39,5 +52,17 @@ public class SystemMessage {
         JsonReader reader = new JsonReader(new StringReader(json));
         reader.setLenient(true);
         return gson.fromJson(reader, SystemMessage.class);
+    }
+
+    public static Map<String, String> splitPayload(String payload) {
+        String[] tokens = payload.split("&");
+        Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < tokens.length; ++i) {
+            String[] pair = tokens[i].split("=");
+            if (pair.length > 1) {
+                map.put(pair[0], pair[1]);
+            }
+        }
+        return map;
     }
 }

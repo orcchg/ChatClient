@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Observer;
@@ -409,8 +410,34 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                                 SystemMessage systemMessage = SystemMessage.fromJson(response.getBody());
                                 switch (systemMessage.getAction()) {
                                     case Status.ACTION_LOGIN:
+                                        Map<String, String> map1 = SystemMessage.splitPayload(systemMessage.getPayload());
+                                        if (map1.containsKey("login")) {
+                                            String login = map1.get("login");
+                                            presenter.addPopupMenuItem(systemMessage.getId(), login);
+                                        } else {
+                                            Timber.w("Login action has occurred, but login is missing in system message!");
+                                        }
+                                        break;
                                     case Status.ACTION_SWITCH_CHANNEL:
-                                        presenter.addPopupMenuItem(systemMessage.getId(), systemMessage.getPayload());
+                                        Map<String, String> map2 = SystemMessage.splitPayload(systemMessage.getPayload());
+                                        if (map2.containsKey("channel_move")) {
+                                            int move = Integer.parseInt(map2.get("channel_move"));
+                                            switch (move) {
+                                                case SystemMessage.CHANNEL_MOVE_ENTER:
+                                                    if (map2.containsKey("login")) {
+                                                        String login = map2.get("login");
+                                                        presenter.addPopupMenuItem(systemMessage.getId(), login);
+                                                    } else {
+                                                        Timber.w("Switch-Channel action has occurred, but login is missing in system message!");
+                                                    }
+                                                    break;
+                                                case SystemMessage.CHANNEL_MOVE_EXIT:
+                                                    presenter.removePopupMenuItem(systemMessage.getId());
+                                                    break;
+                                            }
+                                        } else {
+                                            Timber.w("Switch-Channel action has occurred, but channel-move is missing in system message!");
+                                        }
                                         break;
                                     case Status.ACTION_LOGOUT:
                                         presenter.removePopupMenuItem(systemMessage.getId());
