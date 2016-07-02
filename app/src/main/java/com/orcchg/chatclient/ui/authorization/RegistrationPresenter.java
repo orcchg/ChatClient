@@ -24,7 +24,7 @@ import timber.log.Timber;
 
 public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
 
-    private DataManager mDataManager;  // TODO: inject
+    private DataManager mDataManager;
     private Subscription mSubscriptionGet;
     private Subscription mSubscriptionSend;
 

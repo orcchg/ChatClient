@@ -44,7 +44,7 @@ import timber.log.Timber;
 
 public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
-    private DataManager mDataManager;  // TODO: inject
+    private DataManager mDataManager;
     private List<MessageVO> mMessagesList;
     private ChatAdapter mChatAdapter;
 

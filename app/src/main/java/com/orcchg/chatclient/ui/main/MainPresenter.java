@@ -25,7 +25,7 @@ import timber.log.Timber;
 
 public class MainPresenter extends BasePresenter<MainMvpView> {
 
-    private DataManager mDataManager;  // TODO: inject
+    private DataManager mDataManager;
 
     private long mUserId;
     private String mUserName;

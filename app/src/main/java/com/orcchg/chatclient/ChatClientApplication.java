@@ -10,9 +10,9 @@ import timber.log.Timber;
 
 public class ChatClientApplication extends Application {
 
-    private RestAdapter mRestAdapter;  // TODO: inject
-    private ServerBridge mServer;  // TODO: inject
-    private DataManager mDataManager;  // TODO: inject
+    private RestAdapter mRestAdapter;
+    private ServerBridge mServer;
+    private DataManager mDataManager;
 
     @Override
     public void onCreate() {

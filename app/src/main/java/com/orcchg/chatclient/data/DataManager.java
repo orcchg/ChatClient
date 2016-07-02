@@ -13,8 +13,8 @@ import rx.Observable;
 
 public class DataManager {
 
-    private RestAdapter mRestAdapter;  // TODO: inject
-    private ServerBridge mServer;  // TODO: inject
+    private RestAdapter mRestAdapter;
+    private ServerBridge mServer;
 
     public DataManager(RestAdapter restAdapter, ServerBridge server) {
         mRestAdapter = restAdapter;
