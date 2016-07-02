@@ -10,6 +10,7 @@ public interface ChatMvpView extends MvpView {
 
     void scrollListTo(int position);
     void showSnackbar(String message, int duration);
+    void setTitleWithChannel(int channel);
     void dropTitleUpdates();
 
     void onDedicatedMessagePrepare(String title);

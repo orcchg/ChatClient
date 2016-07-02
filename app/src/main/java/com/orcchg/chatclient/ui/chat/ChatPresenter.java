@@ -275,6 +275,9 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             case ApiStatusFactory.STATUS_WRONG_CHANNEL:
                 onWrongChannel();
                 break;
+            case ApiStatusFactory.STATUS_SAME_CHANNEL:
+                onSameChannel();
+                break;
             case ApiStatusFactory.STATUS_UNKNOWN:
             default:
                 Timber.d("Unknown status");
@@ -337,6 +340,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
+                getMvpView().onComplete();
                 getMvpView().scrollListTo(mMessagesList.size() - 1);
                 mChatAdapter.notifyItemInserted(mMessagesList.size());
             }
@@ -350,7 +354,13 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
-                getMvpView().showSnackbar(message, Snackbar.LENGTH_SHORT);
+                getMvpView().onComplete();
+                if (mCurrentChannel != Status.DEFAULT_CHANNEL) {
+                    getMvpView().setTitleWithChannel(mCurrentChannel);
+                } else {
+                    getMvpView().dropTitleUpdates();
+                }
+                showSnackbar(message);
             }
         });
     }
@@ -369,8 +379,33 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void onWrongChannel() {
-        showSystemMessage(String.format(ChatActivity.WRONG_CHANNEL_MESSAGE, mCurrentChannel));
-        mCurrentChannel = mLastChannel;
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onComplete();
+                showSnackbar(String.format(ChatActivity.WRONG_CHANNEL_MESSAGE, mCurrentChannel));
+                mCurrentChannel = mLastChannel;  // restore previous valid channel
+            }
+        });
+    }
+
+    private void onSameChannel() {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onComplete();
+                showSnackbar(String.format(ChatActivity.SAME_CHANNEL_MESSAGE, mCurrentChannel));
+            }
+        });
+    }
+
+    private void showSnackbar(final String message) {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().showSnackbar(message, Snackbar.LENGTH_SHORT);
+            }
+        });
     }
 
     /* Direct connection */

@@ -28,6 +28,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     public static final String EXTRA_USER_ID = "extra_user_id";
     public static final String EXTRA_USER_NAME = "extra_user_name";
     static String WRONG_CHANNEL_MESSAGE;
+    static String SAME_CHANNEL_MESSAGE;
+    static String CHAT_CHANNEL_MESSAGE;
     static String DEDICATED_MESSAGE;
 
     static final int MENU_GROUP_ID_SYSTEM = 0;
@@ -67,6 +69,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         initToolbar();
 
         WRONG_CHANNEL_MESSAGE = getResources().getString(R.string.error_wrong_channel);
+        SAME_CHANNEL_MESSAGE = getResources().getString(R.string.error_same_channel);
+        CHAT_CHANNEL_MESSAGE = getResources().getString(R.string.chat_channel_label);
         DEDICATED_MESSAGE = getResources().getString(R.string.menu_chat_dedicated_message_to);
 
         mLayoutManager = new LinearLayoutManager(this);
@@ -172,6 +176,12 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     public void showSnackbar(String message, int duration) {
         Snackbar.make(mRootContainer, message, duration).show();
+    }
+
+    @Override
+    public void setTitleWithChannel(int channel) {
+        dropTitleUpdates();
+        mToolbar.setTitle(String.format(CHAT_CHANNEL_MESSAGE, channel));
     }
 
     @Override
