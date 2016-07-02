@@ -573,6 +573,10 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         for (int i = 0; i < menu.size(); ++i) {
             menu.getItem(i).setChecked(false);
         }
-        getMvpView().dropTitleUpdates();
+        if (mCurrentChannel != Status.DEFAULT_CHANNEL) {
+            getMvpView().setTitleWithChannel(mCurrentChannel);
+        } else {
+            getMvpView().dropTitleUpdates();
+        }
     }
 }
