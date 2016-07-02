@@ -34,6 +34,6 @@
     <string name="registration_label">Registration</string>
     <string name="chat_label">Chat</string>
     <string name="logout_toast_message">You\'ve just logged out</string>
-    <string name="switch_channel_toast_message">Channel\'ve been switched to %s</string>
+    <string name="switch_channel_toast_message">Channel\'ve been switched to %d</string>
     <string name="terminate_message">Server shutdown</string>
 </resources>
