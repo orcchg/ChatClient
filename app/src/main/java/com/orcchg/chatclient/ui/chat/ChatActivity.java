@@ -1,10 +1,13 @@
 package com.orcchg.chatclient.ui.chat;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -253,5 +256,31 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     public PopupMenu getPopupMenu() {
         return mPopupMenu;
+    }
+
+    /* Dialogs */
+    // --------------------------------------------------------------------------------------------
+    @Override
+    public void showSwitchChannelDialog(int channel) {
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_switch_channel, null);
+        final EditText channelEditText = (EditText) dialogView.findViewById(R.id.et_channel);
+        if (channel != Status.WRONG_CHANNEL && channel != Status.DEFAULT_CHANNEL) {
+            channelEditText.setText(Integer.toString(channel));
+        }
+
+        new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setTitle(R.string.dialog_switch_channel_title)
+                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        int channel = Integer.parseInt(channelEditText.getText().toString());
+                        mPresenter.switchChannel(channel);
+                    }
+                })
+                .setNegativeButton(R.string.button_cancel, null)
+                .create()
+                .show();
     }
 }

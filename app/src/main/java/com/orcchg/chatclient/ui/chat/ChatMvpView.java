@@ -10,6 +10,8 @@ public interface ChatMvpView extends MvpView {
 
     void scrollListTo(int position);
     void showSnackbar(String message, int duration);
+    void showSwitchChannelDialog(int channel);
+
     void setTitleWithChannel(int channel);
     void dropTitleUpdates();
 

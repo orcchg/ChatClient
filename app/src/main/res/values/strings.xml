@@ -12,6 +12,10 @@
     <string name="menu_chat_item_logout">Logout</string>
     <string name="menu_chat_dedicated_message_to">Message to %s</string>
 
+    <!-- Dialog -->
+    <string name="dialog_switch_channel_title">Channel</string>
+    <string name="dialog_switch_channel_hint">Enter channel</string>
+
     <!-- Lexeme -->
     <string name="prompt_login_or_email">Login or email</string>
     <string name="prompt_login">Login</string>
@@ -39,4 +43,7 @@
     <string name="logout_toast_message">You\'ve just logged out</string>
     <string name="switch_channel_toast_message">Channel\'ve been switched to %d</string>
     <string name="terminate_message">Server shutdown</string>
+
+    <string name="button_ok">Ok</string>
+    <string name="button_cancel">Cancel</string>
 </resources>

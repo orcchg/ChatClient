@@ -513,8 +513,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     /* Chat menu */
     // --------------------------------------------------------------------------------------------
     void onMenuSwitchChannel() {
-        // TODO: set current channel via dialog
-        switchChannel(mCurrentChannel);
+        getMvpView().showSwitchChannelDialog(mCurrentChannel);
     }
 
     void onMenuLogout() {

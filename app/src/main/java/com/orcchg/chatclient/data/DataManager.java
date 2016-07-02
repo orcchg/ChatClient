@@ -119,7 +119,7 @@ public class DataManager {
     }
 
     public void switchChannelDirect(long id, int channel, String name) {
-        StringBuilder line = new StringBuilder("PUT //switch_channel?id=")
+        StringBuilder line = new StringBuilder("PUT /switch_channel?id=")
                 .append(id).append("&channel=").append(channel).append("&login=").append(name).append(" HTTP/1.1\r\n")
                 .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
         mServer.sendRequest(line.toString());
