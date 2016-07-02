@@ -484,7 +484,9 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     private void fillPeersOnChannel(List<Peer> peers, int channel) {
         for (Peer peer : peers) {
-            addPopupMenuItem(peer.getId(), peer.getLogin());
+            if (peer.getId() != mUserId) {  // don't add self as peer
+                addPopupMenuItem(peer.getId(), peer.getLogin());
+            }
         }
     }
 }
