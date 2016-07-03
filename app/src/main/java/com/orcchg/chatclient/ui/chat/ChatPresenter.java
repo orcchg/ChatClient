@@ -21,6 +21,8 @@ import com.orcchg.chatclient.data.parser.Response;
 import com.orcchg.chatclient.data.remote.ServerBridge;
 import com.orcchg.chatclient.data.viewobject.MessageMapper;
 import com.orcchg.chatclient.data.viewobject.MessageVO;
+import com.orcchg.chatclient.data.viewobject.PeerMapper;
+import com.orcchg.chatclient.data.viewobject.PeerVO;
 import com.orcchg.chatclient.mock.MockProvider;
 import com.orcchg.chatclient.ui.authorization.LoginActivity;
 import com.orcchg.chatclient.ui.base.BasePresenter;
@@ -55,6 +57,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     private int mCurrentChannel = Status.DEFAULT_CHANNEL, mLastChannel = Status.DEFAULT_CHANNEL;
     private long mDestId = Status.UNKNOWN_ID;
     private MessageVO mLastMessage;
+
+    private List<PeerVO> mPeersOnChannel;
 
     private Subscription mSubscriptionSend;
     private Subscription mSubscriptionLogout;
@@ -350,6 +354,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void onChannelSwitched() {
+        getAllPeers(mCurrentChannel);  // request peers on new channel
         mLastChannel = mCurrentChannel;
         Activity activity = (Activity) getMvpView();
         final String message = String.format(activity.getResources().getString(R.string.switch_channel_toast_message), mCurrentChannel);
@@ -419,6 +424,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 super.onSuccess();
                 Timber.v("Connection has been established");
                 getAllPeers(Status.WRONG_CHANNEL);
+                getAllPeers(mCurrentChannel);
             }
 
             @Override
@@ -458,23 +464,17 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                                         break;
                                     case Status.ACTION_SWITCH_CHANNEL:
                                         Map<String, String> map2 = SharedUtility.splitPayload(systemMessage.getPayload());
-                                        if (map2.containsKey("channel_move")) {
-                                            int move = Integer.parseInt(map2.get("channel_move"));
-                                            switch (move) {
-                                                case SystemMessage.CHANNEL_MOVE_ENTER:
-                                                    if (map2.containsKey("login")) {
-                                                        String login = map2.get("login");
-                                                        presenter.addPopupMenuItem(systemMessage.getId(), login);
-                                                    } else {
-                                                        Timber.w("Switch-Channel action has occurred, but login is missing in system message!");
-                                                    }
-                                                    break;
-                                                case SystemMessage.CHANNEL_MOVE_EXIT:
-                                                    presenter.removePopupMenuItem(systemMessage.getId());
-                                                    break;
-                                            }
-                                        } else {
-                                            Timber.w("Switch-Channel action has occurred, but channel-move is missing in system message!");
+                                        PeerVO peer = new PeerVO.Builder(systemMessage.getId())
+                                                .setLogin(map2.get("login"))
+                                                .build();
+                                        int move = Integer.parseInt(map2.get("channel_move"));
+                                        switch (move) {
+                                            case SystemMessage.CHANNEL_MOVE_ENTER:
+                                                mPeersOnChannel.add(peer);
+                                                break;
+                                            case SystemMessage.CHANNEL_MOVE_EXIT:
+                                                mPeersOnChannel.remove(peer);
+                                                break;
                                         }
                                         break;
                                     case Status.ACTION_LOGOUT:
@@ -560,9 +560,18 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void fillPeersOnChannel(List<Peer> peers, int channel) {
-        for (Peer peer : peers) {
-            if (peer.getId() != mUserId) {  // don't add self as peer
-                addPopupMenuItem(peer.getId(), peer.getLogin());
+        if (channel == Status.WRONG_CHANNEL) {  // all logged in peers
+            for (Peer peer : peers) {
+                if (peer.getId() != mUserId) {  // don't add self as peer
+                    addPopupMenuItem(peer.getId(), peer.getLogin());
+                }
+            }
+        } else {
+            mPeersOnChannel.clear();
+            Mapper<Peer, PeerVO> mapper = new PeerMapper();
+            for (Peer peer : peers) {
+                PeerVO viewObject = mapper.map(peer);
+                mPeersOnChannel.add(viewObject);
             }
         }
     }

@@ -83,7 +83,9 @@ public final class Gravatar {
 		try {
 			String emailHash = Cryptor.md5(email.toLowerCase().trim());
 			String params = formatUrlParameters();
-			return GRAVATAR_URL + emailHash + ".jpg" + params;
+			String url = GRAVATAR_URL + emailHash + ".jpg" + params;
+			Timber.d("Gravatar url: %s", url);
+			return url;
 		} catch (NoSuchAlgorithmException e) {
 			Timber.e("%s", Log.getStackTraceString(e));
 		}
