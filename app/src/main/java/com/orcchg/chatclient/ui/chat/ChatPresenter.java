@@ -157,13 +157,13 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 //            .subscribeOn(Schedulers.io())
 //            .observeOn(AndroidSchedulers.mainThread())
 //            .subscribe(processStatus(ACTION_LOGOUT));
-        mDataManager.logoutDirect(mUserId, mUserName);
+        mDataManager.logoutDirect(mUserId);
     }
 
     void switchChannel(int channel) {
         getMvpView().onLoading();
         mCurrentChannel = channel;
-        mDataManager.switchChannelDirect(mUserId, mCurrentChannel, mUserName);
+        mDataManager.switchChannelDirect(mUserId, mCurrentChannel);
     }
 
     // --------------------------------------------------------------------------------------------

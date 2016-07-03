@@ -60,10 +60,10 @@ public interface RestAdapter {
     Observable<Status> sendMessage(@Body Message message);
 
     @DELETE("/logout")
-    Observable<Status> logout(@Query("id") long id, @Query("login") String name);
+    Observable<Status> logout(@Query("id") long id);
 
     @PUT("/switch_channel")
-    Observable<Status> switchChannel(@Query("id") long id, @Query("channel") int channel, @Query("login") String name);
+    Observable<Status> switchChannel(@Query("id") long id, @Query("channel") int channel);
 
     @GET("/is_logged_in")
     Observable<Check> isLoggedIn(@Query("login") String name);

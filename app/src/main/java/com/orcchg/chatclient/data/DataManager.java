@@ -11,6 +11,8 @@ import com.orcchg.chatclient.data.remote.ServerBridge;
 
 import rx.Observable;
 
+import static android.R.attr.name;
+
 public class DataManager {
 
     private RestAdapter mRestAdapter;
@@ -103,24 +105,24 @@ public class DataManager {
 
     /* Access */
     // --------------------------------------------------------------------------------------------
-    public Observable<Status> logout(long id, String name) {
-        return mRestAdapter.logout(id, name);
+    public Observable<Status> logout(long id) {
+        return mRestAdapter.logout(id);
     }
 
-    public void logoutDirect(long id, String name) {
+    public void logoutDirect(long id) {
         StringBuilder line = new StringBuilder("DELETE /logout?id=")
-                .append(id).append("&login=").append(name).append(" HTTP/1.1\r\n")
+                .append(id).append(" HTTP/1.1\r\n")
                 .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
         mServer.sendRequest(line.toString());
     }
 
-    public Observable<Status> switchChannel(long id, int channel, String name) {
-        return mRestAdapter.switchChannel(id, channel, name);
+    public Observable<Status> switchChannel(long id, int channel) {
+        return mRestAdapter.switchChannel(id, channel);
     }
 
-    public void switchChannelDirect(long id, int channel, String name) {
+    public void switchChannelDirect(long id, int channel) {
         StringBuilder line = new StringBuilder("PUT /switch_channel?id=")
-                .append(id).append("&channel=").append(channel).append("&login=").append(name).append(" HTTP/1.1\r\n")
+                .append(id).append("&channel=").append(channel).append(" HTTP/1.1\r\n")
                 .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
         mServer.sendRequest(line.toString());
     }

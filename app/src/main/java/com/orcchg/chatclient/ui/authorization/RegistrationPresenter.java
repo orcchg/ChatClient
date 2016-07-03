@@ -14,9 +14,12 @@ import com.orcchg.chatclient.data.viewobject.AuthFormVO;
 import com.orcchg.chatclient.data.viewobject.RegistrationFormMapper;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
+import com.orcchg.chatclient.util.SharedUtility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Map;
 
 import rx.Observer;
 import rx.Subscription;
@@ -152,9 +155,11 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
             case ApiStatusFactory.STATUS_SUCCESS:
                 Timber.i("Successfully registered");
                 long id = status.getId();
-                String userName = status.getPayload();
+                Map<String, String> map = SharedUtility.splitPayload(status.getPayload());
+                String userName = map.get("login");
+                String userEmail = map.get("email");
                 Activity activity1 = (Activity) getMvpView();
-                Utility.logInAndOpenChat(activity1, id, userName);
+                Utility.logInAndOpenChat(activity1, id, userName, userEmail);
                 activity1.finish();
                 break;
             case ApiStatusFactory.STATUS_WRONG_PASSWORD:
