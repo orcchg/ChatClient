@@ -1,6 +1,9 @@
 package com.orcchg.jgravatar;
 
-import org.apache.commons.codec.digest.DigestUtils;
+import android.util.Log;
+
+import com.orcchg.chatclient.util.crypting.Cryptor;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -8,8 +11,11 @@ import org.apache.commons.lang3.Validate;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * A gravatar is a dynamic image resource that is requested from the
@@ -74,9 +80,14 @@ public final class Gravatar {
 
 		// hexadecimal MD5 hash of the requested user's lowercased email address
 		// with all whitespace trimmed
-		String emailHash = DigestUtils.md5Hex(email.toLowerCase().trim());
-		String params = formatUrlParameters();
-		return GRAVATAR_URL + emailHash + ".jpg" + params;
+		try {
+			String emailHash = Cryptor.md5(email.toLowerCase().trim());
+			String params = formatUrlParameters();
+			return GRAVATAR_URL + emailHash + ".jpg" + params;
+		} catch (NoSuchAlgorithmException e) {
+			Timber.e("%s", Log.getStackTraceString(e));
+		}
+		return "";
 	}
 
 	/**
