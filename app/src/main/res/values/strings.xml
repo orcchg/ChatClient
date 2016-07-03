@@ -5,6 +5,7 @@
     <string name="shared_prefs_file_key" translatable="false">com.orcchg.chatclient.SHARED_PREFS_FILE_KEY</string>
     <string name="shared_prefs_user_id_key" translatable="false">SP_USER_ID_KEY</string>
     <string name="shared_prefs_user_login_key" translatable="false">SP_USER_LOGIN_KEY</string>
+    <string name="shared_prefs_user_email_key" translatable="false">SP_USER_EMAIL_KEY</string>
 
     <!-- Menu -->
     <string name="menu_chat_title">Actions</string>

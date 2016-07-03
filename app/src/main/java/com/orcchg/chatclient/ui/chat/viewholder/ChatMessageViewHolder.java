@@ -11,6 +11,7 @@ import com.orcchg.chatclient.data.viewobject.MessageVO;
 import com.orcchg.chatclient.resources.MessageDrawable;
 import com.orcchg.chatclient.resources.MessageView;
 import com.orcchg.chatclient.resources.PhotoItem;
+import com.orcchg.jgravatar.Gravatar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -53,10 +54,12 @@ public class ChatMessageViewHolder extends ChatBaseViewHolder<MessageVO> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 params.addRule(RelativeLayout.END_OF, R.id.space);
             }
+            Gravatar gravatar = new Gravatar();
+            String url = gravatar.getUrl(viewObject.getEmail());
             mMessageView.setSide(MessageDrawable.TOP_LEFT);
             mMessageView.getTitle().setVisibility(View.VISIBLE);
             mPhotoView.setVisibility(View.VISIBLE);
-            mPhotoView.setPhoto("", true);  // TODO: use real photo or gravatar
+            mPhotoView.setPhoto(url, true);
         }
 
         mMessageView.getTitle().setText(viewObject.getLogin());

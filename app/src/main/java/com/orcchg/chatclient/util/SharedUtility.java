@@ -8,6 +8,9 @@ import android.content.res.Resources;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.model.Status;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SharedUtility {
 
     public static SharedPreferences getSharedPrefs(Activity activity) {
@@ -15,11 +18,12 @@ public class SharedUtility {
         return activity.getSharedPreferences(key, Context.MODE_PRIVATE);
     }
 
-    public static void logIn(Activity activity, long id, String userName) {
+    public static void logIn(Activity activity, long id, String userName, String userEmail) {
         Resources resources = activity.getResources();
         SharedPreferences.Editor editor = SharedUtility.getSharedPrefs(activity).edit();
         editor.putLong(resources.getString(R.string.shared_prefs_user_id_key), id);
         editor.putString(resources.getString(R.string.shared_prefs_user_login_key), userName);
+        editor.putString(resources.getString(R.string.shared_prefs_user_email_key), userEmail);
         editor.apply();
     }
 
@@ -28,6 +32,19 @@ public class SharedUtility {
         SharedPreferences.Editor editor = SharedUtility.getSharedPrefs(activity).edit();
         editor.putLong(resources.getString(R.string.shared_prefs_user_id_key), Status.UNKNOWN_ID);
         editor.putString(resources.getString(R.string.shared_prefs_user_login_key), null);
+        editor.putString(resources.getString(R.string.shared_prefs_user_email_key), null);
         editor.apply();
+    }
+
+    public static Map<String, String> splitPayload(String payload) {
+        String[] tokens = payload.split("&");
+        Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < tokens.length; ++i) {
+            String[] pair = tokens[i].split("=");
+            if (pair.length > 1) {
+                map.put(pair[0], pair[1]);
+            }
+        }
+        return map;
     }
 }

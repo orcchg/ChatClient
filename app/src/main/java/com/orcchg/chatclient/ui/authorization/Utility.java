@@ -56,11 +56,12 @@ public class Utility {
         }
     }
 
-    static void logInAndOpenChat(Activity activity, long id, String userName) {
-        SharedUtility.logIn(activity, id, userName);
+    static void logInAndOpenChat(Activity activity, long id, String userName, String userEmail) {
+        SharedUtility.logIn(activity, id, userName, userEmail);
         Intent intent = new Intent(activity, ChatActivity.class);
         intent.putExtra(ChatActivity.EXTRA_USER_ID, id);
         intent.putExtra(ChatActivity.EXTRA_USER_NAME, userName);
+        intent.putExtra(ChatActivity.EXTRA_USER_EMAIL, userEmail);
         activity.startActivity(intent);
     }
 }

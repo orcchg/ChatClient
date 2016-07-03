@@ -51,6 +51,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     private final long mUserId;
     private final String mUserName;
+    private final String mUserEmail;
     private int mCurrentChannel = Status.DEFAULT_CHANNEL, mLastChannel = Status.DEFAULT_CHANNEL;
     private long mDestId = Status.UNKNOWN_ID;
     private MessageVO mLastMessage;
@@ -58,10 +59,11 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     private Subscription mSubscriptionSend;
     private Subscription mSubscriptionLogout;
 
-    ChatPresenter(DataManager dataManager, long id, String name) {
+    ChatPresenter(DataManager dataManager, long id, String name, String email) {
         mDataManager = dataManager;
         mUserId = id;
         mUserName = name;
+        mUserEmail = email;
 
         mMessagesList = new ArrayList<>();
         mChatAdapter = new ChatAdapter(mUserId, mMessagesList);
@@ -132,7 +134,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     void sendMessage() {
         String messageString = getMvpView().getMessage();
-        Message message = new Message.Builder(mUserId, mUserName)
+        Message message = new Message.Builder(mUserId, mUserName, mUserEmail)
             .setChannel(mCurrentChannel)
             .setDestId(mDestId)
             .setTimestamp(System.currentTimeMillis())
@@ -446,7 +448,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                                 SystemMessage systemMessage = SystemMessage.fromJson(response.getBody());
                                 switch (systemMessage.getAction()) {
                                     case Status.ACTION_LOGIN:
-                                        Map<String, String> map1 = SystemMessage.splitPayload(systemMessage.getPayload());
+                                        Map<String, String> map1 = SharedUtility.splitPayload(systemMessage.getPayload());
                                         if (map1.containsKey("login")) {
                                             String login = map1.get("login");
                                             presenter.addPopupMenuItem(systemMessage.getId(), login);
@@ -455,7 +457,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                                         }
                                         break;
                                     case Status.ACTION_SWITCH_CHANNEL:
-                                        Map<String, String> map2 = SystemMessage.splitPayload(systemMessage.getPayload());
+                                        Map<String, String> map2 = SharedUtility.splitPayload(systemMessage.getPayload());
                                         if (map2.containsKey("channel_move")) {
                                             int move = Integer.parseInt(map2.get("channel_move"));
                                             switch (move) {

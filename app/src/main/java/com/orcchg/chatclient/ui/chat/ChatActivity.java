@@ -30,6 +30,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     public static final String EXTRA_USER_ID = "extra_user_id";
     public static final String EXTRA_USER_NAME = "extra_user_name";
+    public static final String EXTRA_USER_EMAIL = "extra_user_email";
+
     static String WRONG_CHANNEL_MESSAGE;
     static String SAME_CHANNEL_MESSAGE;
     static String CHAT_CHANNEL_MESSAGE;
@@ -58,7 +60,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         ChatClientApplication application = (ChatClientApplication) getApplication();
         long id = getIntent().getLongExtra(EXTRA_USER_ID, Status.UNKNOWN_ID);
         String name = getIntent().getStringExtra(EXTRA_USER_NAME);
-        return new ChatPresenter(application.getDataManager(), id, name);
+        String email = getIntent().getStringExtra(EXTRA_USER_EMAIL);
+        return new ChatPresenter(application.getDataManager(), id, name, email);
     }
 
     /* Lifecycle */

@@ -9,6 +9,7 @@ import java.io.StringReader;
 public class Message {
     @SerializedName("id") private long mId;
     @SerializedName("login") private String mLogin;
+    @SerializedName("email") private String mEmail;
     @SerializedName("channel") private int mChannel;
     @SerializedName("dest_id") private long mDestId;
     @SerializedName("timestamp") private long mTimestamp;
@@ -17,6 +18,7 @@ public class Message {
     public Message(Builder builder) {
         mId = builder.mId;
         mLogin = builder.mLogin;
+        mEmail = builder.mEmail;
         mChannel = builder.mChannel;
         mDestId = builder.mDestId;
         mTimestamp = builder.mTimestamp;
@@ -26,14 +28,16 @@ public class Message {
     public static class Builder {
         private final long mId;
         private final String mLogin;
+        private final String mEmail;
         private int mChannel;
         private long mDestId;
         private long mTimestamp;
         private String mMessage;
 
-        public Builder(long id, String login) {
+        public Builder(long id, String login, String email) {
             mId = id;
             mLogin = login;
+            mEmail = email;
         }
 
         public Builder setChannel(int channel) {
@@ -75,6 +79,14 @@ public class Message {
 
     public void setLogin(String mLogin) {
         this.mLogin = mLogin;
+    }
+
+    public String getEmail() {
+        return mEmail;
+    }
+
+    public void setEmail(String email) {
+        mEmail = email;
     }
 
     public int getChannel() {

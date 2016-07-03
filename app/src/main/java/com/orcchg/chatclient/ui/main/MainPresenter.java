@@ -29,6 +29,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
     private long mUserId;
     private String mUserName;
+    private String mUserEmail;
 
     MainPresenter(DataManager dataManager) {
         mDataManager = dataManager;
@@ -40,6 +41,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         SharedPreferences sp = SharedUtility.getSharedPrefs(activity);
         mUserId = sp.getLong(resources.getString(R.string.shared_prefs_user_id_key), Status.UNKNOWN_ID);
         mUserName = sp.getString(resources.getString(R.string.shared_prefs_user_login_key), null);
+        mUserEmail = sp.getString(resources.getString(R.string.shared_prefs_user_email_key), null);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -66,7 +68,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
     // --------------------------------------------------------------------------------------------
     private void checkForLogin() {
         onLoading();
-        mDataManager.isLoggedInDirect(mUserName);
+        mDataManager.isLoggedInDirect(mUserEmail);
     }
 
     private void processCheck(Check check) {
@@ -150,6 +152,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         Intent intent = new Intent(activity, ChatActivity.class);
         intent.putExtra(ChatActivity.EXTRA_USER_ID, mUserId);
         intent.putExtra(ChatActivity.EXTRA_USER_NAME, mUserName);
+        intent.putExtra(ChatActivity.EXTRA_USER_EMAIL, mUserEmail);
         activity.startActivity(intent);
         activity.finish();
     }

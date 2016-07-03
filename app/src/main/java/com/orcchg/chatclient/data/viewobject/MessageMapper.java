@@ -8,6 +8,7 @@ public class MessageMapper implements Mapper<Message, MessageVO> {
     public MessageVO map(Message object) {
         return new MessageVO.Builder(object.getId())
                 .setLogin(object.getLogin())
+                .setEmail(object.getEmail())
                 .setMessage(object.getMessage())
                 .setTimestamp(object.getTimestamp())
                 .build();

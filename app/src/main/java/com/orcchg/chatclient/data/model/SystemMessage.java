@@ -9,8 +9,6 @@ import com.google.gson.stream.JsonReader;
 import java.io.StringReader;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SystemMessage {
     public static final int CHANNEL_MOVE_UNKNOWN = -1;
@@ -52,17 +50,5 @@ public class SystemMessage {
         JsonReader reader = new JsonReader(new StringReader(json));
         reader.setLenient(true);
         return gson.fromJson(reader, SystemMessage.class);
-    }
-
-    public static Map<String, String> splitPayload(String payload) {
-        String[] tokens = payload.split("&");
-        Map<String, String> map = new HashMap<>();
-        for (int i = 0; i < tokens.length; ++i) {
-            String[] pair = tokens[i].split("=");
-            if (pair.length > 1) {
-                map.put(pair[0], pair[1]);
-            }
-        }
-        return map;
     }
 }
