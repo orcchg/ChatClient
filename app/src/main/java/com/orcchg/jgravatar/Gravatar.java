@@ -40,7 +40,7 @@ public final class Gravatar {
 	private final static int DEFAULT_SIZE = 80;
 	private final static String GRAVATAR_URL = "http://www.gravatar.com/avatar/";
 	private static final GravatarRating DEFAULT_RATING = GravatarRating.GENERAL_AUDIENCES;
-	private static final GravatarDefaultImage DEFAULT_DEFAULT_IMAGE = GravatarDefaultImage.HTTP_404;
+	private static final GravatarDefaultImage DEFAULT_DEFAULT_IMAGE = GravatarDefaultImage.IDENTICON;
 
 	private int size = DEFAULT_SIZE;
 	private GravatarRating rating = DEFAULT_RATING;
@@ -83,7 +83,7 @@ public final class Gravatar {
 		try {
 			String emailHash = Cryptor.md5(email.toLowerCase().trim());
 			String params = formatUrlParameters();
-			String url = GRAVATAR_URL + emailHash + ".jpg" + params;
+			String url = GRAVATAR_URL + emailHash + params;
 			Timber.d("Gravatar url: %s", url);
 			return url;
 		} catch (NoSuchAlgorithmException e) {

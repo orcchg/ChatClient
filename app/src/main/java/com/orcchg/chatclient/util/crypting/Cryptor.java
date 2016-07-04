@@ -18,7 +18,8 @@ public class Cryptor {
     public static String bytesToHex(byte[] bytes) {
         StringBuffer result = new StringBuffer();
         for (byte byt : bytes) {
-            result.append(Integer.toString((byt & 0xff) + 0x100, 16).substring(1));
+//            result.append(Integer.toString((byt & 0xff) + 0x100, 16).substring(1));
+            result.append(Integer.toHexString((byt & 0xFF) | 0x100).substring(1, 3));
         }
         return result.toString();
     }
