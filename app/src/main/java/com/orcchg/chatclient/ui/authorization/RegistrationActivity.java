@@ -148,6 +148,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
         Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
         mEmailView.setError(getString(R.string.error_already_logged_in));
         mFocusedView = mEmailView;
+        if (mFocusedView != null) mFocusedView.requestFocus();
     }
 
     @Override
@@ -155,6 +156,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
         Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
         mEmailView.setError(getString(R.string.error_already_registered));
         mFocusedView = mEmailView;
+        if (mFocusedView != null) mFocusedView.requestFocus();
     }
 
     @Override
