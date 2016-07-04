@@ -82,15 +82,21 @@ public class Response {
         List<Header> headers = new ArrayList<>();
 
         int index = 1;
+        boolean checkForBody = true, hasBody = false;
         while (Header.isHeader(tokens[index])) {
             Header header = Header.parse(tokens[index]);
             headers.add(header);
             ++index;
+
+            if (checkForBody && header.getKey().equals("Content-Length")) {
+                checkForBody = false;
+                hasBody = Integer.parseInt(header.getValue().trim()) > 0;
+            }
         }
 
         String ending = "";
         StringBuilder bodyBuilder = new StringBuilder();
-        while (index < tokens.length) {
+        while (hasBody && index < tokens.length) {
             String bodyLine = tokens[index].replaceAll("\r+", "");
             bodyBuilder.append(ending).append(bodyLine);
             ending = "\n";
@@ -98,12 +104,14 @@ public class Response {
         }
 
         String body = bodyBuilder.toString();
-        int i1 = body.lastIndexOf("}");
-        if (i1 > 0) {
-            body = body.substring(0, i1 + 1);
-        } else {
-            String error = "Malformed json body: " + line;
-            throw new MalformedJsonException(error);
+        if (hasBody) {
+            int i1 = body.lastIndexOf("}");
+            if (i1 > 0) {
+                body = body.substring(0, i1 + 1);
+            } else {
+                String error = "Malformed json body: " + line;
+                throw new MalformedJsonException(error);
+            }
         }
 
         Response response = new Response();

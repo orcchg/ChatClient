@@ -28,6 +28,14 @@ public class Peer {
         return gson.toJson(this);
     }
 
+    @Override
+    public String toString() {
+        return new StringBuilder("Peer: id=").append(mId)
+                .append(", login=").append(mLogin)
+                .append(", channel=").append(mChannel)
+                .toString();
+    }
+
     public static Peer fromJson(String json) {
         Gson gson = new Gson();
         JsonReader reader = new JsonReader(new StringReader(json));

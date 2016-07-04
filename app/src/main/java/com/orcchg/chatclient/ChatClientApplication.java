@@ -14,10 +14,18 @@ public class ChatClientApplication extends Application {
     private ServerBridge mServer;
     private DataManager mDataManager;
 
+    public static String PACKAGE_NAME;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        Timber.plant(new Timber.DebugTree());
+        PACKAGE_NAME = getPackageName();
+        Timber.plant(new Timber.DebugTree() {
+            @Override
+            protected String createStackElementTag(StackTraceElement element) {
+                return PACKAGE_NAME + ":" + super.createStackElementTag(element) + ":" + element.getLineNumber();
+            }
+        });
 
         mRestAdapter = RestAdapter.Creator.create();
         mServer = new ServerBridge();

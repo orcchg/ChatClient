@@ -49,6 +49,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     private DataManager mDataManager;
     private List<MessageVO> mMessagesList;
+    private List<PeerVO> mPeersOnChannel;
     private ChatAdapter mChatAdapter;
 
     private final long mUserId;
@@ -57,8 +58,6 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     private int mCurrentChannel = Status.DEFAULT_CHANNEL, mLastChannel = Status.DEFAULT_CHANNEL;
     private long mDestId = Status.UNKNOWN_ID;
     private MessageVO mLastMessage;
-
-    private List<PeerVO> mPeersOnChannel;
 
     private Subscription mSubscriptionSend;
     private Subscription mSubscriptionLogout;
@@ -70,6 +69,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         mUserEmail = email;
 
         mMessagesList = new ArrayList<>();
+        mPeersOnChannel = new ArrayList<>();
         mChatAdapter = new ChatAdapter(mUserId, mMessagesList);
     }
 
@@ -561,15 +561,19 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     private void fillPeersOnChannel(List<Peer> peers, int channel) {
         if (channel == Status.WRONG_CHANNEL) {  // all logged in peers
+            Timber.d("All logged in peers: ");
             for (Peer peer : peers) {
+                Timber.d("%s", peer.toString());
                 if (peer.getId() != mUserId) {  // don't add self as peer
                     addPopupMenuItem(peer.getId(), peer.getLogin());
                 }
             }
         } else {
+            Timber.d("All logged in peers on channel %s", channel);
             mPeersOnChannel.clear();
             Mapper<Peer, PeerVO> mapper = new PeerMapper();
             for (Peer peer : peers) {
+                Timber.d("%s", peer.toString());
                 PeerVO viewObject = mapper.map(peer);
                 mPeersOnChannel.add(viewObject);
             }
