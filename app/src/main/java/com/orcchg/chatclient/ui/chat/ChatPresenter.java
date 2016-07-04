@@ -55,7 +55,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     private final long mUserId;
     private final String mUserName;
     private final String mUserEmail;
-    private int mCurrentChannel = Status.DEFAULT_CHANNEL, mLastChannel = Status.DEFAULT_CHANNEL;
+    private int mCurrentChannel = Status.DEFAULT_CHANNEL;
+    private int mLastChannel = Status.DEFAULT_CHANNEL;
     private long mDestId = Status.UNKNOWN_ID;
     private MessageVO mLastMessage;
 
@@ -362,11 +363,6 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             @Override
             public void run() {
                 getMvpView().onComplete();
-                if (mCurrentChannel != Status.DEFAULT_CHANNEL) {
-                    getMvpView().setTitleWithChannel(mCurrentChannel);
-                } else {
-                    getMvpView().dropTitleUpdates();
-                }
                 showSnackbar(message);
             }
         });
@@ -452,33 +448,33 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                             if (json.has("system")) {
                                 Timber.d("System message: %s", response.getBody());
                                 SystemMessage systemMessage = SystemMessage.fromJson(response.getBody());
+                                Map<String, String> map = SharedUtility.splitPayload(systemMessage.getPayload());
+                                PeerVO.Builder peerBuilder = new PeerVO.Builder(systemMessage.getId());
                                 switch (systemMessage.getAction()) {
                                     case Status.ACTION_LOGIN:
-                                        Map<String, String> map1 = SharedUtility.splitPayload(systemMessage.getPayload());
-                                        if (map1.containsKey("login")) {
-                                            String login = map1.get("login");
-                                            presenter.addPopupMenuItem(systemMessage.getId(), login);
-                                        } else {
-                                            Timber.w("Login action has occurred, but login is missing in system message!");
+                                        String login1 = map.get("login");
+                                        peerBuilder.setLogin(login1).setChannel(Status.DEFAULT_CHANNEL);
+                                        presenter.addPopupMenuItem(systemMessage.getId(), login1);
+                                        if (mCurrentChannel == Status.DEFAULT_CHANNEL) {
+                                            addPeerOnChannel(peerBuilder.build());
                                         }
                                         break;
                                     case Status.ACTION_SWITCH_CHANNEL:
-                                        Map<String, String> map2 = SharedUtility.splitPayload(systemMessage.getPayload());
-                                        PeerVO peer = new PeerVO.Builder(systemMessage.getId())
-                                                .setLogin(map2.get("login"))
-                                                .build();
-                                        int move = Integer.parseInt(map2.get("channel_move"));
+                                        int move = Integer.parseInt(map.get("channel_move"));
                                         switch (move) {
                                             case SystemMessage.CHANNEL_MOVE_ENTER:
-                                                mPeersOnChannel.add(peer);
+                                                String login2 = map.get("login");
+                                                peerBuilder.setLogin(login2).setChannel(mCurrentChannel);
+                                                addPeerOnChannel(peerBuilder.build());
                                                 break;
                                             case SystemMessage.CHANNEL_MOVE_EXIT:
-                                                mPeersOnChannel.remove(peer);
+                                                removePeerFromChannel(systemMessage.getId());
                                                 break;
                                         }
                                         break;
                                     case Status.ACTION_LOGOUT:
                                         presenter.removePopupMenuItem(systemMessage.getId());
+                                        removePeerFromChannel(systemMessage.getId());
                                         break;
                                 }
                                 presenter.showSystemMessage(systemMessage.getMessage());
@@ -577,7 +573,32 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 PeerVO viewObject = mapper.map(peer);
                 mPeersOnChannel.add(viewObject);
             }
+            updateTitle();
         }
+    }
+
+    private void addPeerOnChannel(PeerVO peer) {
+        mPeersOnChannel.add(peer);
+        updateTitle();
+    }
+
+    private void removePeerFromChannel(long id) {
+        for (PeerVO peer : mPeersOnChannel) {
+            if (id == peer.getId() && mCurrentChannel == peer.getChannel()) {
+                mPeersOnChannel.remove(peer);
+                break;
+            }
+        }
+        updateTitle();
+    }
+
+    private void updateTitle() {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().setTitleWithChannel(mCurrentChannel, mPeersOnChannel.size());
+            }
+        });
     }
 
     /* Dedicated message mode */
@@ -588,10 +609,6 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         for (int i = 0; i < menu.size(); ++i) {
             menu.getItem(i).setChecked(false);
         }
-        if (mCurrentChannel != Status.DEFAULT_CHANNEL) {
-            getMvpView().setTitleWithChannel(mCurrentChannel);
-        } else {
-            getMvpView().dropTitleUpdates();
-        }
+        updateTitle();
     }
 }

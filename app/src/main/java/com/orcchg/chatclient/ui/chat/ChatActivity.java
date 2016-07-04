@@ -185,14 +185,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     }
 
     @Override
-    public void setTitleWithChannel(int channel) {
-        dropTitleUpdates();
-        mToolbar.setTitle(String.format(CHAT_CHANNEL_MESSAGE, channel));
-    }
-
-    @Override
-    public void dropTitleUpdates() {
-        mToolbar.setTitle(R.string.chat_label);
+    public void setTitleWithChannel(int channel, int peersOnChannel) {
+        mToolbar.setTitle(String.format(CHAT_CHANNEL_MESSAGE, channel, peersOnChannel));
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

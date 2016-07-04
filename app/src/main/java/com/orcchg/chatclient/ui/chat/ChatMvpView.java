@@ -12,8 +12,7 @@ public interface ChatMvpView extends MvpView {
     void showSnackbar(String message, int duration);
     void showSwitchChannelDialog(int channel);
 
-    void setTitleWithChannel(int channel);
-    void dropTitleUpdates();
+    void setTitleWithChannel(int channel, int peersOnChannel);
 
     void onDedicatedMessagePrepare(String title);
     void onUnauthorizedError();
