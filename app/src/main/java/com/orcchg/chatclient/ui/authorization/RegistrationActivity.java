@@ -1,5 +1,6 @@
 package com.orcchg.chatclient.ui.authorization;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -97,7 +98,9 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        mPresenter.closeDirectConnection();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -228,5 +231,12 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     // --------------------------------------------------------------------------------------------
     private void initToolbar() {
         mToolbar.setTitle(R.string.registration_label);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 }
