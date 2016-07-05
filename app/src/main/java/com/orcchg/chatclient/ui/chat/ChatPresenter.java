@@ -372,6 +372,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
+                dropDedicatedMessageMode();
                 getMvpView().onComplete();
                 showSnackbar(message);
             }
