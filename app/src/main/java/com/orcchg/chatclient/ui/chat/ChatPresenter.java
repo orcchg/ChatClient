@@ -3,6 +3,7 @@ package com.orcchg.chatclient.ui.chat;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -139,6 +140,11 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     void sendMessage() {
         String messageString = getMvpView().getMessage();
+        if (TextUtils.isEmpty(messageString)) {
+            Timber.w("Empty message is forbidden");
+            return;
+        }
+
         Message message = new Message.Builder(mUserId, mUserName, mUserEmail)
             .setChannel(mCurrentChannel)
             .setDestId(mDestId)

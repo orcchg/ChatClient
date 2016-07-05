@@ -19,6 +19,7 @@ import android.widget.PopupMenu;
 import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.model.Status;
+import com.orcchg.chatclient.resources.PhotoItem;
 import com.orcchg.chatclient.ui.base.BaseActivity;
 import com.orcchg.chatclient.util.FrameworkUtility;
 
@@ -42,9 +43,11 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     private static final int MENU_ITEM_ID_SWITCH_CHANNEL = 0;
     private static final int MENU_ITEM_ID_LOGOUT = 1;
 
+    @Bind(R.id.root_coordinator) ViewGroup mRootCoordinator;
     @Bind(R.id.root_container) ViewGroup mRootContainer;
     @Bind(R.id.action_container) View mActionContainer;
     @Bind(R.id.toolbar) Toolbar mToolbar;
+    @Bind(R.id.photo) PhotoItem mPhotoItem;
     @Bind(R.id.rv_messages) RecyclerView mMessagesView;
     @Bind(R.id.et_message) EditText mMessagesEditView;
     @Bind(R.id.btn_send_message) ImageButton mSendMessageButton;
@@ -181,11 +184,12 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     @Override
     public void showSnackbar(String message, int duration) {
-        Snackbar.make(mRootContainer, message, duration).show();
+        Snackbar.make(mRootCoordinator, message, duration).show();
     }
 
     @Override
     public void setTitleWithChannel(int channel, int peersOnChannel) {
+        mPhotoItem.setVisibility(View.GONE);
         mToolbar.setTitle(String.format(CHAT_CHANNEL_MESSAGE, channel, peersOnChannel));
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -198,6 +202,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     @Override
     public void onDedicatedMessagePrepare(String title) {
+        mPhotoItem.setVisibility(View.VISIBLE);
+        mPhotoItem.setPhoto(url, true);
         mToolbar.setTitle(title);
         mToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -211,6 +217,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     /* Toolbar */
     // --------------------------------------------------------------------------------------------
     private void initToolbar() {
+        mPhotoItem.setVisibility(View.GONE);
         mToolbar.setTitle(R.string.chat_label);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         mToolbar.inflateMenu(R.menu.chat_menu);
