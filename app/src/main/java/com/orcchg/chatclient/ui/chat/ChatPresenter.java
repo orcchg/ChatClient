@@ -2,9 +2,12 @@ package com.orcchg.chatclient.ui.chat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.LongSparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -35,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +54,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     private DataManager mDataManager;
     private List<MessageVO> mMessagesList;
-    private List<PeerVO> mPeersOnChannel;
+    private Map<Integer, LongSparseArray<PeerVO>> mAllPeers;
     private ChatAdapter mChatAdapter;
 
     private final long mUserId;
@@ -71,7 +75,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         mUserEmail = email;
 
         mMessagesList = new ArrayList<>();
-        mPeersOnChannel = new ArrayList<>();
+        mAllPeers = new HashMap<>();
         mChatAdapter = new ChatAdapter(mUserId, mMessagesList);
     }
 
@@ -454,33 +458,34 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                             if (json.has("system")) {
                                 Timber.d("System message: %s", response.getBody());
                                 SystemMessage systemMessage = SystemMessage.fromJson(response.getBody());
-                                Map<String, String> map = SharedUtility.splitPayload(systemMessage.getPayload());
+
+                                String login = "", email;
                                 PeerVO.Builder peerBuilder = new PeerVO.Builder(systemMessage.getId());
+                                Map<String, String> map = SharedUtility.splitPayload(systemMessage.getPayload());
+                                if (map.size() > 0) {
+                                    login = map.get("login");
+                                    email = map.get("email");
+                                    peerBuilder.setLogin(login).setEmail(email);
+                                }
+
                                 switch (systemMessage.getAction()) {
                                     case Status.ACTION_LOGIN:
-                                        String login1 = map.get("login");
-                                        peerBuilder.setLogin(login1).setChannel(Status.DEFAULT_CHANNEL);
-                                        presenter.addPopupMenuItem(systemMessage.getId(), login1);
-                                        if (mCurrentChannel == Status.DEFAULT_CHANNEL) {
-                                            addPeerOnChannel(peerBuilder.build());
-                                        }
+                                        peerBuilder.setChannel(Status.DEFAULT_CHANNEL);
+                                        presenter.addPopupMenuItem(systemMessage.getId(), login);
+                                        addPeer(peerBuilder.build());
                                         break;
                                     case Status.ACTION_SWITCH_CHANNEL:
+                                        int prev = Integer.parseInt(map.get("channel_prev"));
+                                        int next = Integer.parseInt(map.get("channel_next"));
                                         int move = Integer.parseInt(map.get("channel_move"));
-                                        switch (move) {
-                                            case SystemMessage.CHANNEL_MOVE_ENTER:
-                                                String login2 = map.get("login");
-                                                peerBuilder.setLogin(login2).setChannel(mCurrentChannel);
-                                                addPeerOnChannel(peerBuilder.build());
-                                                break;
-                                            case SystemMessage.CHANNEL_MOVE_EXIT:
-                                                removePeerFromChannel(systemMessage.getId());
-                                                break;
-                                        }
+                                        peerBuilder.setChannel(next);
+                                        movePeer(peerBuilder.build(), prev);
                                         break;
                                     case Status.ACTION_LOGOUT:
+                                        int channel = Integer.parseInt(map.get("channel"));
+                                        peerBuilder.setChannel(channel);
                                         presenter.removePopupMenuItem(systemMessage.getId());
-                                        removePeerFromChannel(systemMessage.getId());
+                                        removePeer(peerBuilder.build());
                                         break;
                                 }
                                 presenter.showSystemMessage(systemMessage.getMessage());
@@ -527,8 +532,13 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     void onMenuItemClick(MenuItem item) {
         item.setChecked(true);
         mDestId = item.getItemId();
-        String title = String.format(ChatActivity.DEDICATED_MESSAGE, item.getTitle());
-        getMvpView().onDedicatedMessagePrepare(title);
+        PeerVO peer = findPeerById(mDestId);
+        String login = peer.getLogin();
+        String email = peer.getEmail();
+        Bundle args = new Bundle();
+        args.putString(ChatActivity.BUNDLE_KEY_LOGIN, login);
+        args.putString(ChatActivity.BUNDLE_KEY_EMAIL, email);
+        getMvpView().onDedicatedMessagePrepare(args);
     }
 
     private void addPopupMenuItem(final long id, final String title) {
@@ -561,50 +571,90 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         });
     }
 
+    /* List of peers */
+    // --------------------------------------------------------------------------------------------
     private void fillPeersOnChannel(List<Peer> peers, int channel) {
+        Mapper<Peer, PeerVO> mapper = new PeerMapper();
         if (channel == Status.WRONG_CHANNEL) {  // all logged in peers
             Timber.d("All logged in peers: ");
+            mAllPeers.clear();
             for (Peer peer : peers) {
                 Timber.d("%s", peer.toString());
                 if (peer.getId() != mUserId) {  // don't add self as peer
                     addPopupMenuItem(peer.getId(), peer.getLogin());
+                    PeerVO viewObject = mapper.map(peer);
+                    if (!mAllPeers.containsKey(peer.getChannel())) {
+                        mAllPeers.put(peer.getChannel(), new LongSparseArray<PeerVO>());
+                    }
+                    mAllPeers.get(peer.getChannel()).put(peer.getId(), viewObject);
                 }
             }
         } else {
             Timber.d("All logged in peers on channel %s", channel);
-            mPeersOnChannel.clear();
-            Mapper<Peer, PeerVO> mapper = new PeerMapper();
+            if (!mAllPeers.containsKey(channel)) {
+                mAllPeers.put(channel, new LongSparseArray<PeerVO>());
+            } else {
+                mAllPeers.get(channel).clear();
+            }
             for (Peer peer : peers) {
                 Timber.d("%s", peer.toString());
                 PeerVO viewObject = mapper.map(peer);
-                mPeersOnChannel.add(viewObject);
+                mAllPeers.get(peer.getChannel()).put(peer.getId(), viewObject);
             }
             updateTitle();
         }
     }
 
-    private void addPeerOnChannel(PeerVO peer) {
-        mPeersOnChannel.add(peer);
+    private void addPeer(PeerVO peer) {
+        if (!mAllPeers.containsKey(peer.getChannel())) {
+            mAllPeers.put(peer.getChannel(), new LongSparseArray<PeerVO>());
+        }
+        mAllPeers.get(peer.getChannel()).put(peer.getId(), peer);
         updateTitle();
     }
 
-    private void removePeerFromChannel(long id) {
-        for (PeerVO peer : mPeersOnChannel) {
-            if (id == peer.getId() && mCurrentChannel == peer.getChannel()) {
-                mPeersOnChannel.remove(peer);
-                break;
-            }
-        }
+    private void movePeer(PeerVO peer, int prevChannel) {
+        removePeerFromChannel(peer, prevChannel);
+        addPeer(peer);
         updateTitle();
+    }
+
+    private void removePeer(PeerVO peer) {
+        removePeerFromChannel(peer, peer.getChannel());
+        updateTitle();
+    }
+
+    // internal method
+    private void removePeerFromChannel(PeerVO peer, int channel) {
+        if (mAllPeers.containsKey(channel)) {
+            mAllPeers.get(channel).remove(peer.getId());
+        }
     }
 
     private void updateTitle() {
+        int total = 0;
+        if (mAllPeers.containsKey(mCurrentChannel)) {
+            total = mAllPeers.get(mCurrentChannel).size();
+        }
+        final int peersOnChannel = total;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
-                getMvpView().setTitleWithChannel(mCurrentChannel, mPeersOnChannel.size());
+                getMvpView().setTitleWithChannel(mCurrentChannel, peersOnChannel);
             }
         });
+    }
+
+    @Nullable
+    private PeerVO findPeerById(long id) {
+        for (Map.Entry<Integer, LongSparseArray<PeerVO>> entry: mAllPeers.entrySet()) {
+            PeerVO peer = entry.getValue().get(id, null);
+            if (peer != null) {
+                return peer;
+            }
+            // continue on next channel
+        }
+        return null;
     }
 
     /* Dedicated message mode */

@@ -9,6 +9,7 @@ import java.io.StringReader;
 public class Peer {
     @SerializedName("id") private long mId;
     @SerializedName("login") private String mLogin;
+    @SerializedName("email") private String mEmail;
     @SerializedName("channel") private int mChannel = Status.WRONG_CHANNEL;
 
     public long getId() {
@@ -17,6 +18,10 @@ public class Peer {
 
     public String getLogin() {
         return mLogin;
+    }
+
+    public String getEmail() {
+        return mEmail;
     }
 
     public int getChannel() {
@@ -32,6 +37,7 @@ public class Peer {
     public String toString() {
         return new StringBuilder("Peer: id=").append(mId)
                 .append(", login=").append(mLogin)
+                .append(", email=").append(mEmail)
                 .append(", channel=").append(mChannel)
                 .toString();
     }

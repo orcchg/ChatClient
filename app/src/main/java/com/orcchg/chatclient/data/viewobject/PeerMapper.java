@@ -8,6 +8,7 @@ public class PeerMapper implements Mapper<Peer, PeerVO> {
     public PeerVO map(Peer object) {
         return new PeerVO.Builder(object.getId())
                 .setLogin(object.getLogin())
+                .setEmail(object.getEmail())
                 .setChannel(object.getChannel())
                 .build();
     }

@@ -1,19 +1,22 @@
 package com.orcchg.chatclient.data.viewobject;
 
-public class PeerVO {
+public class PeerVO implements Comparable<PeerVO> {
     private long mId;
     private String mLogin;
+    private String mEmail;
     private int mChannel;
 
     public PeerVO(Builder builder) {
         mId = builder.mId;
         mLogin = builder.mLogin;
+        mEmail = builder.mEmail;
         mChannel = builder.mChannel;
     }
 
     public static class Builder {
         private final long mId;
         private String mLogin;
+        private String mEmail;
         private int mChannel;
 
         public Builder(long id) {
@@ -22,6 +25,11 @@ public class PeerVO {
 
         public Builder setLogin(String login) {
             mLogin = login;
+            return this;
+        }
+
+        public Builder setEmail(String email) {
+            mEmail = email;
             return this;
         }
 
@@ -42,7 +50,29 @@ public class PeerVO {
         return mLogin;
     }
 
+    public String getEmail() {
+        return mEmail;
+    }
+
     public int getChannel() {
         return mChannel;
+    }
+
+    @Override
+    public int compareTo(PeerVO peerVO) {
+        return (int) (mId - peerVO.mId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PeerVO peerVO = (PeerVO) o;
+        return mId == peerVO.mId;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (mId ^ (mId >>> 32));
     }
 }

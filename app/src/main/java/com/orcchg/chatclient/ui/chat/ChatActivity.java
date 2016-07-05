@@ -22,6 +22,7 @@ import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.resources.PhotoItem;
 import com.orcchg.chatclient.ui.base.BaseActivity;
 import com.orcchg.chatclient.util.FrameworkUtility;
+import com.orcchg.jgravatar.Gravatar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -37,6 +38,9 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     static String SAME_CHANNEL_MESSAGE;
     static String CHAT_CHANNEL_MESSAGE;
     static String DEDICATED_MESSAGE;
+
+    static final String BUNDLE_KEY_LOGIN = "bundle_key_login";
+    static final String BUNDLE_KEY_EMAIL = "bundle_key_email";
 
     static final int MENU_GROUP_ID_SYSTEM = 0;
     static final int MENU_GROUP_ID_USERS = 1;
@@ -201,10 +205,15 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     }
 
     @Override
-    public void onDedicatedMessagePrepare(String title) {
+    public void onDedicatedMessagePrepare(Bundle args) {
+        String login = args.getString(BUNDLE_KEY_LOGIN);
+        String email = args.getString(BUNDLE_KEY_EMAIL);
+        Gravatar gravatar = new Gravatar();
+        String url = gravatar.getUrl(email);
+
         mPhotoItem.setVisibility(View.VISIBLE);
         mPhotoItem.setPhoto(url, true);
-        mToolbar.setTitle(title);
+        mToolbar.setTitle(login);
         mToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

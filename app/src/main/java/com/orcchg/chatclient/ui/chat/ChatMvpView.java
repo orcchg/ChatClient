@@ -1,5 +1,6 @@
 package com.orcchg.chatclient.ui.chat;
 
+import android.os.Bundle;
 import android.widget.PopupMenu;
 
 import com.orcchg.chatclient.ui.base.MvpView;
@@ -14,6 +15,6 @@ public interface ChatMvpView extends MvpView {
 
     void setTitleWithChannel(int channel, int peersOnChannel);
 
-    void onDedicatedMessagePrepare(String title);
+    void onDedicatedMessagePrepare(Bundle args);
     void onUnauthorizedError();
 }
