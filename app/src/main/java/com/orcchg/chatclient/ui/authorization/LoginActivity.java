@@ -29,6 +29,7 @@ import timber.log.Timber;
 
 public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.LOGIN_ACTIVITY;
+    private static String SHARED_PREFS_KEY_USER_EMAIL;
 
     @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.email) AutoCompleteTextView mEmailView;
@@ -58,6 +59,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         ButterKnife.bind(this);
         initToolbar();
 
+        SHARED_PREFS_KEY_USER_EMAIL = getResources().getString(R.string.shared_prefs_user_email_key);
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -75,20 +78,28 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
                 mPresenter.onRetry();
             }
         });
-
         mSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
-
         mSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 openRegistration();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = getIntent();
+        String userEmail = intent.getStringExtra(SHARED_PREFS_KEY_USER_EMAIL);
+        if (!TextUtils.isEmpty(userEmail)) {
+            mEmailView.setText(userEmail);
+        }
     }
 
     @Override
