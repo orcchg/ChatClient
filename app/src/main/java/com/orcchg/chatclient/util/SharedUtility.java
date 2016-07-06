@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 
 import com.orcchg.chatclient.R;
-import com.orcchg.chatclient.data.model.Status;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,12 +27,12 @@ public class SharedUtility {
     }
 
     public static void logOut(Activity activity) {
-        Resources resources = activity.getResources();
-        SharedPreferences.Editor editor = SharedUtility.getSharedPrefs(activity).edit();
-        editor.putLong(resources.getString(R.string.shared_prefs_user_id_key), Status.UNKNOWN_ID);
-        editor.putString(resources.getString(R.string.shared_prefs_user_login_key), null);
-        editor.putString(resources.getString(R.string.shared_prefs_user_email_key), null);
-        editor.apply();
+//        Resources resources = activity.getResources();
+//        SharedPreferences.Editor editor = SharedUtility.getSharedPrefs(activity).edit();
+//        editor.putLong(resources.getString(R.string.shared_prefs_user_id_key), Status.UNKNOWN_ID);
+//        editor.putString(resources.getString(R.string.shared_prefs_user_login_key), null);
+//        editor.putString(resources.getString(R.string.shared_prefs_user_email_key), null);
+//        editor.apply();
     }
 
     public static Map<String, String> splitPayload(String payload) {
