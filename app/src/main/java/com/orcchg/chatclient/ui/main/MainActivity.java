@@ -17,6 +17,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity<MainPresenter> implements MainMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.MAIN_ACTIVITY;
+    static String SHARED_PREFS_KEY_USER_EMAIL;
 
     @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.progress) View mProgressView;
@@ -39,6 +40,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initToolbar();
+
+        SHARED_PREFS_KEY_USER_EMAIL = getResources().getString(R.string.shared_prefs_user_email_key);
 
         mRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override

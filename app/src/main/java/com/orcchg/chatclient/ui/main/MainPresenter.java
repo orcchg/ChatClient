@@ -15,7 +15,6 @@ import com.orcchg.chatclient.data.remote.ServerBridge;
 import com.orcchg.chatclient.ui.authorization.LoginActivity;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
-import com.orcchg.chatclient.ui.chat.ChatActivity;
 import com.orcchg.chatclient.util.SharedUtility;
 
 import org.json.JSONException;
@@ -78,23 +77,22 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
     private void processCheck(Check check) {
         @Status.Action int action = check.getAction();
+        Timber.v("Processing check with user [id=%s, name=%s, email=%s]", mUserId, mUserName, mUserEmail);
         switch (action) {
-            case Status.ACTION_IS_LOGGED_IN:
-                if (check.getCheck() != 0) {
-                    Timber.d("User is logged in");
-                    openChatActivity();
-                } else {
-                    Timber.d("User is not logged in");
-                    openLoginActivity();
-                }
-                break;
             case Status.ACTION_LOGIN:
             case Status.ACTION_REGISTER:
             case Status.ACTION_MESSAGE:
             case Status.ACTION_LOGOUT:
             case Status.ACTION_SWITCH_CHANNEL:
-            case Status.ACTION_IS_REGISTERED:
                 Timber.d("Action not processed: %s", Integer.toString(action));
+                break;
+            case Status.ACTION_IS_LOGGED_IN:
+                openLoginActivity();
+                break;
+            case Status.ACTION_IS_REGISTERED:
+                if (check.getCheck() == 0) {
+                    Timber.e("User is not registered, but previously had logged in. This is magic error...");
+                }
                 break;
             case Status.ACTION_UNKNOWN:
             default:
@@ -149,16 +147,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
     void openLoginActivity() {
         Activity activity = (Activity) getMvpView();
         Intent intent = new Intent(activity, LoginActivity.class);
-        activity.startActivity(intent);
-        activity.finish();
-    }
-
-    void openChatActivity() {
-        Activity activity = (Activity) getMvpView();
-        Intent intent = new Intent(activity, ChatActivity.class);
-        intent.putExtra(ChatActivity.EXTRA_USER_ID, mUserId);
-        intent.putExtra(ChatActivity.EXTRA_USER_NAME, mUserName);
-        intent.putExtra(ChatActivity.EXTRA_USER_EMAIL, mUserEmail);
+        intent.putExtra(MainActivity.SHARED_PREFS_KEY_USER_EMAIL, mUserEmail);
         activity.startActivity(intent);
         activity.finish();
     }
