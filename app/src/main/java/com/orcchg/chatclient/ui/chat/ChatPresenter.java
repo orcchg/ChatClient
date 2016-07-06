@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -60,10 +61,11 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     private final long mUserId;
     private final String mUserName;
     private final String mUserEmail;
+    private long mDestId = Status.UNKNOWN_ID;
     private int mCurrentChannel = Status.DEFAULT_CHANNEL;
     private int mLastChannel = Status.DEFAULT_CHANNEL;
-    private long mDestId = Status.UNKNOWN_ID;
     private MessageVO mLastMessage;
+    private boolean mLogoutAndCloseApp = false;
 
     private Subscription mSubscriptionSend;
     private Subscription mSubscriptionLogout;
@@ -250,8 +252,12 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                         Timber.i("Successfully logged out");
                         Activity activity = (Activity) getMvpView();
                         if (!activity.isFinishing()) {
-                            Toast.makeText(activity, R.string.logout_toast_message, Toast.LENGTH_SHORT).show();
+                            showToast(R.string.logout_toast_message);
                             SharedUtility.logOut(activity);
+                            if (!mLogoutAndCloseApp) {
+                                Intent intent = new Intent(activity, LoginActivity.class);
+                                activity.startActivity(intent);
+                            }
                             activity.finish();
                         }
                         break;
@@ -318,6 +324,10 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         Intent intent = new Intent(activity, MainActivity.class);
         activity.startActivity(intent);
         activity.finish();  // close chat
+    }
+
+    void onBackPressed() {
+        mLogoutAndCloseApp = true;
     }
 
     /**
@@ -418,6 +428,16 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             @Override
             public void run() {
                 getMvpView().showSnackbar(message, Snackbar.LENGTH_SHORT);
+            }
+        });
+    }
+
+    private void showToast(final @StringRes int resId) {
+        final Activity activity = (Activity) getMvpView();
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(activity, resId, Toast.LENGTH_SHORT).show();
             }
         });
     }

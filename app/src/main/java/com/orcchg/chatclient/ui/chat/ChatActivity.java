@@ -122,6 +122,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        mPresenter.onBackPressed();
         mPresenter.logout();
     }
 
