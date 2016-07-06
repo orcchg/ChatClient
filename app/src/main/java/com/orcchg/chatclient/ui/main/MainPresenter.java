@@ -71,6 +71,11 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         mDataManager.isLoggedInDirect(mUserEmail);
     }
 
+    private void checkRegistered() {
+        onLoading();
+        mDataManager.isRegisteredDirect(mUserEmail);
+    }
+
     private void processCheck(Check check) {
         @Status.Action int action = check.getAction();
         switch (action) {
@@ -106,6 +111,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
             public void onSuccess() {
                 super.onSuccess();
                 checkForLogin();
+                checkRegistered();
             }
 
             @Override
