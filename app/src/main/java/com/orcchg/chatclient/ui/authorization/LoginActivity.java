@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.orcchg.chatclient.ChatClientApplication;
@@ -34,6 +35,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.email) AutoCompleteTextView mEmailView;
     @Bind(R.id.password) EditText mPasswordView;
+    @Bind(R.id.clear_email_button) ImageButton mClearEmailButton;
     @Bind(R.id.sign_in_button) Button mSignInButton;
     @Bind(R.id.sign_up_button) Button mSignUpButton;
     @Bind(R.id.form_container_scroll) View mFormContainer;
@@ -76,6 +78,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
             @Override
             public void onClick(View v) {
                 mPresenter.onRetry();
+            }
+        });
+        mClearEmailButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mEmailView.setText("");
             }
         });
         mSignInButton.setOnClickListener(new OnClickListener() {
