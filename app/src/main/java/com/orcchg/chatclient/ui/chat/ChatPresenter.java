@@ -301,6 +301,12 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             case ApiStatusFactory.STATUS_SAME_CHANNEL:
                 onSameChannel();
                 break;
+            case ApiStatusFactory.STATUS_NO_SUCH_PEER:
+                // TODO: impl private secure communication
+                break;
+            case ApiStatusFactory.STATUS_NOT_REQUESTED:
+                // TODO: impl private secure communication
+                break;
             case ApiStatusFactory.STATUS_UNKNOWN:
             default:
                 Timber.d("Unknown status");

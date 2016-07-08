@@ -18,6 +18,8 @@ public class ApiStatusFactory {
     public static final int STATUS_UNAUTHORIZED = 7;
     public static final int STATUS_WRONG_CHANNEL = 8;
     public static final int STATUS_SAME_CHANNEL = 9;
+    public static final int STATUS_NO_SUCH_PEER = 10;
+    public static final int STATUS_NOT_REQUESTED = 11;
     @IntDef({
         STATUS_UNKNOWN,
         STATUS_SUCCESS,
@@ -29,7 +31,9 @@ public class ApiStatusFactory {
         STATUS_INVALID_QUERY,
         STATUS_UNAUTHORIZED,
         STATUS_WRONG_CHANNEL,
-        STATUS_SAME_CHANNEL
+        STATUS_SAME_CHANNEL,
+        STATUS_NO_SUCH_PEER,
+        STATUS_NOT_REQUESTED
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Status {}
