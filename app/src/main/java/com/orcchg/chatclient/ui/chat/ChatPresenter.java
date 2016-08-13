@@ -34,6 +34,7 @@ import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.ui.main.MainActivity;
 import com.orcchg.chatclient.util.SharedUtility;
+import com.orcchg.chatclient.util.crypting.SecurityUtility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -155,6 +156,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             .setChannel(mCurrentChannel)
             .setDestId(mDestId)
             .setTimestamp(System.currentTimeMillis())
+            .setEncrypted(false)
             .setMessage(messageString)
             .build();
 
@@ -485,11 +487,18 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                             if (json.has("system")) {
                                 Timber.d("System message: %s", response.getBody());
                                 SystemMessage systemMessage = SystemMessage.fromJson(response.getBody());
+                                Activity activity = (Activity) presenter.getMvpView();
 
                                 String login = "", email;
                                 PeerVO.Builder peerBuilder = new PeerVO.Builder(systemMessage.getId());
                                 Map<String, String> map = SharedUtility.splitPayload(systemMessage.getPayload());
                                 if (map.size() > 0) {
+                                    if (SecurityUtility.isSecurityEnabled(activity) && map.containsKey("private_pubkey")) {
+                                        Timber.d("Server's hello with public key has been received");
+                                        String pem = map.get("private_pubkey");
+                                        SecurityUtility.storeServerPublicKey(activity, pem);
+                                        return;
+                                    }
                                     login = map.get("login");
                                     email = map.get("email");
                                     peerBuilder.setLogin(login).setEmail(email);

@@ -10,15 +10,19 @@ import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.DataManager;
 import com.orcchg.chatclient.data.model.Check;
 import com.orcchg.chatclient.data.model.Status;
+import com.orcchg.chatclient.data.model.SystemMessage;
 import com.orcchg.chatclient.data.parser.Response;
 import com.orcchg.chatclient.data.remote.ServerBridge;
 import com.orcchg.chatclient.ui.authorization.LoginActivity;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.util.SharedUtility;
+import com.orcchg.chatclient.util.crypting.SecurityUtility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -127,7 +131,23 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
                             return;
                         }
 
-                        Timber.w("Something doesn't like a check has been received. Skip");
+                        if (json.has("system")) {
+                            Timber.d("System message: %s", response.getBody());
+                            SystemMessage systemMessage = SystemMessage.fromJson(response.getBody());
+                            Activity activity = (Activity) presenter.getMvpView();
+
+                            Map<String, String> map = SharedUtility.splitPayload(systemMessage.getPayload());
+                            if (map.size() > 0) {
+                                if (SecurityUtility.isSecurityEnabled(activity) && map.containsKey("private_pubkey")) {
+                                    Timber.d("Server's hello with public key has been received");
+                                    String pem = map.get("private_pubkey");
+                                    SecurityUtility.storeServerPublicKey(activity, pem);
+                                    return;
+                                }
+                            }
+                        }
+
+                        Timber.w("Something doesn't like a check or system has been received. Skip");
 
                     } catch (JSONException e) {
                         Timber.e("Server has responded with malformed json body: %s", response.getBody());

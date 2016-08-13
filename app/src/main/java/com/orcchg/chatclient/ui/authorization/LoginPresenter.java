@@ -16,6 +16,7 @@ import com.orcchg.chatclient.data.viewobject.LoginFormMapper;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.util.SharedUtility;
+import com.orcchg.chatclient.util.crypting.SecurityUtility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,6 +93,9 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
         String login = getMvpView().getLogin();
         String password = getMvpView().getPassword();
         LoginForm form = new LoginForm(login, password);
+        if (SecurityUtility.isSecurityEnabled((Activity) getMvpView())) {
+            form.encrypt(SecurityUtility.getServerPublicKey());
+        }
 
 //        mSubscriptionSend = mDataManager.sendLoginForm(form)
 //            .subscribeOn(Schedulers.io())

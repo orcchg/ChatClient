@@ -13,6 +13,8 @@ public class Message {
     @SerializedName("channel") private int mChannel;
     @SerializedName("dest_id") private long mDestId;
     @SerializedName("timestamp") private long mTimestamp;
+    @SerializedName("size") private int mSize;
+    @SerializedName("encrypted") private int mIsEncrypted;
     @SerializedName("message") private String mMessage;
 
     public Message(Builder builder) {
@@ -22,6 +24,8 @@ public class Message {
         mChannel = builder.mChannel;
         mDestId = builder.mDestId;
         mTimestamp = builder.mTimestamp;
+        mSize = builder.mSize;
+        mIsEncrypted = builder.mIsEncrypted ? 1 : 0;
         mMessage = builder.mMessage;
     }
 
@@ -32,6 +36,8 @@ public class Message {
         private int mChannel;
         private long mDestId;
         private long mTimestamp;
+        private int mSize;
+        private boolean mIsEncrypted;
         private String mMessage;
 
         public Builder(long id, String login, String email) {
@@ -55,7 +61,13 @@ public class Message {
             return this;
         }
 
+        public Builder setEncrypted(boolean isEncrypted) {
+            mIsEncrypted = isEncrypted;
+            return this;
+        }
+
         public Builder setMessage(String message) {
+            mSize = message.length();
             mMessage = message;
             return this;
         }
@@ -93,32 +105,44 @@ public class Message {
         return mChannel;
     }
 
-    public void setChannel(int mChannel) {
-        this.mChannel = mChannel;
+    public void setChannel(int channel) {
+        this.mChannel = channel;
     }
 
     public long getDestId() {
         return mDestId;
     }
 
-    public void setDestId(long mDestId) {
-        this.mDestId = mDestId;
+    public void setDestId(long destId) {
+        this.mDestId = destId;
     }
 
     public long getTimestamp() {
         return mTimestamp;
     }
 
-    public void setTimestamp(long mTimestamp) {
-        this.mTimestamp = mTimestamp;
+    public void setTimestamp(long timestamp) {
+        this.mTimestamp = timestamp;
+    }
+
+    public int getSize() {
+        return mSize;
+    }
+
+    public boolean isEncrypted() {
+        return mIsEncrypted != 0;
+    }
+
+    public void setEncrypted(boolean isEncrypted) {
+        this.mIsEncrypted = isEncrypted ? 1 : 0;
     }
 
     public String getMessage() {
         return mMessage;
     }
 
-    public void setMessage(String mMessage) {
-        this.mMessage = mMessage;
+    public void setMessage(String message) {
+        this.mMessage = message;
     }
 
     public String toJson() {

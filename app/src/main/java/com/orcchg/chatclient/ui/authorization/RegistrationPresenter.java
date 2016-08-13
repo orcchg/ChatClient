@@ -15,6 +15,7 @@ import com.orcchg.chatclient.data.viewobject.RegistrationFormMapper;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.util.SharedUtility;
+import com.orcchg.chatclient.util.crypting.SecurityUtility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,6 +94,9 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
         String email = getMvpView().getEmail();
         String password = getMvpView().getPassword();
         RegistrationForm form = new RegistrationForm(login, email, password);
+        if (SecurityUtility.isSecurityEnabled((Activity) getMvpView())) {
+            form.encrypt(SecurityUtility.getServerPublicKey());
+        }
 
 //        mSubscriptionSend = mDataManager.sendRegistrationForm(form)
 //            .subscribeOn(Schedulers.io())

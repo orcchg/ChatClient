@@ -42,4 +42,8 @@ public class LoginForm {
         reader.setLenient(true);
         return gson.fromJson(reader, LoginForm.class);
     }
+
+    public void encrypt(String publicPem) {
+//        mPassword = RSACryptor.encryptRSA(mPassword, publicPem);
+    }
 }

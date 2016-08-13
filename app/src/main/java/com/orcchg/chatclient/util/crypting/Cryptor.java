@@ -15,13 +15,23 @@ public class Cryptor {
         return encrypt(data, "MD5");
     }
 
-    public static String bytesToHex(byte[] bytes) {
-        StringBuffer result = new StringBuffer();
+    static String bytesToHex(byte[] bytes) {
+        StringBuilder result = new StringBuilder();
         for (byte byt : bytes) {
 //            result.append(Integer.toString((byt & 0xff) + 0x100, 16).substring(1));
             result.append(Integer.toHexString((byt & 0xFF) | 0x100).substring(1, 3));
         }
         return result.toString();
+    }
+
+    static byte[] hexToBytes(String hex) {
+        int len = hex.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4)
+                    + Character.digit(hex.charAt(i + 1), 16));
+        }
+        return data;
     }
 
     private static String encrypt(String data, String algorithm) throws NoSuchAlgorithmException {
