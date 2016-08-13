@@ -20,12 +20,14 @@ import timber.log.Timber;
  */
 public class RSACryptor {
 
-    public static String encryptRSA(String source, String publicPem) {
+    public static String encryptRSA(String source, String publicPem, boolean[] encrypted) {
+        encrypted[0] = false;
         try {
             PublicKey key = getPublicKeyFromPEM(publicPem);
             Cipher cipher = Cipher.getInstance("RSA/None/NoPadding");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] data = cipher.doFinal(source.getBytes());
+            encrypted[0] = true;
             return Cryptor.bytesToHex(data);
         } catch (Exception e) {
             Timber.e(e, e.getMessage());
@@ -33,13 +35,15 @@ public class RSACryptor {
         return source;
     }
 
-    public static String decryptRSA(String source, String privatePem) {
+    public static String decryptRSA(String source, String privatePem, boolean[] decrypted) {
+        decrypted[0] = false;
         try {
             PrivateKey key = getPrivateKeyFromPEM(privatePem);
             Cipher cipher = Cipher.getInstance("RSA/None/NoPadding");
             cipher.init(Cipher.DECRYPT_MODE, key);
             byte[] data = Cryptor.hexToBytes(source);
             byte[] plain = cipher.doFinal(data);
+            decrypted[0] = true;
             return new String(plain);
         } catch (Exception e) {
             Timber.e(e, e.getMessage());

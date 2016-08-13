@@ -9,10 +9,12 @@ import java.io.StringReader;
 public class LoginForm {
     @SerializedName("login") protected String mLogin;
     @SerializedName("password") protected String mPassword;
+    @SerializedName("encrypted") protected int mIsEncrypted;
 
     public LoginForm(String login, String password) {
         mLogin = login;
         mPassword = password;
+        mIsEncrypted = 0;
     }
 
     public String getLogin() {
@@ -31,6 +33,14 @@ public class LoginForm {
         this.mPassword = mPassword;
     }
 
+    public boolean isEncrypted() {
+        return mIsEncrypted != 0;
+    }
+
+    public void setEncrypted(boolean isEncrypted) {
+        mIsEncrypted = isEncrypted ? 1 : 0;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         return gson.toJson(this);
@@ -44,6 +54,8 @@ public class LoginForm {
     }
 
     public void encrypt(String publicPem) {
-//        mPassword = RSACryptor.encryptRSA(mPassword, publicPem);
+//        boolean[] encrypted = new boolean[1];
+//        mPassword = RSACryptor.encryptRSA(mPassword, publicPem, encrypted);
+//        mIsEncrypted = encrypted[0] ? 1 : 0;
     }
 }
