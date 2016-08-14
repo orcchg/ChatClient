@@ -3,6 +3,7 @@ package com.orcchg.chatclient.data.model;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
+import com.orcchg.chatclient.util.crypting.RSACryptor;
 
 import java.io.StringReader;
 
@@ -54,8 +55,8 @@ public class LoginForm {
     }
 
     public void encrypt(String publicPem) {
-//        boolean[] encrypted = new boolean[1];
-//        mPassword = RSACryptor.encryptRSA(mPassword, publicPem, encrypted);
-//        mIsEncrypted = encrypted[0] ? 1 : 0;
+        boolean[] encrypted = new boolean[1];
+        mPassword = RSACryptor.encryptRSA(mPassword, publicPem, encrypted);
+        mIsEncrypted = encrypted[0] ? 1 : 0;
     }
 }

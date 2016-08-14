@@ -15,6 +15,12 @@ public class SecurityUtility {
 
     private static String SERVER_PUBLIC_KEY;
 
+    public static void enableSecurity(Activity activity, boolean isEnabled) {
+        SharedPreferences sp = SharedUtility.getSharedPrefs(activity);
+        String spKey = activity.getResources().getString(R.string.shared_prefs_security_enabled);
+        sp.edit().putBoolean(spKey, isEnabled).apply();
+    }
+
     public static boolean isSecurityEnabled(Activity activity) {
         SharedPreferences sp = SharedUtility.getSharedPrefs(activity);
         String spKey = activity.getResources().getString(R.string.shared_prefs_security_enabled);
@@ -36,6 +42,7 @@ public class SecurityUtility {
     }
 
     private static String restoreStrippedInMemoryPEM(String pem) {
+        Timber.d("Input pem: %s", pem);
         char[] buffer = new char[pem.length() + 80];
         Arrays.fill(buffer, '\0');
 
@@ -66,9 +73,11 @@ public class SecurityUtility {
         buffer[i2] = '\n';
         ++i2;
         pem.getChars(i3, pem.length(), buffer, i2);
+        int length = i2 + pem.length() - i3;
 
         String answer = new String(buffer);
-        Timber.d("%s", answer);
+        answer = answer.substring(0, length);
+        Timber.d("Restored PEM: %s", answer);
         return answer;
     }
 }

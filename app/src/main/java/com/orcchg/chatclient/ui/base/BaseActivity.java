@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.orcchg.chatclient.util.crypting.SecurityUtility;
+
 /**
  * Base class for every {@link Activity} in MVP architecture.
  */
@@ -17,6 +19,7 @@ public abstract class BaseActivity<P extends Presenter> extends AppCompatActivit
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SecurityUtility.enableSecurity(this, true);
         mPresenter = createPresenter();
         mPresenter.attachView(this);
     }

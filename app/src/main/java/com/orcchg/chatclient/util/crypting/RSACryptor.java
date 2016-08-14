@@ -24,7 +24,7 @@ public class RSACryptor {
         encrypted[0] = false;
         try {
             PublicKey key = getPublicKeyFromPEM(publicPem);
-            Cipher cipher = Cipher.getInstance("RSA/None/NoPadding");
+            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] data = cipher.doFinal(source.getBytes());
             encrypted[0] = true;
@@ -39,7 +39,7 @@ public class RSACryptor {
         decrypted[0] = false;
         try {
             PrivateKey key = getPrivateKeyFromPEM(privatePem);
-            Cipher cipher = Cipher.getInstance("RSA/None/NoPadding");
+            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, key);
             byte[] data = Cryptor.hexToBytes(source);
             byte[] plain = cipher.doFinal(data);
