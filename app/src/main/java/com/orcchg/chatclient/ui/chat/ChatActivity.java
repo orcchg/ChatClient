@@ -2,8 +2,11 @@ package com.orcchg.chatclient.ui.chat;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -16,13 +19,27 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.resources.PhotoItem;
 import com.orcchg.chatclient.ui.base.BaseActivity;
+import com.orcchg.chatclient.ui.chat.peerslist.DrawerChatPeersList;
+import com.orcchg.chatclient.ui.chat.peerslist.PopupMenuChatPeersList;
 import com.orcchg.chatclient.util.FrameworkUtility;
 import com.orcchg.jgravatar.Gravatar;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -42,10 +59,16 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     static final String BUNDLE_KEY_LOGIN = "bundle_key_login";
     static final String BUNDLE_KEY_EMAIL = "bundle_key_email";
 
-    static final int MENU_GROUP_ID_SYSTEM = 0;
-    static final int MENU_GROUP_ID_USERS = 1;
+    public static final int MENU_GROUP_ID_SYSTEM = 0;
+    public static final int MENU_GROUP_ID_USERS = 1;
     private static final int MENU_ITEM_ID_SWITCH_CHANNEL = 0;
     private static final int MENU_ITEM_ID_LOGOUT = 1;
+
+    private static final int MENU_TYPE_DRAWER = 0;
+    private static final int MENU_TYPE_POPUP = 1;
+    @IntDef({MENU_TYPE_DRAWER, MENU_TYPE_POPUP})
+    @Retention(RetentionPolicy.SOURCE)
+    private @interface MenuType {}
 
     @Bind(R.id.root_coordinator) ViewGroup mRootCoordinator;
     @Bind(R.id.root_container) ViewGroup mRootContainer;
@@ -61,6 +84,10 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     private LinearLayoutManager mLayoutManager;
     private PopupMenu mPopupMenu;
+    private Drawer mDrawer;
+    private DrawerArrowDrawable mDrawerToggle;
+
+    private @MenuType int mMenuType;
 
     @Override
     protected ChatPresenter createPresenter() {
@@ -80,6 +107,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         initToolbar();
+        initDrawer();
 
         WRONG_CHANNEL_MESSAGE = getResources().getString(R.string.error_wrong_channel);
         SAME_CHANNEL_MESSAGE = getResources().getString(R.string.error_same_channel);
@@ -196,11 +224,25 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     public void setTitleWithChannel(int channel, int peersOnChannel) {
         mPhotoItem.setVisibility(View.GONE);
         mToolbar.setTitle(String.format(CHAT_CHANNEL_MESSAGE, channel, peersOnChannel));
-        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        switch (mMenuType) {
+            case MENU_TYPE_DRAWER:
+                mDrawer.getActionBarDrawerToggle().setDrawerArrowDrawable(mDrawerToggle);
+                break;
+            case MENU_TYPE_POPUP:
+                mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+                break;
+        }
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                switch (mMenuType) {
+                    case MENU_TYPE_DRAWER:
+                        mDrawer.openDrawer();
+                        break;
+                    case MENU_TYPE_POPUP:
+                        onBackPressed();
+                        break;
+                }
             }
         });
     }
@@ -229,6 +271,11 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     private void initToolbar() {
         mPhotoItem.setVisibility(View.GONE);
         mToolbar.setTitle(R.string.chat_label);
+    }
+
+    private void initPopupMenu() {
+        mMenuType = MENU_TYPE_POPUP;
+
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         mToolbar.inflateMenu(R.menu.chat_menu);
         View anchorView = mToolbar.findViewById(R.id.chat_settings);
@@ -248,7 +295,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                         mPresenter.onMenuLogout();
                         return true;
                     default:
-                        mPresenter.onMenuItemClick(item);
+                        item.setChecked(true);
+                        mPresenter.onMenuItemClick(item.getItemId());
                         return true;
                 }
             }
@@ -265,11 +313,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                 return false;
             }
         });
-    }
 
-    @Override
-    public PopupMenu getPopupMenu() {
-        return mPopupMenu;
+        mPresenter.setChatPeersList(new PopupMenuChatPeersList(mPopupMenu));
     }
 
     /* Dialogs */
@@ -296,5 +341,80 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                 .setNegativeButton(R.string.button_cancel, null)
                 .create()
                 .show();
+    }
+
+    /* Drawer */
+    // --------------------------------------------------------------------------------------------
+    public static final int DRAWER_ITEM_ID_SWITCH_CHANNEL = 0;
+    public static final int DRAWER_ITEM_ID_LOGOUT = 1;
+    public static final int DRAWER_ITEM_ID_CUSTOM = 2;
+
+    private void initDrawer() {
+        mMenuType = MENU_TYPE_DRAWER;
+
+        long id = getIntent().getLongExtra(EXTRA_USER_ID, Status.UNKNOWN_ID);
+        String name = getIntent().getStringExtra(EXTRA_USER_NAME);
+        String email = getIntent().getStringExtra(EXTRA_USER_EMAIL);
+        String url = new Gravatar().getUrl(email);
+
+        /* header */
+        // --------------------------------------
+        IProfile profile = new ProfileDrawerItem()
+                .withName(name)
+                .withEmail(email)
+                .withIcon(url)
+                .withIdentifier(DRAWER_ITEM_ID_CUSTOM + id);
+
+        AccountHeader accountHeader = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.green_rectangle)
+                .withSelectionListEnabledForSingleProfile(false)
+                .addProfiles(profile)
+                .build();
+
+        /* items */
+        // --------------------------------------
+        PrimaryDrawerItem switchChannelItem = new PrimaryDrawerItem()
+                .withIcon(R.drawable.ic_exit_to_app_black_24dp)
+                .withIdentifier(DRAWER_ITEM_ID_SWITCH_CHANNEL)
+                .withName(R.string.menu_chat_item_switch_channel);
+        PrimaryDrawerItem logoutItem = new PrimaryDrawerItem()
+                .withIcon(R.drawable.ic_close_black_24dp)
+                .withIdentifier(DRAWER_ITEM_ID_LOGOUT)
+                .withName(R.string.menu_chat_item_logout);
+
+        mDrawer = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(mToolbar)
+                .withActionBarDrawerToggle(true)
+                .withActionBarDrawerToggleAnimated(true)
+                .withSelectedItem(-1)  // no default selection
+                .withAccountHeader(accountHeader)
+                .addDrawerItems(switchChannelItem, logoutItem, new DividerDrawerItem())
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        long id = drawerItem.getIdentifier();
+                        switch ((int) id) {
+                            case DRAWER_ITEM_ID_SWITCH_CHANNEL:
+                                mPresenter.onMenuSwitchChannel();
+                                break;
+                            case DRAWER_ITEM_ID_LOGOUT:
+                                mPresenter.onMenuLogout();
+                                break;
+                            default:
+                                mPresenter.onMenuItemClick(id - DRAWER_ITEM_ID_CUSTOM);
+                                break;
+                        }
+                        return false;
+                    }
+                })
+                .build();
+
+        ActionBarDrawerToggle toggle = mDrawer.getActionBarDrawerToggle();
+        toggle.setDrawerIndicatorEnabled(true);  // hamburger
+        mDrawerToggle = toggle.getDrawerArrowDrawable();
+
+        mPresenter.setChatPeersList(new DrawerChatPeersList(mDrawer));
     }
 }

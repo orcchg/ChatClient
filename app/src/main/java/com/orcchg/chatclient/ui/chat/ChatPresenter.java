@@ -9,8 +9,6 @@ import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.orcchg.chatclient.R;
@@ -32,6 +30,7 @@ import com.orcchg.chatclient.mock.MockProvider;
 import com.orcchg.chatclient.ui.authorization.LoginActivity;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
+import com.orcchg.chatclient.ui.chat.peerslist.ChatPeersList;
 import com.orcchg.chatclient.ui.main.MainActivity;
 import com.orcchg.chatclient.util.SharedUtility;
 import com.orcchg.chatclient.util.crypting.SecurityUtility;
@@ -58,6 +57,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     private List<MessageVO> mMessagesList;
     private Map<Integer, LongSparseArray<PeerVO>> mAllPeers;
     private ChatAdapter mChatAdapter;
+    private ChatPeersList mChatPeersList;
 
     private final long mUserId;
     private final String mUserName;
@@ -80,6 +80,10 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         mMessagesList = new ArrayList<>();
         mAllPeers = new HashMap<>();
         mChatAdapter = new ChatAdapter(mUserId, mMessagesList);
+    }
+
+    void setChatPeersList(ChatPeersList peersList) {
+        mChatPeersList = peersList;
     }
 
     ChatAdapter getChatAdapter() {
@@ -507,8 +511,9 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                                 switch (systemMessage.getAction()) {
                                     case Status.ACTION_LOGIN:
                                         peerBuilder.setChannel(Status.DEFAULT_CHANNEL);
-                                        presenter.addPopupMenuItem(systemMessage.getId(), login);
-                                        addPeer(peerBuilder.build());
+                                        PeerVO peer = peerBuilder.build();
+                                        presenter.addPeerMenuItem(systemMessage.getId(), peer);
+                                        addPeer(peer);
                                         break;
                                     case Status.ACTION_SWITCH_CHANNEL:
                                         int prev = Integer.parseInt(map.get("channel_prev"));
@@ -520,7 +525,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                                     case Status.ACTION_LOGOUT:
                                         int channel = Integer.parseInt(map.get("channel"));
                                         peerBuilder.setChannel(channel);
-                                        presenter.removePopupMenuItem(systemMessage.getId());
+                                        presenter.removePeerMenuItem(systemMessage.getId());
                                         removePeer(peerBuilder.build());
                                         break;
                                 }
@@ -565,9 +570,9 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         logout();
     }
 
-    void onMenuItemClick(MenuItem item) {
-        item.setChecked(true);
-        mDestId = item.getItemId();
+    void onMenuItemClick(long id) {
+        mDestId = id;
+        mChatPeersList.setDestId(mDestId);
         PeerVO peer = findPeerById(mDestId);
         String login = peer.getLogin();
         String email = peer.getEmail();
@@ -577,32 +582,20 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         getMvpView().onDedicatedMessagePrepare(args);
     }
 
-    private void addPopupMenuItem(final long id, final String title) {
+    private void addPeerMenuItem(final long id, final PeerVO peer) {
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Menu menu = getMvpView().getPopupMenu().getMenu();
-                MenuItem item1 = menu.findItem((int) id);
-                if (item1 == null) {
-                    menu.add(ChatActivity.MENU_GROUP_ID_USERS, (int) id, menu.size(), title);
-                    menu.setGroupCheckable(ChatActivity.MENU_GROUP_ID_USERS, true, true);
-                    if (mDestId != Status.UNKNOWN_ID) {
-                        MenuItem item2 = menu.findItem((int) mDestId);
-                        if (item2 != null) {
-                            item2.setChecked(true);
-                        }
-                    }
-                }
+                mChatPeersList.addItem(id, peer);
             }
         });
     }
 
-    private void removePopupMenuItem(final long id) {
+    private void removePeerMenuItem(final long id) {
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Menu menu = getMvpView().getPopupMenu().getMenu();
-                menu.removeItem((int) id);
+                mChatPeersList.removeItem(id);
             }
         });
     }
@@ -617,8 +610,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             for (Peer peer : peers) {
                 Timber.d("%s", peer.toString());
                 if (peer.getId() != mUserId) {  // don't add self as peer
-                    addPopupMenuItem(peer.getId(), peer.getLogin());
                     PeerVO viewObject = mapper.map(peer);
+                    addPeerMenuItem(peer.getId(), viewObject);
                     if (!mAllPeers.containsKey(peer.getChannel())) {
                         mAllPeers.put(peer.getChannel(), new LongSparseArray<PeerVO>());
                     }
@@ -697,10 +690,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     // ------------------------------------------
     void dropDedicatedMessageMode() {
         mDestId = Status.UNKNOWN_ID;
-        Menu menu = getMvpView().getPopupMenu().getMenu();
-        for (int i = 0; i < menu.size(); ++i) {
-            menu.getItem(i).setChecked(false);
-        }
+        mChatPeersList.setDestId(mDestId);
         updateTitle();
     }
 }

@@ -1,13 +1,11 @@
 package com.orcchg.chatclient.ui.chat;
 
 import android.os.Bundle;
-import android.widget.PopupMenu;
 
 import com.orcchg.chatclient.ui.base.MvpView;
 
-public interface ChatMvpView extends MvpView {
+interface ChatMvpView extends MvpView {
     String getMessage();
-    PopupMenu getPopupMenu();
 
     void scrollListTo(int position);
     void showSnackbar(String message, int duration);
