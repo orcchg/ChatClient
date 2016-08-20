@@ -19,7 +19,7 @@ import timber.log.Timber;
 public class ServerBridge {
 
     public static final String IP_ADDRESS = "194.190.63.108";
-    public static final int PORT = 80;
+    public static final int PORT = 9000;
     private static final int BUFFER_SIZE = 1024;
 
     private WorkerThread mWorker;
