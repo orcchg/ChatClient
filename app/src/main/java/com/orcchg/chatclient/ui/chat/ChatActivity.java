@@ -1,6 +1,7 @@
 package com.orcchg.chatclient.ui.chat;
 
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.design.widget.Snackbar;
@@ -36,6 +37,7 @@ import com.orcchg.chatclient.ui.base.BaseActivity;
 import com.orcchg.chatclient.ui.chat.peerslist.DrawerChatPeersList;
 import com.orcchg.chatclient.ui.chat.peerslist.PopupMenuChatPeersList;
 import com.orcchg.chatclient.util.FrameworkUtility;
+import com.orcchg.chatclient.util.WindowUtility;
 import com.orcchg.jgravatar.Gravatar;
 
 import java.lang.annotation.Retention;
@@ -66,7 +68,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     private static final int MENU_TYPE_DRAWER = 0;
     private static final int MENU_TYPE_POPUP = 1;
-    @IntDef({MENU_TYPE_DRAWER, MENU_TYPE_POPUP})
+    private static final int MENU_TYPE_LIST = 2;
+    @IntDef({MENU_TYPE_DRAWER, MENU_TYPE_POPUP, MENU_TYPE_LIST})
     @Retention(RetentionPolicy.SOURCE)
     private @interface MenuType {}
 
@@ -107,7 +110,13 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         initToolbar();
-        initDrawer();
+        if (WindowUtility.isTablet(this) &&
+            getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            initSideMenu();
+            initPeersList();
+        } else {
+            initDrawer();
+        }
 
         WRONG_CHANNEL_MESSAGE = getResources().getString(R.string.error_wrong_channel);
         SAME_CHANNEL_MESSAGE = getResources().getString(R.string.error_same_channel);
@@ -416,5 +425,17 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         mDrawerToggle = toggle.getDrawerArrowDrawable();
 
         mPresenter.setChatPeersList(new DrawerChatPeersList(mDrawer));
+    }
+
+    /* Side menu */
+    // --------------------------------------------------------------------------------------------
+    private void initSideMenu() {
+        //
+    }
+
+    /* Peers list */
+    // --------------------------------------------------------------------------------------------
+    private void initPeersList() {
+        //
     }
 }
