@@ -89,6 +89,7 @@
                     android:background="?selectableItemBackground"
                     android:text="@string/action_sign_in"
                     android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/text_button_size"
                     android:textStyle="bold"
                     style="?android:textAppearanceSmall"/>
 
@@ -97,9 +98,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@id/sign_in_button"
+                    android:layout_toStartOf="@id/sign_in_button"
                     android:background="?selectableItemBackground"
                     android:text="@string/action_sign_up"
                     android:textColor="?attr/colorPrimaryDark"
+                    android:textSize="@dimen/text_button_size"
                     android:textStyle="bold"
                     style="?android:textAppearanceSmall"/>
             </RelativeLayout>

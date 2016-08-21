@@ -131,7 +131,6 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
 
     @Override
     public void onError() {
-        Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
         mFormContainer.setVisibility(View.GONE);
         mProgressView.setVisibility(View.GONE);
         mErrorView.setVisibility(View.VISIBLE);

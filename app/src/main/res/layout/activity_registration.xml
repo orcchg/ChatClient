@@ -90,6 +90,7 @@
                     android:background="?selectableItemBackground"
                     android:text="@string/action_sign_up"
                     android:textColor="?attr/colorAccent"
+                    android:textSize="@dimen/text_button_size"
                     android:textStyle="bold"
                     style="?android:textAppearanceSmall"/>
             </RelativeLayout>
