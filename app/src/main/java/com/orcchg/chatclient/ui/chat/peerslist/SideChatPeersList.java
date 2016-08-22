@@ -59,7 +59,9 @@ public class SideChatPeersList extends ChatPeersList {
         private void removeItem(long id) {
             if (mPeerIds.containsKey(id)) {
                 int index = mPeerIds.get(id);
-                mPeerVOs.remove(index);
+                if (mPeerVOs.size() > index) {
+                    mPeerVOs.remove(index);
+                }
                 mPeerIds.remove(id);
                 notifyItemRemoved(index);
             }
