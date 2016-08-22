@@ -13,11 +13,11 @@ import com.orcchg.chatclient.resources.PhotoItem;
 import com.orcchg.jgravatar.Gravatar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 
 public class SideChatPeersList extends ChatPeersList {
 
@@ -41,23 +41,27 @@ public class SideChatPeersList extends ChatPeersList {
     // --------------------------------------------------------------------------------------------
     public static class PeersAdapter extends RecyclerView.Adapter<PeersAdapter.PeerViewHolder> {
         private List<PeerVO> mPeerVOs;
+        private Map<Long, Integer> mPeerIds;
 
         public PeersAdapter() {
             mPeerVOs = new ArrayList<>();
+            mPeerIds = new HashMap<>();
         }
 
         private void addItem(long id, PeerVO peer) {
-            mPeerVOs.add(peer);
-            notifyItemInserted(mPeerVOs.size());
+            if (!mPeerIds.containsKey(Long.valueOf(id))) {
+                mPeerVOs.add(peer);
+                mPeerIds.put(id, mPeerVOs.size() - 1);
+                notifyItemInserted(mPeerVOs.size());
+            }
         }
 
         private void removeItem(long id) {
-            for (int index = 0; index < mPeerVOs.size(); ++index) {
-                if (mPeerVOs.get(index).getId() == id) {
-                    mPeerVOs.remove(index);
-                    notifyItemRemoved(index);
-                    break;
-                }
+            if (mPeerIds.containsKey(id)) {
+                int index = mPeerIds.get(id);
+                mPeerVOs.remove(index);
+                mPeerIds.remove(id);
+                notifyItemRemoved(index);
             }
         }
 
