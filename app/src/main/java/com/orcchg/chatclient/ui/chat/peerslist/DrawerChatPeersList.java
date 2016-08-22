@@ -18,14 +18,15 @@ public class DrawerChatPeersList extends ChatPeersList {
     @Override
     public void addItem(long id, PeerVO peer) {
         String url = new Gravatar().getUrl(peer.getEmail());
+        long shiftedId = ChatActivity.DRAWER_ITEM_ID_CUSTOM + id;
 
         IDrawerItem item = new ProfileDrawerItem()
                 .withName(peer.getLogin())
                 .withEmail(peer.getEmail())
                 .withIcon(url)
-                .withIdentifier(ChatActivity.DRAWER_ITEM_ID_CUSTOM + id);
+                .withIdentifier(shiftedId);
 
-        if (mDrawer.getDrawerItem(id) == null) {
+        if (mDrawer.getDrawerItem(shiftedId) == null) {
             mDrawer.addItem(item);
         } else {
             mDrawer.updateItem(item);
