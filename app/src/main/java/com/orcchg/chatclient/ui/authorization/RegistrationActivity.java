@@ -96,14 +96,6 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    @Override
     protected void onDestroy() {
         mPresenter.unsubscribe();
         FrameworkUtility.setInactive(REQUEST_CODE);

@@ -168,8 +168,10 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         Activity activity = (Activity) getMvpView();
         Intent intent = new Intent(activity, LoginActivity.class);
         intent.putExtra(MainActivity.SHARED_PREFS_KEY_USER_EMAIL, mUserEmail);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         activity.startActivity(intent);
         activity.finish();
+        activity.overridePendingTransition(0, 0);
     }
 
     /* View state */

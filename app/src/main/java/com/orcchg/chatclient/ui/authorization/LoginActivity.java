@@ -241,8 +241,9 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
     private void openRegistration() {
         Intent intent = new Intent(this, RegistrationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
-        finish();
+        overridePendingTransition(0, 0);
     }
 
     /* Toolbar */
