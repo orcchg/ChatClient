@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/icon_container"
+    android:id="@+id/ii_icon_container"
     android:layout_width="@dimen/icon_size"
     android:layout_height="@dimen/icon_size"
     android:layout_marginLeft="@dimen/message_item_right_small_padding"
@@ -9,20 +9,20 @@
     android:layout_marginEnd="@dimen/message_item_right_small_padding">
 
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/ii_icon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"
         android:contentDescription="@null"/>
 
     <ProgressBar
-        android:id="@+id/progress"
+        android:id="@+id/ii_progress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"/>
 
     <View
-        android:id="@+id/stub"
+        android:id="@+id/ii_stub"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/refPhotoStub"

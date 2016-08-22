@@ -40,10 +40,10 @@ public abstract class IconItem extends FrameLayout {
         super(context, attrs, defStyle);
         LayoutInflater inflater = LayoutInflater.from(context);
         View rootView = inflater.inflate(R.layout.icon_item, this, true);
-        mContainer = (FrameLayout) rootView.findViewById(R.id.icon_container);
-        mStubView = findViewById(R.id.stub);
-        mImageView = (ImageView) rootView.findViewById(R.id.icon);
-        mProgressView = (ProgressBar) rootView.findViewById(R.id.progress);
+        mContainer = (FrameLayout) rootView.findViewById(R.id.ii_icon_container);
+        mStubView = findViewById(R.id.ii_stub);
+        mImageView = (ImageView) rootView.findViewById(R.id.ii_icon);
+        mProgressView = (ProgressBar) rootView.findViewById(R.id.ii_progress);
         mProgressListener = new ProgressListener(this);
         setOnClickListener(mClickListener);
     }
