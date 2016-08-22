@@ -10,6 +10,7 @@
         <item name="refForegroundSelectorColor">@drawable/foreground_selector</item>
         <item name="refSelfMessageBlobBackgroundColor">@color/self_message_blob_background</item>
         <item name="refSystemMessageBlobBackgroundColor">@color/system_message_blob_background</item>
+        <item name="refSideMenuButtonToggleBgColor">@drawable/side_menu_button_toggle_bg_green</item>
     </style>
 
 </resources>

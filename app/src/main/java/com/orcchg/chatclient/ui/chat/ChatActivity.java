@@ -1,7 +1,6 @@
 package com.orcchg.chatclient.ui.chat;
 
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.design.widget.Snackbar;
@@ -32,10 +31,12 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.model.Status;
+import com.orcchg.chatclient.resources.ButtonItem;
 import com.orcchg.chatclient.resources.PhotoItem;
 import com.orcchg.chatclient.ui.base.BaseActivity;
 import com.orcchg.chatclient.ui.chat.peerslist.DrawerChatPeersList;
 import com.orcchg.chatclient.ui.chat.peerslist.PopupMenuChatPeersList;
+import com.orcchg.chatclient.ui.chat.peerslist.SideChatPeersList;
 import com.orcchg.chatclient.util.FrameworkUtility;
 import com.orcchg.chatclient.util.WindowUtility;
 import com.orcchg.jgravatar.Gravatar;
@@ -86,12 +87,22 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Bind(R.id.retry_button) Button mRetryButton;
 
     private LinearLayoutManager mLayoutManager;
+
+    /* Peers lists */
+    // ------------------------------------------
     private PopupMenu mPopupMenu;
+
     private Drawer mDrawer;
     private DrawerArrowDrawable mDrawerToggle;
 
+    private SideChatPeersList.PeersAdapter mAdapter;
+    @Bind(R.id.rv_peers_list) RecyclerView mList;
+    @Bind(R.id.btni_switch_channel) ButtonItem mSwitchChannelBtnI;
+    @Bind(R.id.btni_logout) ButtonItem mLogoutBtnI;
+
     private @MenuType int mMenuType;
 
+    // --------------------------------------------------------------------------------------------
     @Override
     protected ChatPresenter createPresenter() {
         ChatClientApplication application = (ChatClientApplication) getApplication();
@@ -110,8 +121,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         initToolbar();
-        if (WindowUtility.isTablet(this) &&
-            getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (WindowUtility.isTablet(this)) {
             initSideMenu();
             initPeersList();
         } else {
@@ -240,6 +250,9 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
             case MENU_TYPE_POPUP:
                 mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
                 break;
+            case MENU_TYPE_LIST:
+                mToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
+                break;
         }
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,6 +262,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                         mDrawer.openDrawer();
                         break;
                     case MENU_TYPE_POPUP:
+                    case MENU_TYPE_LIST:
                         onBackPressed();
                         break;
                 }
@@ -430,12 +444,29 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     /* Side menu */
     // --------------------------------------------------------------------------------------------
     private void initSideMenu() {
-        //
+        mSwitchChannelBtnI.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.onMenuSwitchChannel();
+            }
+        });
+
+        mLogoutBtnI.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.onMenuLogout();
+            }
+        });
     }
 
     /* Peers list */
     // --------------------------------------------------------------------------------------------
     private void initPeersList() {
-        //
+        mMenuType = MENU_TYPE_LIST;
+
+        mAdapter = new SideChatPeersList.PeersAdapter();
+        mList.setAdapter(mAdapter);
+        mList.setLayoutManager(new LinearLayoutManager(this));
+        mPresenter.setChatPeersList(new SideChatPeersList(mAdapter));
     }
 }

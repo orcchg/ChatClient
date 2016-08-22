@@ -26,4 +26,8 @@
         <item name="android:layout_width">match_parent</item>
     </style>
 
+    <style name="ProgressBar" parent="android:Widget.ProgressBar.Small">
+        <item name="android:animationResolution">33</item>
+    </style>
+
 </resources>

@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="ButtonItem">
+        <attr name="btn_icon" format="reference" />
+        <attr name="btn_size" format="dimension" />
+    </declare-styleable>
+
     <attr name="refPhotoStub" format="reference" />
     <attr name="refForegroundSelectorColor" format="reference" />
     <attr name="refSelfMessageBlobBackgroundColor" format="reference" />
     <attr name="refSystemMessageBlobBackgroundColor" format="reference" />
+    <attr name="refSideMenuButtonToggleBgColor" format="reference" />
 </resources>

@@ -10,16 +10,25 @@
     <color name="colorControlActivated">#f9a825</color>
     <color name="colorControlActivatedSemi">#33f9a825</color>
 
-    <color name="text_primary_dark">#DE000000</color>
+    <color name="text_primary_dark">#de000000</color>
     <color name="text_description_dark">#8b000000</color>
     <color name="text_white">#ffffffff</color>
     <color name="text_title">#de000000</color>
     <color name="text_description">#8b000000</color>
 
     <color name="chat_window_bg_color">#ffededed</color>
+    <color name="chat_side_menu_bg_color">#4dffffff</color>
     <color name="photo_stub_color">#aed581</color>
     <color name="self_message_blob_background">#aed581</color>
     <color name="system_message_blob_background">#ffee58</color>
     <color name="substrate">#66f3f3f3</color>
+    <color name="divider">#1f000000</color>
+
+    <color name="side_menu_button_color_default">#888888</color>
+    <color name="side_menu_button_color_toggle_green">#1f9ccc65</color>
+    <color name="side_menu_button_color_toggle_violet">#1f7e57c2</color>
+    <color name="side_menu_button_color_toggle_blue">#1f4dd0e1</color>
+    <color name="side_menu_button_color_toggle_pink">#1fec4d7a</color>
+    <color name="side_menu_button_color_toggle_orange">#1fffa726</color>
 
 </resources>
