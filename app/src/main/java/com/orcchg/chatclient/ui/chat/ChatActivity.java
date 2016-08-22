@@ -3,6 +3,7 @@ package com.orcchg.chatclient.ui.chat;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -90,15 +91,15 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     /* Peers lists */
     // ------------------------------------------
-    private PopupMenu mPopupMenu;
+    @Nullable private PopupMenu mPopupMenu;
 
-    private Drawer mDrawer;
-    private DrawerArrowDrawable mDrawerToggle;
+    @Nullable private Drawer mDrawer;
+    @Nullable private DrawerArrowDrawable mDrawerToggle;
 
-    private SideChatPeersList.PeersAdapter mAdapter;
-    @Bind(R.id.rv_peers_list) RecyclerView mList;
-    @Bind(R.id.btni_switch_channel) ButtonItem mSwitchChannelBtnI;
-    @Bind(R.id.btni_logout) ButtonItem mLogoutBtnI;
+    @Nullable private SideChatPeersList.PeersAdapter mAdapter;
+    @Nullable @Bind(R.id.rv_peers_list) RecyclerView mList;
+    @Nullable @Bind(R.id.btni_switch_channel) ButtonItem mSwitchChannelBtnI;
+    @Nullable @Bind(R.id.btni_logout) ButtonItem mLogoutBtnI;
 
     private @MenuType int mMenuType;
 
