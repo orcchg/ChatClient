@@ -1,6 +1,8 @@
 package com.orcchg.chatclient.ui.chat.peerslist;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.orcchg.chatclient.R;
+import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.data.viewobject.PeerVO;
 import com.orcchg.chatclient.resources.PhotoItem;
 import com.orcchg.jgravatar.Gravatar;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class SideChatPeersList extends ChatPeersList {
 
@@ -37,15 +41,31 @@ public class SideChatPeersList extends ChatPeersList {
         mAdapter.removeItem(id);
     }
 
+    @Override
+    public void setDestId(long id) {
+        super.setDestId(id);
+        mAdapter.setDestId(id);
+    }
+
     /* Adapter */
     // --------------------------------------------------------------------------------------------
     public static class PeersAdapter extends RecyclerView.Adapter<PeersAdapter.PeerViewHolder> {
         private List<PeerVO> mPeerVOs;
         private Map<Long, Integer> mPeerIds;
 
-        public PeersAdapter() {
+        private int mPrevPosition = -1;
+        private PeerVO mPrevSelectedPeer;
+
+        public interface OnPeerSelect {
+            void onSelect(long id, boolean selected);
+        }
+
+        private OnPeerSelect mCallback;
+
+        public PeersAdapter(OnPeerSelect callback) {
             mPeerVOs = new ArrayList<>();
             mPeerIds = new HashMap<>();
+            mCallback = callback;
         }
 
         private void addItem(long id, PeerVO peer) {
@@ -67,6 +87,15 @@ public class SideChatPeersList extends ChatPeersList {
             }
         }
 
+        private void setDestId(long id) {
+            if (id == Status.UNKNOWN_ID) {
+                notifyItemChanged(mPrevPosition);
+                mPrevSelectedPeer.setSelected(false);
+                mPrevPosition = -1;
+                mPrevSelectedPeer = null;
+            }
+        }
+
         @Override
         public PeerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_chat_peers_list_item, parent, false);
@@ -76,7 +105,7 @@ public class SideChatPeersList extends ChatPeersList {
         @Override
         public void onBindViewHolder(PeerViewHolder holder, int position) {
             PeerVO viewObject = mPeerVOs.get(position);
-            holder.bind(viewObject);
+            holder.bind(viewObject, position);
         }
 
         @Override
@@ -86,19 +115,22 @@ public class SideChatPeersList extends ChatPeersList {
 
         class PeerViewHolder extends RecyclerView.ViewHolder {
             private View mRoot;
+            @Bind(R.id.ll_item_container) ViewGroup mContainer;
             @Bind(R.id.pi_icon) PhotoItem mIcon;
             @Bind(R.id.tv_label) TextView mLabel;
+            @Bind(R.id.select_indicator) View mSelectIndicator;
+
+            private @ColorInt int mSelectedBackground;
 
             private PeerViewHolder(View rootView) {
                 super(rootView);
                 mRoot = rootView;
-//                ButterKnife.bind(mRoot);
+                ButterKnife.bind(this, mRoot);
 
-                mIcon = (PhotoItem) mRoot.findViewById(R.id.pi_icon);
-                mLabel = (TextView) mRoot.findViewById(R.id.tv_label);
+                mSelectedBackground = rootView.getContext().getColor(R.color.colorControlActivatedSemi);
             }
 
-            private void bind(PeerVO viewObject) {
+            private void bind(final PeerVO viewObject, final int position) {
                 Gravatar gravatar = new Gravatar();
                 String url = gravatar.getUrl(viewObject.getEmail());
                 Drawable drawable = mRoot.getContext().getResources().getDrawable(R.drawable.green_circle);
@@ -109,9 +141,35 @@ public class SideChatPeersList extends ChatPeersList {
                 mRoot.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // TODO: click peer
+                        boolean selected = !viewObject.isSelected();
+                        viewObject.setSelected(selected);
+                        notifyItemChanged(position);
+
+                        if (mPrevSelectedPeer != null) {
+                            mPrevSelectedPeer.setSelected(false);
+                            notifyItemChanged(mPrevPosition);
+                        }
+
+                        mPrevPosition = position;
+                        mPrevSelectedPeer = viewObject;
+
+                        if (mCallback != null) {
+                            mCallback.onSelect(viewObject.getId(), selected);
+                        }
                     }
                 });
+
+                selectItem(viewObject.isSelected());
+            }
+
+            private void selectItem(boolean isSelected) {
+                if (isSelected) {
+                    mContainer.setBackgroundColor(mSelectedBackground);
+                    mSelectIndicator.setVisibility(View.VISIBLE);
+                } else {
+                    mContainer.setBackgroundColor(Color.TRANSPARENT);
+                    mSelectIndicator.setVisibility(View.INVISIBLE);
+                }
             }
         }
     }

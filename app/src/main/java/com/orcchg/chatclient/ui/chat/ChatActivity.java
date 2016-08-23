@@ -465,7 +465,16 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     private void initPeersList() {
         mMenuType = MENU_TYPE_LIST;
 
-        mAdapter = new SideChatPeersList.PeersAdapter();
+        mAdapter = new SideChatPeersList.PeersAdapter(new SideChatPeersList.PeersAdapter.OnPeerSelect() {
+            @Override
+            public void onSelect(long id, boolean selected) {
+                if (selected) {
+                    mPresenter.onMenuItemClick(id);
+                } else {
+                    mPresenter.dropDedicatedMessageMode();
+                }
+            }
+        });
         mList.setAdapter(mAdapter);
         mList.setLayoutManager(new LinearLayoutManager(this));
         mPresenter.setChatPeersList(new SideChatPeersList(mAdapter));

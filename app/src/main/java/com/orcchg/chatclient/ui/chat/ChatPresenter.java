@@ -648,9 +648,17 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         updateTitle();
     }
 
-    private void removePeer(PeerVO peer) {
+    private void removePeer(final PeerVO peer) {
         removePeerFromChannel(peer, peer.getChannel());
         updateTitle();
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mDestId == peer.getId()) {
+                    dropDedicatedMessageMode();
+                }
+            }
+        });
     }
 
     // internal method

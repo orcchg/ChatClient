@@ -5,12 +5,14 @@ public class PeerVO implements Comparable<PeerVO> {
     private String mLogin;
     private String mEmail;
     private int mChannel;
+    private boolean mIsSelected;  // for view purposes
 
     public PeerVO(Builder builder) {
         mId = builder.mId;
         mLogin = builder.mLogin;
         mEmail = builder.mEmail;
         mChannel = builder.mChannel;
+        mIsSelected = false;
     }
 
     public static class Builder {
@@ -56,6 +58,14 @@ public class PeerVO implements Comparable<PeerVO> {
 
     public int getChannel() {
         return mChannel;
+    }
+
+    public boolean isSelected() {
+        return mIsSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        mIsSelected = isSelected;
     }
 
     @Override
