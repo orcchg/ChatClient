@@ -248,6 +248,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                     case Status.ACTION_REGISTER:
                     case Status.ACTION_IS_LOGGED_IN:
                     case Status.ACTION_IS_REGISTERED:
+                    case Status.ACTION_ALL_PEERS:
                         Timber.d("Action not processed: %s", Integer.toString(action));
                         break;
                     case Status.ACTION_MESSAGE:
@@ -308,9 +309,12 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 onSameChannel();
                 break;
             case ApiStatusFactory.STATUS_NO_SUCH_PEER:
-                // TODO: impl private secure communication
-                break;
             case ApiStatusFactory.STATUS_NOT_REQUESTED:
+            case ApiStatusFactory.STATUS_ALREADY_REQUESTED:
+            case ApiStatusFactory.STATUS_ALREADY_RESPONDED:
+            case ApiStatusFactory.STATUS_REJECTED:
+            case ApiStatusFactory.STATUS_ANOTHER_ACTION_REQUIRED:
+            case ApiStatusFactory.STATUS_PUBLIC_KEY_MISSING:
                 // TODO: impl private secure communication
                 break;
             case ApiStatusFactory.STATUS_UNKNOWN:

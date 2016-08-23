@@ -20,6 +20,11 @@ public class ApiStatusFactory {
     public static final int STATUS_SAME_CHANNEL = 9;
     public static final int STATUS_NO_SUCH_PEER = 10;
     public static final int STATUS_NOT_REQUESTED = 11;
+    public static final int STATUS_ALREADY_REQUESTED  = 12;
+    public static final int STATUS_ALREADY_RESPONDED  = 13;
+    public static final int STATUS_REJECTED = 14;
+    public static final int STATUS_ANOTHER_ACTION_REQUIRED = 15;
+    public static final int STATUS_PUBLIC_KEY_MISSING = 16;
     @IntDef({
         STATUS_UNKNOWN,
         STATUS_SUCCESS,
@@ -33,7 +38,12 @@ public class ApiStatusFactory {
         STATUS_WRONG_CHANNEL,
         STATUS_SAME_CHANNEL,
         STATUS_NO_SUCH_PEER,
-        STATUS_NOT_REQUESTED
+        STATUS_NOT_REQUESTED,
+        STATUS_ALREADY_REQUESTED,
+        STATUS_ALREADY_RESPONDED,
+        STATUS_REJECTED,
+        STATUS_ANOTHER_ACTION_REQUIRED,
+        STATUS_PUBLIC_KEY_MISSING
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Status {}
