@@ -180,7 +180,9 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     protected void onDestroy() {
         mPresenter.unsubscribe();
-        mPresenter.removeDirectConnectionCallback();
+        if (mPresenter.isBackPressed()) {
+            mPresenter.removeDirectConnectionCallback();
+        }
         FrameworkUtility.setInactive(REQUEST_CODE);
         if (isFinishing() && FrameworkUtility.getActiveCount() == 0) {
             mPresenter.closeDirectConnection();
@@ -325,7 +327,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                         mPresenter.onMenuSwitchChannel();
                         return true;
                     case MENU_ITEM_ID_LOGOUT:
-                        mPresenter.onMenuLogout();
+                        mPresenter.logout();
                         return true;
                     default:
                         item.setChecked(true);
@@ -433,7 +435,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                                 mPresenter.onMenuSwitchChannel();
                                 break;
                             case DRAWER_ITEM_ID_LOGOUT:
-                                mPresenter.onMenuLogout();
+                                mPresenter.logout();
                                 break;
                             default:
                                 mPresenter.onMenuItemClick(id - DRAWER_ITEM_ID_CUSTOM);
@@ -464,7 +466,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         mLogoutBtnI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.onMenuLogout();
+                mPresenter.logout();
             }
         });
     }

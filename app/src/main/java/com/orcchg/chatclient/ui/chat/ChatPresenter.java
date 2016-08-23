@@ -348,6 +348,10 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         mLogoutAndCloseApp = true;
     }
 
+    boolean isBackPressed() {
+        return mLogoutAndCloseApp;
+    }
+
     /**
      * Unauthorized attempt to do an action from chat (send message, switch channel, etc.)
      */
@@ -583,10 +587,6 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     // --------------------------------------------------------------------------------------------
     void onMenuSwitchChannel() {
         getMvpView().showSwitchChannelDialog(mCurrentChannel);
-    }
-
-    void onMenuLogout() {
-        logout();
     }
 
     void onMenuItemClick(long id) {
