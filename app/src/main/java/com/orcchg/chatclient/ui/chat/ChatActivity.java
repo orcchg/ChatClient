@@ -361,6 +361,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         final EditText channelEditText = (EditText) dialogView.findViewById(R.id.et_channel);
         if (channel != Status.WRONG_CHANNEL && channel != Status.DEFAULT_CHANNEL) {
             channelEditText.setText(Integer.toString(channel));
+            channelEditText.setSelection(channelEditText.getText().length());
         }
 
         new AlertDialog.Builder(this)
