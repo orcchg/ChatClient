@@ -89,8 +89,12 @@ public class SideChatPeersList extends ChatPeersList {
 
         private void setDestId(long id) {
             if (id == Status.UNKNOWN_ID) {
-                notifyItemChanged(mPrevPosition);
-                mPrevSelectedPeer.setSelected(false);
+                if (mPrevPosition >= 0) {
+                    notifyItemChanged(mPrevPosition);
+                }
+                if (mPrevSelectedPeer != null) {
+                    mPrevSelectedPeer.setSelected(false);
+                }
                 mPrevPosition = -1;
                 mPrevSelectedPeer = null;
             }
