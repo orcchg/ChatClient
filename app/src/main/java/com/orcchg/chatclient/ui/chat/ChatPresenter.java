@@ -23,6 +23,7 @@ import com.orcchg.chatclient.data.model.SystemMessage;
 import com.orcchg.chatclient.data.parser.Response;
 import com.orcchg.chatclient.data.remote.ServerBridge;
 import com.orcchg.chatclient.data.viewobject.MessageMapper;
+import com.orcchg.chatclient.data.viewobject.MessageToPeerMapper;
 import com.orcchg.chatclient.data.viewobject.MessageVO;
 import com.orcchg.chatclient.data.viewobject.PeerMapper;
 import com.orcchg.chatclient.data.viewobject.PeerVO;
@@ -32,6 +33,7 @@ import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.ui.chat.peerslist.ChatPeersList;
 import com.orcchg.chatclient.ui.main.MainActivity;
+import com.orcchg.chatclient.ui.notification.NotificationMaster;
 import com.orcchg.chatclient.util.SharedUtility;
 import com.orcchg.chatclient.util.crypting.SecurityUtility;
 
@@ -369,6 +371,19 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         MessageVO viewObject = mapper.map(message);
         mMessagesList.add(viewObject);
         notifyViewChanged();
+
+        /**
+         * Messages dedicated to the current user are wrappend into notifications
+         * in case Chat is paused.
+         */
+        if (getMvpView().isPaused() && message.getDestId() == mUserId) {
+            Timber.d("Notification from peer: " + message.getId());
+            Mapper<Message, PeerVO> mapper1 = new MessageToPeerMapper();
+            NotificationMaster.pushNotification(
+                    (Activity) getMvpView(),
+                    mapper1.map(message),
+                    message.getMessage());
+        }
     }
 
     private void showSystemMessage(String message) {

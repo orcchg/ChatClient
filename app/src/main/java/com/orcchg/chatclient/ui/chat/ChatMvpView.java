@@ -15,4 +15,6 @@ interface ChatMvpView extends MvpView {
 
     void onDedicatedMessagePrepare(Bundle args);
     void onUnauthorizedError();
+
+    boolean isPaused();
 }

@@ -89,6 +89,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     private LinearLayoutManager mLayoutManager;
 
+    private boolean mIsPaused;
+
     /* Peers lists */
     // ------------------------------------------
     @Nullable private PopupMenu mPopupMenu;
@@ -158,13 +160,14 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     protected void onResume() {
         super.onResume();
+        mIsPaused = false;
         mPresenter.onStart();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mPresenter.removeDirectConnectionCallback();
+        mIsPaused = true;
     }
 
     @Override
@@ -177,6 +180,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     protected void onDestroy() {
         mPresenter.unsubscribe();
+        mPresenter.removeDirectConnectionCallback();
         FrameworkUtility.setInactive(REQUEST_CODE);
         if (isFinishing() && FrameworkUtility.getActiveCount() == 0) {
             mPresenter.closeDirectConnection();
@@ -226,6 +230,11 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     public String getMessage() {
         return mMessagesEditView.getText().toString();
+    }
+
+    @Override
+    public boolean isPaused() {
+        return mIsPaused;
     }
 
     /* Actions */
