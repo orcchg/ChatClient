@@ -113,6 +113,7 @@ public class DataManager {
         StringBuilder line = new StringBuilder("DELETE /logout?id=")
                 .append(id).append(" HTTP/1.1\r\n")
                 .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
+        mServer.setLoggingOut();
         mServer.sendRequest(line.toString());
     }
 

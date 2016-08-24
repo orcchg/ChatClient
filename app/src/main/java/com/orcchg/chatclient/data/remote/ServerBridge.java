@@ -84,6 +84,15 @@ public class ServerBridge {
         }
     }
 
+    public void setLoggingOut() {
+        Timber.d("setLoggingOut");
+        if (mWorker != null) {
+            mWorker.setLoggingOut(true);
+        } else {
+            Timber.w("Worker thread is null");
+        }
+    }
+
     public void sendRequest(String request) {
         Timber.d("sendRequest: %s", request);
         if (mWorker != null) {
@@ -99,6 +108,7 @@ public class ServerBridge {
         private Socket mSocket;
         private BufferedReader mInput;
         private boolean mIsStopped;
+        private boolean mIsLoggingOut;
         private ConnectionCallback mCallback;
         private InternalCallback mInternalCallback;
 
@@ -118,6 +128,7 @@ public class ServerBridge {
                 Timber.i("Connection has been established !");
                 if (mCallback != null) mCallback.onSuccess();
                 while (!mIsStopped && mInput.read(buffer) >= 0) {
+                    Timber.v("Is logging out: " + mIsLoggingOut);
                     try {
                         Response response = Response.parse(buffer);
                         Timber.v("Parsed response:\n\n%s", response.toString());
@@ -144,7 +155,7 @@ public class ServerBridge {
                 if (mInternalCallback != null) mInternalCallback.onConnectionReset();
             } catch (IOException e) {
                 Timber.e("Connection error: %s", Log.getStackTraceString(e));
-                if (mCallback != null) mCallback.onError(e);
+                if (!mIsLoggingOut && mCallback != null) mCallback.onError(e);
                 if (mInternalCallback != null) mInternalCallback.onConnectionReset();
             }
 
@@ -154,6 +165,8 @@ public class ServerBridge {
         private void terminate() {
             mIsStopped = true;
         }
+
+        private void setLoggingOut(boolean flag) { mIsLoggingOut = flag; }
 
         private void setConnectionCallback(ConnectionCallback callback) {
             mCallback = callback;
