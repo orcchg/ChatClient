@@ -100,6 +100,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     @Nullable private SideChatPeersList.PeersAdapter mAdapter;
     @Nullable @Bind(R.id.rv_peers_list) RecyclerView mList;
+    @Nullable @Bind(R.id.side_menu_container) ViewGroup mSideMenuContainer;
     @Nullable @Bind(R.id.btni_switch_channel) ButtonItem mSwitchChannelBtnI;
     @Nullable @Bind(R.id.btni_logout) ButtonItem mLogoutBtnI;
 
@@ -125,7 +126,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         ButterKnife.bind(this);
         initToolbar();
         if (WindowUtility.isTablet(this)) {
-            initSideMenu();
+//            initSideMenu();
+            initToolbarMenu();
             initPeersList();
         } else {
             initDrawer();
@@ -260,10 +262,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                 mDrawer.getActionBarDrawerToggle().setDrawerArrowDrawable(mDrawerToggle);
                 break;
             case MENU_TYPE_POPUP:
-                mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-                break;
             case MENU_TYPE_LIST:
-                mToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
+                mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
                 break;
         }
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -275,7 +275,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                         break;
                     case MENU_TYPE_POPUP:
                     case MENU_TYPE_LIST:
-                        onBackPressed();
+                        mPresenter.logout();
                         break;
                 }
             }
@@ -454,9 +454,11 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         mPresenter.setChatPeersList(new DrawerChatPeersList(mDrawer));
     }
 
-    /* Side menu */
+    /* Toolbar & Side menu */
     // --------------------------------------------------------------------------------------------
     private void initSideMenu() {
+        mSideMenuContainer.setVisibility(View.VISIBLE);
+
         mSwitchChannelBtnI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -468,6 +470,24 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
             @Override
             public void onClick(View view) {
                 mPresenter.logout();
+            }
+        });
+    }
+
+    private void initToolbarMenu() {
+        mToolbar.inflateMenu(R.menu.chat_actions_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_switch_channel:
+                        mPresenter.onMenuSwitchChannel();
+                        return true;
+                    case R.id.menu_logout:
+                        onBackPressed();
+                        return true;
+                }
+                return false;
             }
         });
     }
