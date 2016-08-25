@@ -43,6 +43,7 @@
     <string name="registration_label">Registration</string>
     <string name="chat_label">Chat</string>
     <string name="chat_channel_label">Channel %1$d (%2$d)</string>
+    <string name="kicked_toast_message">You\'ve been kicked !</string>
     <string name="logout_toast_message">You\'ve just logged out</string>
     <string name="switch_channel_toast_message">Channel\'ve been switched to %d</string>
     <string name="terminate_message">Server shutdown</string>

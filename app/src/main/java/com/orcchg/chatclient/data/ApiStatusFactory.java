@@ -25,6 +25,10 @@ public class ApiStatusFactory {
     public static final int STATUS_REJECTED = 14;
     public static final int STATUS_ANOTHER_ACTION_REQUIRED = 15;
     public static final int STATUS_PUBLIC_KEY_MISSING = 16;
+    public static final int STATUS_PERMISSION_DENIED = 17;
+    public static final int STATUS_KICKED = 18;
+    public static final int STATUS_FORBIDDEN_MESSAGE = 19;
+    public static final int STATUS_REQUEST_REJECTED = 20;
     @IntDef({
         STATUS_UNKNOWN,
         STATUS_SUCCESS,
@@ -43,7 +47,11 @@ public class ApiStatusFactory {
         STATUS_ALREADY_RESPONDED,
         STATUS_REJECTED,
         STATUS_ANOTHER_ACTION_REQUIRED,
-        STATUS_PUBLIC_KEY_MISSING
+        STATUS_PUBLIC_KEY_MISSING,
+        STATUS_PERMISSION_DENIED,
+        STATUS_KICKED,
+        STATUS_FORBIDDEN_MESSAGE,
+        STATUS_REQUEST_REJECTED
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Status {}

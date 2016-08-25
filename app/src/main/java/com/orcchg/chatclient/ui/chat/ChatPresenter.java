@@ -246,6 +246,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         switch (code) {
             case ApiStatusFactory.STATUS_SUCCESS:
                 switch (action) {
+                    case Status.ACTION_KICK:
+                    case Status.ACTION_ADMIN:
                     case Status.ACTION_LOGIN:
                     case Status.ACTION_REGISTER:
                     case Status.ACTION_IS_LOGGED_IN:
@@ -259,16 +261,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                         break;
                     case Status.ACTION_LOGOUT:
                         Timber.i("Successfully logged out");
-                        Activity activity = (Activity) getMvpView();
-                        if (!activity.isFinishing()) {
-                            showToast(R.string.logout_toast_message);
-                            SharedUtility.logOut(activity);
-                            if (!mLogoutAndCloseApp) {
-                                Intent intent = new Intent(activity, LoginActivity.class);
-                                activity.startActivity(intent);
-                            }
-                            activity.finish();
-                        }
+                        onLogout(R.string.logout_toast_message);
                         break;
                     case Status.ACTION_SWITCH_CHANNEL:
                         Timber.i("Successfully switched channel to: %s", mCurrentChannel);
@@ -318,6 +311,17 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             case ApiStatusFactory.STATUS_ANOTHER_ACTION_REQUIRED:
             case ApiStatusFactory.STATUS_PUBLIC_KEY_MISSING:
                 // TODO: impl private secure communication
+                break;
+            case ApiStatusFactory.STATUS_KICKED:
+                Timber.w("You were kicked by administrator");
+                onLogout(R.string.kicked_toast_message);
+                break;
+            case ApiStatusFactory.STATUS_FORBIDDEN_MESSAGE:
+                // TODO: forbidden message
+                break;
+            case ApiStatusFactory.STATUS_PERMISSION_DENIED:
+            case ApiStatusFactory.STATUS_REQUEST_REJECTED:
+                // no-op - administrating priviledges not available on mobile client
                 break;
             case ApiStatusFactory.STATUS_UNKNOWN:
             default:
@@ -458,6 +462,19 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         });
     }
 
+    private void onLogout(@StringRes int resId) {
+        Activity activity = (Activity) getMvpView();
+        if (!activity.isFinishing()) {
+            showToast(resId);
+            SharedUtility.logOut(activity);
+            if (!mLogoutAndCloseApp) {
+                Intent intent = new Intent(activity, LoginActivity.class);
+                activity.startActivity(intent);
+            }
+            activity.finish();
+        }
+    }
+
     private void showSnackbar(final String message) {
         getMvpView().postOnUiThread(new Runnable() {
             @Override
@@ -531,6 +548,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                                     peerBuilder.setLogin(login).setEmail(email);
                                 }
 
+                                // another peer has performed an action
                                 switch (systemMessage.getAction()) {
                                     case Status.ACTION_LOGIN:
                                         peerBuilder.setChannel(Status.DEFAULT_CHANNEL);
@@ -550,6 +568,17 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                                         peerBuilder.setChannel(channel);
                                         presenter.removePeerMenuItem(systemMessage.getId());
                                         removePeer(peerBuilder.build());
+                                        break;
+                                    case Status.ACTION_KICK:
+                                    case Status.ACTION_ADMIN:
+                                    case Status.ACTION_REGISTER:
+                                    case Status.ACTION_MESSAGE:
+                                    case Status.ACTION_IS_LOGGED_IN:
+                                    case Status.ACTION_IS_REGISTERED:
+                                    case Status.ACTION_ALL_PEERS:
+                                    case Status.ACTION_UNKNOWN:
+                                    default:
+                                        // no-op
                                         break;
                                 }
                                 presenter.showSystemMessage(systemMessage.getMessage());

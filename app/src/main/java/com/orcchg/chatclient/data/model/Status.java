@@ -17,6 +17,8 @@ public class Status {
     public static final int DEFAULT_CHANNEL = 0;
 
     public static final int ACTION_UNKNOWN = -1;
+    public static final int ACTION_KICK = -2;
+    public static final int ACTION_ADMIN = -3;
     public static final int ACTION_LOGIN = 0;
     public static final int ACTION_REGISTER = 1;
     public static final int ACTION_MESSAGE = 2;
@@ -27,6 +29,8 @@ public class Status {
     public static final int ACTION_ALL_PEERS = 7;
     @IntDef({
         ACTION_UNKNOWN,
+        ACTION_KICK,
+        ACTION_ADMIN,
         ACTION_LOGIN,
         ACTION_REGISTER,
         ACTION_MESSAGE,
