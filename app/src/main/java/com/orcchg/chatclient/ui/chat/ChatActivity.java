@@ -224,6 +224,13 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     }
 
     @Override
+    public void onForbiddenMessage(String message) {
+        mMessagesEditView.setText(message);
+        mMessagesEditView.setSelection(mMessagesEditView.getText().length());
+        mMessagesEditView.setError(getResources().getString(R.string.error_forbidden_message));
+    }
+
+    @Override
     public void onLoading() {
         mActionContainer.setVisibility(View.GONE);
         mMessagesView.setVisibility(View.GONE);

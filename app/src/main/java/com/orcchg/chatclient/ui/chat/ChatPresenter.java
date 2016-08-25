@@ -317,7 +317,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 onLogout(R.string.kicked_toast_message);
                 break;
             case ApiStatusFactory.STATUS_FORBIDDEN_MESSAGE:
-                // TODO: forbidden message
+                onForbiddenMessage();
                 break;
             case ApiStatusFactory.STATUS_PERMISSION_DENIED:
             case ApiStatusFactory.STATUS_REQUEST_REJECTED:
@@ -437,6 +437,15 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             @Override
             public void run() {
                 getMvpView().onUnauthorizedError();
+            }
+        });
+    }
+
+    private void onForbiddenMessage() {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onForbiddenMessage(mLastMessage.getMessage());
             }
         });
     }
