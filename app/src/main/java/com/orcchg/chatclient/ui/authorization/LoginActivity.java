@@ -147,6 +147,11 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     }
 
     @Override
+    public void onSuccess() {
+        onComplete();
+    }
+
+    @Override
     public void onComplete() {
         Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
         mErrorView.setVisibility(View.GONE);

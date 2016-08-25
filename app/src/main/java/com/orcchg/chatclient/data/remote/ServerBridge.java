@@ -128,7 +128,7 @@ public class ServerBridge {
                 Timber.i("Connection has been established !");
                 if (mCallback != null) mCallback.onSuccess();
                 while (!mIsStopped && mInput.read(buffer) >= 0) {
-                    Timber.v("Is logging out: " + mIsLoggingOut);
+                    Timber.v("Is logging out: %s", Boolean.toString(mIsLoggingOut));
                     try {
                         Response response = Response.parse(buffer);
                         Timber.v("Parsed response:\n\n%s", response.toString());

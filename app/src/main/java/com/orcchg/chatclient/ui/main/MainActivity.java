@@ -82,6 +82,11 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     /* Presentation layer */
     // --------------------------------------------------------------------------------------------
     @Override
+    public void onSuccess() {
+        onComplete();
+    }
+
+    @Override
     public void onComplete() {
         mProgressView.setVisibility(View.GONE);
         mErrorView.setVisibility(View.GONE);

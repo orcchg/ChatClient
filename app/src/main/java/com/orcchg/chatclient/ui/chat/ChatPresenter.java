@@ -32,7 +32,6 @@ import com.orcchg.chatclient.ui.authorization.LoginActivity;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.ui.chat.peerslist.ChatPeersList;
-import com.orcchg.chatclient.ui.main.MainActivity;
 import com.orcchg.chatclient.ui.notification.NotificationMaster;
 import com.orcchg.chatclient.util.SharedUtility;
 import com.orcchg.chatclient.util.crypting.SecurityUtility;
@@ -338,14 +337,10 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     /**
-     * Connection lost during chat - jump to Main screen
+     * Connection lost during chat - retry to get onSuccess()
      */
     void onRetry() {
-        removeDirectConnectionCallback();
-        Activity activity = (Activity) getMvpView();
-        Intent intent = new Intent(activity, MainActivity.class);
-        activity.startActivity(intent);
-        activity.finish();  // close chat
+        onStart();
     }
 
     void onBackPressed() {

@@ -23,7 +23,18 @@ public class SimpleConnectionCallback<P extends BasePresenter> implements Server
 
     @Override
     public void onSuccess() {
-        // override in subclasses
+        Timber.d("Success (Direct connection)");
+        final P presenter = mPresenterRef.get();
+        if (presenter != null) {
+            presenter.getMvpView().postOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    presenter.getMvpView().onSuccess();
+                }
+            });
+        } else {
+            Timber.v("Presenter has already been GC'ed");
+        }
     }
 
     @Override

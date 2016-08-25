@@ -1,6 +1,5 @@
 package com.orcchg.chatclient.ui.authorization;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
@@ -113,6 +112,11 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
         mLoginView.setText(viewObject.getLogin());
         mEmailView.setText(viewObject.getEmail());
         mPasswordView.setText(viewObject.getPassword());
+    }
+
+    @Override
+    public void onSuccess() {
+        onComplete();
     }
 
     @Override

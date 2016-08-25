@@ -202,6 +202,11 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     /* Presentation layer */
     // --------------------------------------------------------------------------------------------
     @Override
+    public void onSuccess() {
+        onComplete();
+    }
+
+    @Override
     public void onComplete() {
         if (mMessagesView.getVisibility() != View.VISIBLE) {
             mActionContainer.setVisibility(View.VISIBLE);

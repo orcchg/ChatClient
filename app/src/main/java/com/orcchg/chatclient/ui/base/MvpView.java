@@ -7,6 +7,7 @@ package com.orcchg.chatclient.ui.base;
  */
 public interface MvpView {
 
+    void onSuccess();
     void onComplete();
     void onError();
     void onLoading();
