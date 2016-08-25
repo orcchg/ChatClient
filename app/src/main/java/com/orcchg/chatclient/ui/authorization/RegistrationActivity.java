@@ -2,6 +2,7 @@ package com.orcchg.chatclient.ui.authorization;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -189,14 +190,15 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
         boolean cancel = false;
         View focusView = null;
 
-        if (!TextUtils.isEmpty(password) && !Utility.isPasswordValid(password)) {
+        if (Utility.tooShort(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
 
-        if (TextUtils.isEmpty(login)) {
-            mLoginView.setError(getString(R.string.error_field_required));
+        if (Utility.tooShort(login)) {
+            @StringRes int resId = TextUtils.isEmpty(login) ? R.string.error_field_required : R.string.error_field_too_short;
+            mLoginView.setError(getString(resId));
             focusView = mLoginView;
             cancel = true;
         }

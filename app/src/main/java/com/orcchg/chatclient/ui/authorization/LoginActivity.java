@@ -35,7 +35,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.email) AutoCompleteTextView mEmailView;
     @Bind(R.id.password) EditText mPasswordView;
-    @Bind(R.id.clear_email_button) ImageButton mClearEmailButton;
+    @Bind(R.id.btn_clear_email) ImageButton mClearEmailButton;
     @Bind(R.id.sign_in_button) Button mSignInButton;
     @Bind(R.id.sign_up_button) Button mSignUpButton;
     @Bind(R.id.form_container_scroll) View mFormContainer;
@@ -214,7 +214,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         boolean cancel = false;
         View focusView = null;
 
-        if (!TextUtils.isEmpty(password) && !Utility.isPasswordValid(password)) {
+        if (Utility.tooShort(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;

@@ -34,6 +34,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_field_too_short">This field is too short</string>
     <string name="error_forbidden_message">Message contains forbidden characters</string>
     <string name="error_network">Network error. Please, try again later.</string>
     <string name="error_wrong_channel">Can\'not switch to channel %d</string>

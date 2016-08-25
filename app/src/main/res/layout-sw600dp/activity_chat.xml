@@ -91,17 +91,33 @@
                     android:background="@color/colorAccentQuatro"
                     android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/et_message"
+                    <FrameLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1">
+
+                        <EditText
+                            android:id="@+id/et_message"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:paddingLeft="32dp"
+                            android:paddingStart="32dp"/>
+
+                        <ImageButton
+                            android:id="@+id/btn_clear_message"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="left|center_vertical"
+                            android:alpha="0.4"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_clear_black_24dp" />
+                    </FrameLayout>
 
                     <ImageButton
                         android:id="@+id/btn_send_message"
                         android:layout_width="@dimen/fab_size"
                         android:layout_height="@dimen/fab_size"
-                        android:background="@drawable/orange_circle"/>
+                        android:background="@drawable/send_button_selector"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

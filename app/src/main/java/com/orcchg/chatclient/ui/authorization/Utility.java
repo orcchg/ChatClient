@@ -14,12 +14,12 @@ import com.orcchg.chatclient.util.SharedUtility;
 
 public class Utility {
 
-    public static boolean isEmailValid(String email) {
-        return email.contains("@");
+    public static boolean tooShort(String symbolic) {
+        return symbolic.length() <= 4;
     }
 
-    public static boolean isPasswordValid(String password) {
-        return password.length() > 4;
+    public static boolean isEmailValid(String email) {
+        return email.contains("@");
     }
 
     /**

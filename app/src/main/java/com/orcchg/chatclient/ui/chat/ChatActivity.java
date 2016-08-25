@@ -83,6 +83,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Bind(R.id.rv_messages) RecyclerView mMessagesView;
     @Bind(R.id.et_message) EditText mMessagesEditView;
     @Bind(R.id.btn_send_message) ImageButton mSendMessageButton;
+    @Bind(R.id.btn_clear_message) ImageButton mClearMessageButton;
     @Bind(R.id.progress) View mProgressView;
     @Bind(R.id.error) View mErrorView;
     @Bind(R.id.retry_button) Button mRetryButton;
@@ -147,6 +148,12 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
             @Override
             public void onClick(View v) {
                 mPresenter.onRetry();
+            }
+        });
+        mClearMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMessagesEditView.setText("");  // clean up
             }
         });
 
