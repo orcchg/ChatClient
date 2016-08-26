@@ -1,6 +1,7 @@
 package com.orcchg.chatclient.ui.notification;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -21,9 +22,13 @@ public class NotificationMaster {
         String url = gravatar.getUrl(peerVO.getEmail());
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(activity)
-                .setSmallIcon(R.drawable.ic_chat_bubble_outline_white_18dp)
+                .setAutoCancel(true)
                 .setContentTitle(peerVO.getLogin())
-                .setContentText(message);
+                .setContentText(message)
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setLights(0xffffd600, 750, 5000)
+                .setSmallIcon(R.drawable.ic_chat_bubble_outline_white_18dp)
+                .setWhen(System.currentTimeMillis());
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             builder.setLargeIcon(ViewUtils.getBitmapByUrl(activity, url, false));
