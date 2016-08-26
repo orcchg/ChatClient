@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.orcchg.chatclient.util.NetworkUtility;
 import com.orcchg.chatclient.util.crypting.SecurityUtility;
 
 import timber.log.Timber;
@@ -69,5 +70,10 @@ public abstract class BaseActivity<P extends Presenter> extends AppCompatActivit
     @Override
     public void postOnUiThread(Runnable runnable) {
         runOnUiThread(runnable);
+    }
+
+    @Override
+    public void onNetworkError(@NetworkUtility.ConnectionError String error) {
+        // override in subclasses
     }
 }

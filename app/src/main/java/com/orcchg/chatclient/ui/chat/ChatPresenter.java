@@ -32,6 +32,7 @@ import com.orcchg.chatclient.ui.authorization.LoginActivity;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.ui.chat.peerslist.ChatPeersList;
+import com.orcchg.chatclient.ui.main.MainActivity;
 import com.orcchg.chatclient.ui.notification.NotificationMaster;
 import com.orcchg.chatclient.util.SharedUtility;
 import com.orcchg.chatclient.util.crypting.SecurityUtility;
@@ -355,9 +356,17 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
      * Unauthorized attempt to do an action from chat (send message, switch channel, etc.)
      */
     void openLoginActivity() {
+        openActivity(LoginActivity.class);
+    }
+
+    void openMainActivity() {
+        openActivity(MainActivity.class);
+    }
+
+    private void openActivity(Class clazz) {
         removeDirectConnectionCallback();
         Activity activity = (Activity) getMvpView();
-        Intent intent = new Intent(activity, LoginActivity.class);
+        Intent intent = new Intent(activity, clazz);
         activity.startActivity(intent);
         activity.finish();  // close chat
     }

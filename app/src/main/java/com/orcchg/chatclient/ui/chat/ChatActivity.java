@@ -39,6 +39,7 @@ import com.orcchg.chatclient.ui.chat.peerslist.DrawerChatPeersList;
 import com.orcchg.chatclient.ui.chat.peerslist.PopupMenuChatPeersList;
 import com.orcchg.chatclient.ui.chat.peerslist.SideChatPeersList;
 import com.orcchg.chatclient.util.FrameworkUtility;
+import com.orcchg.chatclient.util.NetworkUtility;
 import com.orcchg.chatclient.util.WindowUtility;
 import com.orcchg.jgravatar.Gravatar;
 
@@ -222,6 +223,16 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         mMessagesView.setVisibility(View.GONE);
         mErrorView.setVisibility(View.VISIBLE);
         mProgressView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onNetworkError(@NetworkUtility.ConnectionError String error) {
+        super.onNetworkError(error);
+        switch (error) {
+            case NetworkUtility.ERROR_SERVER_SHUTDOWN:
+                mPresenter.openMainActivity();
+                break;
+        }
     }
 
     @Override

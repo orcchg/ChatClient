@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.orcchg.chatclient.data.parser.Response;
 import com.orcchg.chatclient.data.remote.ServerBridge;
+import com.orcchg.chatclient.util.NetworkUtility;
 
 import java.lang.ref.WeakReference;
 
@@ -59,7 +60,7 @@ public class SimpleConnectionCallback<P extends BasePresenter> implements Server
     }
 
     @Override
-    public void onError(Throwable e) {
+    public void onError(final Throwable e) {
         Timber.e("Error (Direct connection): %s", Log.getStackTraceString(e));
         final P presenter = mPresenterRef.get();
         if (presenter != null) {
@@ -67,6 +68,7 @@ public class SimpleConnectionCallback<P extends BasePresenter> implements Server
                 @Override
                 public void run() {
                     presenter.getMvpView().onError();
+                    presenter.getMvpView().onNetworkError(NetworkUtility.getNetworkError(e));
                 }
             });
         } else {
