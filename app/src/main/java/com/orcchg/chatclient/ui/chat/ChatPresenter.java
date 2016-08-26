@@ -626,12 +626,14 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         mDestId = id;
         mChatPeersList.setDestId(mDestId);
         PeerVO peer = findPeerById(mDestId);
-        String login = peer.getLogin();
-        String email = peer.getEmail();
-        Bundle args = new Bundle();
-        args.putString(ChatActivity.BUNDLE_KEY_LOGIN, login);
-        args.putString(ChatActivity.BUNDLE_KEY_EMAIL, email);
-        getMvpView().onDedicatedMessagePrepare(args);
+        if (peer != null) {
+            String login = peer.getLogin();
+            String email = peer.getEmail();
+            Bundle args = new Bundle();
+            args.putString(ChatActivity.BUNDLE_KEY_LOGIN, login);
+            args.putString(ChatActivity.BUNDLE_KEY_EMAIL, email);
+            getMvpView().onDedicatedMessagePrepare(args);
+        }
     }
 
     private void addPeerMenuItem(final long id, final PeerVO peer) {
