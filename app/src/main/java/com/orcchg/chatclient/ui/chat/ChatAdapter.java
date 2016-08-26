@@ -15,10 +15,14 @@ import java.util.List;
 public class ChatAdapter extends RecyclerView.Adapter<ChatBaseViewHolder> {
 
     private final long mUserId;
-    private final List<MessageVO> mMessagesList;
+    private List<MessageVO> mMessagesList;
 
     public ChatAdapter(long id, @NonNull List<MessageVO> messagesList) {
         mUserId = id;
+        mMessagesList = messagesList;
+    }
+
+    public void restoreMessages(List<MessageVO> messagesList) {
         mMessagesList = messagesList;
     }
 

@@ -2,6 +2,7 @@ package com.orcchg.chatclient.ui.chat;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -63,6 +64,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     static final String BUNDLE_KEY_LOGIN = "bundle_key_login";
     static final String BUNDLE_KEY_EMAIL = "bundle_key_email";
+    private static final String BUNDLE_KEY_MESSAGES_LIST_STATE = "bundle_key_messages_list_state";
 
     public static final int MENU_GROUP_ID_SYSTEM = 0;
     public static final int MENU_GROUP_ID_USERS = 1;
@@ -92,6 +94,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     private LinearLayoutManager mLayoutManager;
 
     private boolean mIsPaused;
+    private Parcelable mMessagesListState;
 
     /* Peers lists */
     // ------------------------------------------
@@ -145,6 +148,14 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         mMessagesView.setLayoutManager(mLayoutManager);
         mMessagesView.setAdapter(mPresenter.getChatAdapter());
 
+        if (savedInstanceState != null) {
+            mMessagesListState = savedInstanceState.getParcelable(BUNDLE_KEY_MESSAGES_LIST_STATE);
+            if (mMessagesListState != null) {
+                mLayoutManager.onRestoreInstanceState(mMessagesListState);
+            }
+            mPresenter.onRestoreInstanceState(savedInstanceState);
+        }
+
         mRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,6 +189,13 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     protected void onPause() {
         super.onPause();
         mIsPaused = true;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        mMessagesListState = mLayoutManager.onSaveInstanceState();
+        mPresenter.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

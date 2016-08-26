@@ -1,6 +1,9 @@
 package com.orcchg.chatclient.data.viewobject;
 
-public class MessageVO {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class MessageVO implements Parcelable {
     private long mId;
     private String mLogin;
     private String mEmail;
@@ -70,4 +73,40 @@ public class MessageVO {
     public long getTimestamp() {
         return mTimestamp;
     }
+
+    /* Parcelable */
+    // --------------------------------------------------------------------------------------------
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(mId);
+        parcel.writeString(mLogin);
+        parcel.writeString(mEmail);
+        parcel.writeString(mMessage);
+        parcel.writeLong(mTimestamp);
+    }
+
+    private MessageVO(Parcel parcel) {
+        mId = parcel.readLong();
+        mLogin = parcel.readString();
+        mEmail = parcel.readString();
+        mMessage = parcel.readString();
+        mTimestamp = parcel.readLong();
+    }
+
+    public static final Parcelable.Creator<MessageVO> CREATOR = new Parcelable.Creator<MessageVO>() {
+        @Override
+        public MessageVO createFromParcel(Parcel parcel) {
+            return new MessageVO(parcel);
+        }
+
+        @Override
+        public MessageVO[] newArray(int size) {
+            return new MessageVO[size];
+        }
+    };
 }

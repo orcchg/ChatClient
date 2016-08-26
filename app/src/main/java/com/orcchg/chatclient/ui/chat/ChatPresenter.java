@@ -54,9 +54,12 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class ChatPresenter extends BasePresenter<ChatMvpView> {
+//    private static final String BUNDLE_KEY_STATE_RESTORED = "bundle_key_state_restored";
+    private static final String BUNDLE_KEY_MESSAGES_LIST = "bundle_key_messages_list";
+    private static final String BUNDLE_KEY_DEDICATED_PEER = "bundle_key_dedicated_peer";
 
     private DataManager mDataManager;
-    private List<MessageVO> mMessagesList;
+    private ArrayList<MessageVO> mMessagesList;
     private Map<Integer, LongSparseArray<PeerVO>> mAllPeers;
     private ChatAdapter mChatAdapter;
     private ChatPeersList mChatPeersList;
@@ -69,6 +72,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     private int mLastChannel = Status.DEFAULT_CHANNEL;
     private MessageVO mLastMessage;
     private boolean mLogoutAndCloseApp = false;
+    private boolean mStateRestored = false;
 
     private Subscription mSubscriptionSend;
     private Subscription mSubscriptionLogout;
@@ -116,6 +120,21 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     void closeDirectConnection() {
         Timber.v("closeDirectConnection");
         mDataManager.closeDirectConnection();
+    }
+
+    /* Save & Restore state */
+    // ------------------------------------------
+    void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(BUNDLE_KEY_MESSAGES_LIST, mMessagesList);
+        outState.putLong(BUNDLE_KEY_DEDICATED_PEER, mDestId);
+    }
+
+    void onRestoreInstanceState(Bundle savedInstanceState) {
+        mStateRestored = true;
+        mMessagesList = savedInstanceState.getParcelableArrayList(BUNDLE_KEY_MESSAGES_LIST);
+        mDestId = savedInstanceState.getLong(BUNDLE_KEY_DEDICATED_PEER, Status.UNKNOWN_ID);
+        mChatAdapter.restoreMessages(mMessagesList);
+        mChatAdapter.notifyDataSetChanged();
     }
 
     /* Chat */
@@ -638,10 +657,17 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         if (peer != null) {
             String login = peer.getLogin();
             String email = peer.getEmail();
-            Bundle args = new Bundle();
+            final Bundle args = new Bundle();
             args.putString(ChatActivity.BUNDLE_KEY_LOGIN, login);
             args.putString(ChatActivity.BUNDLE_KEY_EMAIL, email);
-            getMvpView().onDedicatedMessagePrepare(args);
+            getMvpView().postOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    getMvpView().onDedicatedMessagePrepare(args);
+                }
+            });
+        } else if (id != Status.UNKNOWN_ID) {
+            Timber.e("Inconsistency in peers list: id and position aren't correspond !");
         }
     }
 
@@ -694,6 +720,24 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 mAllPeers.get(peer.getChannel()).put(peer.getId(), viewObject);
             }
             updateTitle();
+        }
+
+        if (mStateRestored) {
+            Timber.i("State restored, destId = %s", mDestId);
+            /**
+             * Posted on UI thread, because predecessing calls of methods
+             * {@link ChatPresenter#addPeerMenuItem(long, PeerVO)} performs
+             * actions on UI thread as well, and such addition of items
+             * must finish before setting destination id inside of
+             * {@link ChatPresenter#onMenuItemClick(long)} method, in order
+             * to get {@link ChatPeersList} to update correctly.
+             */
+            getMvpView().postOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    onMenuItemClick(mDestId);  // restore selected dedicated peer if any
+                }
+            });
         }
     }
 

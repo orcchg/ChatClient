@@ -14,7 +14,7 @@ import timber.log.Timber;
 public class NetworkUtility {
 
     public static final String ERROR_SERVER_UNAVAILABLE = "ECONNREFUSED";
-    public static final String ERROR_SERVER_SHUTDOWN = "ECONNRESET";
+    public static final String ERROR_SERVER_SHUTDOWN = "ECONNRESET";  // also on client logout
     public static final String ERROR_NO_NETWORK = "ETIMEOUT";
     @StringDef({
             ERROR_SERVER_UNAVAILABLE,

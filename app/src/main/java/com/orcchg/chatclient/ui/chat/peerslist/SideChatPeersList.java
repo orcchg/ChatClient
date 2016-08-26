@@ -71,7 +71,8 @@ public class SideChatPeersList extends ChatPeersList {
         private void addItem(long id, PeerVO peer) {
             if (!mPeerIds.containsKey(Long.valueOf(id))) {
                 mPeerVOs.add(peer);
-                mPeerIds.put(id, mPeerVOs.size() - 1);
+                int position = mPeerVOs.size() - 1;
+                mPeerIds.put(id, position);
                 notifyItemInserted(mPeerVOs.size());
             }
         }
@@ -97,6 +98,16 @@ public class SideChatPeersList extends ChatPeersList {
                 }
                 mPrevPosition = -1;
                 mPrevSelectedPeer = null;
+            } else if (mPeerIds.containsKey(id)) {
+                int index = mPeerIds.get(id);
+                if (mPeerVOs.size() > index) {
+                    mPrevSelectedPeer = mPeerVOs.get(index);
+                    if (mPrevSelectedPeer != null) {
+                        mPrevPosition = index;
+                        mPrevSelectedPeer.setSelected(true);
+                        notifyItemChanged(index);
+                    }
+                }
             }
         }
 
