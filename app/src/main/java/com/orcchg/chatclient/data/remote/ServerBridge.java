@@ -152,12 +152,12 @@ public class ServerBridge {
                         if (mCallback != null) mCallback.onNext(response);
                     } catch (ParseException e) {
                         Timber.e("Parse error: %s", Log.getStackTraceString(e));
-                        if (mCallback != null) mCallback.onError(e);
-                        if (mInternalCallback != null) mInternalCallback.onConnectionReset();
+//                        if (mCallback != null) mCallback.onError(e);
+//                        if (mInternalCallback != null) mInternalCallback.onConnectionReset();
                     } catch (MalformedJsonException e) {
                         Timber.e("Response has malformed json body: %s", Log.getStackTraceString(e));
-                        if (mCallback != null) mCallback.onError(e);
-                        if (mInternalCallback != null) mInternalCallback.onConnectionReset();
+//                        if (mCallback != null) mCallback.onError(e);
+//                        if (mInternalCallback != null) mInternalCallback.onConnectionReset();
                     }
                 }
                 Timber.d("Thread is stopping");

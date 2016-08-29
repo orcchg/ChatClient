@@ -470,6 +470,9 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     void onNetworkError(@NetworkUtility.ConnectionError String error) {
+        if (TextUtils.isEmpty(error)) {
+            return;
+        }
         switch (error) {
             case NetworkUtility.ERROR_SERVER_SHUTDOWN:
                 openMainActivity();
