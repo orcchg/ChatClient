@@ -75,4 +75,9 @@ public class SimpleConnectionCallback<P extends BasePresenter> implements Server
             Timber.v("Presenter has already been GC'ed");
         }
     }
+
+    @Override
+    public void onReconnect() {
+        // override in subclasses
+    }
 }

@@ -97,6 +97,9 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
             form.encrypt(SecurityUtility.getServerPublicKey());
         }
 
+//        Activity activity = (Activity) getMvpView();
+//        SharedUtility.storePasswordHash(activity, password);
+
 //        mSubscriptionSend = mDataManager.sendLoginForm(form)
 //            .subscribeOn(Schedulers.io())
 //            .observeOn(AndroidSchedulers.mainThread())

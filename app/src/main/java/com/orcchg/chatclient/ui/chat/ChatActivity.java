@@ -1,5 +1,6 @@
 package com.orcchg.chatclient.ui.chat;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -92,6 +93,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Bind(R.id.retry_button) Button mRetryButton;
 
     private LinearLayoutManager mLayoutManager;
+    private ProgressDialog mProgressDialog;
 
     private boolean mIsPaused;
     private Parcelable mMessagesListState;
@@ -130,6 +132,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         initToolbar();
+        initProgressDialog();
         if (WindowUtility.isTablet(this)) {
 //            initSideMenu();
             initToolbarMenu();
@@ -246,11 +249,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     public void onNetworkError(@NetworkUtility.ConnectionError String error) {
         super.onNetworkError(error);
-        switch (error) {
-            case NetworkUtility.ERROR_SERVER_SHUTDOWN:
-                mPresenter.openMainActivity();
-                break;
-        }
+        mPresenter.onNetworkError(error);
     }
 
     @Override
@@ -402,6 +401,12 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     /* Dialogs */
     // --------------------------------------------------------------------------------------------
+    private void initProgressDialog() {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage(getString(R.string.dialog_progress_reconnect));
+        mProgressDialog.setCancelable(false);
+    }
+
     @Override
     public void showSwitchChannelDialog(int channel) {
         LayoutInflater inflater = this.getLayoutInflater();
@@ -425,6 +430,19 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                 .setNegativeButton(R.string.button_cancel, null)
                 .create()
                 .show();
+    }
+
+    @Override
+    public void showReconnectProgress(boolean isShow) {
+        if (isShow) {
+            if (!mProgressDialog.isShowing()) {
+                mProgressDialog.show();
+            }
+        } else {
+            if (mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
     }
 
     /* Drawer */
@@ -491,6 +509,23 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                                 break;
                         }
                         return false;
+                    }
+                })
+                .withOnDrawerListener(new Drawer.OnDrawerListener() {
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        mMessagesEditView.requestFocus();
+                        WindowUtility.showSoftKeyboard(ChatActivity.this, false);
+                    }
+
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                        mMessagesEditView.requestFocus();
+                        WindowUtility.showSoftKeyboard(ChatActivity.this, true);
+                    }
+
+                    @Override
+                    public void onDrawerSlide(View drawerView, float slideOffset) {
                     }
                 })
                 .build();

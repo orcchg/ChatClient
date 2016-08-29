@@ -34,6 +34,7 @@ import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.ui.chat.peerslist.ChatPeersList;
 import com.orcchg.chatclient.ui.main.MainActivity;
 import com.orcchg.chatclient.ui.notification.NotificationMaster;
+import com.orcchg.chatclient.util.NetworkUtility;
 import com.orcchg.chatclient.util.SharedUtility;
 import com.orcchg.chatclient.util.crypting.SecurityUtility;
 
@@ -140,7 +141,12 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     /* Chat */
     // --------------------------------------------------------------------------------------------
     void loadMessages() {
-        getMvpView().onLoading();
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onLoading();
+            }
+        });
 
         final Mapper<Message, MessageVO> mapper = new MessageMapper();
 
@@ -196,7 +202,12 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     void logout() {
-        getMvpView().onLoading();
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onLoading();
+            }
+        });
 //        mSubscriptionLogout = mDataManager.logout(mUserId, mUserName)
 //            .subscribeOn(Schedulers.io())
 //            .observeOn(AndroidSchedulers.mainThread())
@@ -205,7 +216,12 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     void switchChannel(int channel) {
-        getMvpView().onLoading();
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().onLoading();
+            }
+        });
         mCurrentChannel = channel;
         mDataManager.switchChannelDirect(mUserId, mCurrentChannel);
     }
@@ -265,9 +281,11 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         switch (code) {
             case ApiStatusFactory.STATUS_SUCCESS:
                 switch (action) {
+                    case Status.ACTION_LOGIN:
+                        Timber.i("Successfully logged in (reconnection)");
+                        break;
                     case Status.ACTION_KICK:
                     case Status.ACTION_ADMIN:
-                    case Status.ACTION_LOGIN:
                     case Status.ACTION_REGISTER:
                     case Status.ACTION_IS_LOGGED_IN:
                     case Status.ACTION_IS_REGISTERED:
@@ -451,6 +469,17 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         });
     }
 
+    void onNetworkError(@NetworkUtility.ConnectionError String error) {
+        switch (error) {
+            case NetworkUtility.ERROR_SERVER_SHUTDOWN:
+                openMainActivity();
+                break;
+            case NetworkUtility.ERROR_CONNECTION_INTERRUPTED:
+                onLostConnection();
+                break;
+        }
+    }
+
     /**
      * User has attempted to send message or switch channel without being previously authorized.
      */
@@ -507,6 +536,10 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         }
     }
 
+    private void onLostConnection() {
+        mDataManager.lostDirectConnection();
+    }
+
     private void showSnackbar(final String message) {
         getMvpView().postOnUiThread(new Runnable() {
             @Override
@@ -522,6 +555,15 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             @Override
             public void run() {
                 Toast.makeText(activity, resId, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showReconnectProgress(final boolean isShow) {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().showReconnectProgress(isShow);
             }
         });
     }
@@ -641,8 +683,22 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                     Timber.v("Presenter has already been GC'ed");
                 }
             }
+
+            @Override
+            public void onReconnect() {
+                super.onReconnect();
+                // TODO: next version - implement autoRelogin()
+//                onBackPressed();
+//                logout();
+            }
         };
     }
+
+//    private void autoRelogin() {
+//        Activity activity = (Activity) getMvpView();
+//        LoginForm form = new LoginForm(mUserName, SharedUtility.getPasswordHash(activity));
+//        mDataManager.sendLoginFormDirect(form);
+//    }
 
     /* Chat menu */
     // --------------------------------------------------------------------------------------------

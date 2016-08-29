@@ -37,6 +37,10 @@ public class DataManager {
         mServer.closeConnection();
     }
 
+    public void lostDirectConnection() {
+        mServer.lostDirectConnection();
+    }
+
     /* Authentication */
     // --------------------------------------------------------------------------------------------
     public Observable<LoginForm> getLoginForm() {

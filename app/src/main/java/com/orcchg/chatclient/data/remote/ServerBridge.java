@@ -22,6 +22,8 @@ public class ServerBridge {
     public static final int PORT = 9000;
     private static final int BUFFER_SIZE = 1024;
 
+    private static boolean sNeedReconnect = false;
+
     private WorkerThread mWorker;
 
     public interface ConnectionCallback {
@@ -29,6 +31,7 @@ public class ServerBridge {
         void onComplete();
         void onNext(Response response);
         void onError(Throwable e);
+        void onReconnect();
     }
 
     private interface InternalCallback {
@@ -40,6 +43,7 @@ public class ServerBridge {
     private InternalCallback mInternalCallback;
 
     public ServerBridge() {
+        sNeedReconnect = false;
         mInternalCallback = new InternalCallback() {
             @Override
             public void onConnectionReset() {
@@ -84,6 +88,11 @@ public class ServerBridge {
         }
     }
 
+    public void lostDirectConnection() {
+        Timber.d("lostDirectConnection");
+        sNeedReconnect = true;
+    }
+
     public void setLoggingOut() {
         Timber.d("setLoggingOut");
         if (mWorker != null) {
@@ -126,7 +135,14 @@ public class ServerBridge {
                 char[] buffer = new char[BUFFER_SIZE];
                 Arrays.fill(buffer, (char) 0);
                 Timber.i("Connection has been established !");
-                if (mCallback != null) mCallback.onSuccess();
+                if (mCallback != null) {
+                    if (sNeedReconnect) {
+                        sNeedReconnect = false;
+                        mCallback.onReconnect();
+                    } else {
+                        mCallback.onSuccess();
+                    }
+                }
                 while (!mIsStopped && mInput.read(buffer) >= 0) {
                     Timber.v("Is logging out: %s", Boolean.toString(mIsLoggingOut));
                     try {
