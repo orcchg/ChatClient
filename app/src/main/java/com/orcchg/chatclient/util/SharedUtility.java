@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.orcchg.chatclient.R;
 
@@ -15,6 +17,19 @@ public class SharedUtility {
     public static SharedPreferences getSharedPrefs(Activity activity) {
         String key = activity.getResources().getString(R.string.shared_prefs_file_key);
         return activity.getSharedPreferences(key, Context.MODE_PRIVATE);
+    }
+
+    public static void storePasswordHash(Activity activity, String hash) {
+        Resources resources = activity.getResources();
+        SharedPreferences.Editor editor = SharedUtility.getSharedPrefs(activity).edit();
+        editor.putString(resources.getString(R.string.shared_prefs_user_password_key), hash);
+        editor.apply();
+    }
+
+    public static String getPasswordHash(Activity activity) {
+        Resources resources = activity.getResources();
+        SharedPreferences sp = SharedUtility.getSharedPrefs(activity);
+        return sp.getString(resources.getString(R.string.shared_prefs_user_password_key), null);
     }
 
     public static void logIn(Activity activity, long id, String userName, String userEmail) {
@@ -35,7 +50,11 @@ public class SharedUtility {
 //        editor.apply();
     }
 
-    public static Map<String, String> splitPayload(String payload) {
+    public static Map<String, String> splitPayload(@Nullable String payload) {
+        if (TextUtils.isEmpty(payload)) {
+            return new HashMap<>();
+        }
+
         String[] tokens = payload.split("&");
         Map<String, String> map = new HashMap<>();
         for (int i = 0; i < tokens.length; ++i) {

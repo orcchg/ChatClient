@@ -6,6 +6,7 @@
     <string name="shared_prefs_user_id_key" translatable="false">SP_USER_ID_KEY</string>
     <string name="shared_prefs_user_login_key" translatable="false">SP_USER_LOGIN_KEY</string>
     <string name="shared_prefs_user_email_key" translatable="false">SP_USER_EMAIL_KEY</string>
+    <string name="shared_prefs_user_password_key" translatable="false">SP_USER_PASSWORD_KEY</string>
     <string name="shared_prefs_security_enabled" translatable="false">SP_SECURITY_ENABLED_KEY</string>
     <string name="shared_prefs_server_pubkey" translatable="false">SP_SERVER_PUBLIC_KEY</string>
 
@@ -18,6 +19,7 @@
     <!-- Dialog -->
     <string name="dialog_switch_channel_title">Channel</string>
     <string name="dialog_switch_channel_hint">Enter channel</string>
+    <string name="dialog_progress_reconnect">Reconnecting...</string>
 
     <!-- Lexeme -->
     <string name="prompt_login_or_email">Login or email</string>

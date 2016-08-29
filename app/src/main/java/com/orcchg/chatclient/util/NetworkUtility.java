@@ -13,13 +13,15 @@ import timber.log.Timber;
 
 public class NetworkUtility {
 
-    public static final String ERROR_SERVER_UNAVAILABLE = "ECONNREFUSED";
-    public static final String ERROR_SERVER_SHUTDOWN = "ECONNRESET";  // also on client logout
-    public static final String ERROR_NO_NETWORK = "ETIMEOUT";
+    public static final String ERROR_SERVER_UNAVAILABLE = "ECONNREFUSED";  // server not started
+    public static final String ERROR_SERVER_SHUTDOWN = "ECONNRESET";  // server's just stopped, also on client logout
+    public static final String ERROR_CONNECTION_INTERRUPTED = "ETIMEDOUT";  // poor network disconnect
+    public static final String ERROR_NETWORK_UNREACHABLE = "ENETUNREACH";  // no network during retry
     @StringDef({
             ERROR_SERVER_UNAVAILABLE,
             ERROR_SERVER_SHUTDOWN,
-            ERROR_NO_NETWORK
+            ERROR_CONNECTION_INTERRUPTED,
+            ERROR_NETWORK_UNREACHABLE
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface ConnectionError {}
