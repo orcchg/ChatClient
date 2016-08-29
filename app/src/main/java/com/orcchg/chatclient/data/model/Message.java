@@ -7,10 +7,10 @@ import com.google.gson.stream.JsonReader;
 import java.io.StringReader;
 
 public class Message {
-    @SerializedName("id") private long mId;
+    @SerializedName("id") private long mId = Status.UNKNOWN_ID;
     @SerializedName("login") private String mLogin;
     @SerializedName("email") private String mEmail;
-    @SerializedName("channel") private int mChannel;
+    @SerializedName("channel") private int mChannel = Status.DEFAULT_CHANNEL;
     @SerializedName("dest_id") private long mDestId;
     @SerializedName("timestamp") private long mTimestamp;
     @SerializedName("size") private int mSize;

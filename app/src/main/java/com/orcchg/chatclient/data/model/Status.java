@@ -44,8 +44,8 @@ public class Status {
     public @interface Action {}
 
     @SerializedName("code") private int mCode;
-    @SerializedName("action") private int mAction;
-    @SerializedName("id") private long mId;
+    @SerializedName("action") private int mAction = Status.ACTION_UNKNOWN;
+    @SerializedName("id") private long mId = Status.UNKNOWN_ID;
     @SerializedName("token") private String mToken;
     @SerializedName("payload") private String mPayload;
 

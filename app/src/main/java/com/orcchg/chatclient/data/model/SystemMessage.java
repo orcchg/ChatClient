@@ -19,8 +19,8 @@ public class SystemMessage {
     public @interface ChannelMove {}
 
     @SerializedName("system") private String mMessage;
-    @SerializedName("action") private int mAction;
-    @SerializedName("id") private long mId;
+    @SerializedName("action") private int mAction = Status.ACTION_UNKNOWN;
+    @SerializedName("id") private long mId = Status.UNKNOWN_ID;
     @SerializedName("payload") private String mPayload;
 
     public String getMessage() {

@@ -8,8 +8,8 @@ import java.io.StringReader;
 
 public class Check {
     @SerializedName("check") private int mCheck;
-    @SerializedName("action") private int mAction;
-    @SerializedName("id") private long mId;
+    @SerializedName("action") private int mAction = Status.ACTION_UNKNOWN;
+    @SerializedName("id") private long mId = Status.UNKNOWN_ID;
 
     public int getCheck() {
         return mCheck;
