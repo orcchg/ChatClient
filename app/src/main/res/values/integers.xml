@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="login_max_length">80</integer>
+    <integer name="email_max_length">80</integer>
+    <integer name="password_max_length">80</integer>
+    <integer name="message_max_length">700</integer>
+</resources>

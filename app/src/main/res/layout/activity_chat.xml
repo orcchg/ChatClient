@@ -51,6 +51,7 @@
                     android:id="@+id/et_message"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:maxLength="@integer/message_max_length"
                     android:paddingLeft="32dp"
                     android:paddingStart="32dp"/>
 
