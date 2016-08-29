@@ -144,7 +144,7 @@ public class ServerBridge {
                     }
                 }
                 while (!mIsStopped && mInput.read(buffer) >= 0) {
-                    Timber.v("Is logging out: %s", Boolean.toString(mIsLoggingOut));
+                    diagnostic();
                     try {
                         Response response = Response.parse(buffer);
                         Timber.v("Parsed response:\n\n%s", response.toString());
@@ -176,6 +176,13 @@ public class ServerBridge {
             }
 
             if (mInternalCallback != null) mInternalCallback.onThreadStopped();
+        }
+
+        private void diagnostic() {
+            Timber.v("Is logging out: %s", Boolean.toString(mIsLoggingOut));
+            if (mCallback == null) {
+                Timber.w("Callback is null !!!");
+            }
         }
 
         private void terminate() {

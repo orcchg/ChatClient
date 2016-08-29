@@ -74,6 +74,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     private MessageVO mLastMessage;
     private boolean mLogoutAndCloseApp = false;
     private boolean mStateRestored = false;
+    private boolean mNeedReconnect = false;
 
     private Subscription mSubscriptionSend;
     private Subscription mSubscriptionLogout;
@@ -378,7 +379,11 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
      * Connection lost during chat - retry to get onSuccess()
      */
     void onRetry() {
-        onStart();
+        if (mNeedReconnect) {
+            logout();  // TODO: implement autoRelogin() next version
+        } else {
+            onStart();
+        }
     }
 
     void onBackPressed() {
@@ -690,9 +695,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             @Override
             public void onReconnect() {
                 super.onReconnect();
-                // TODO: next version - implement autoRelogin()
-//                onBackPressed();
-//                logout();
+                mNeedReconnect = true;
             }
         };
     }

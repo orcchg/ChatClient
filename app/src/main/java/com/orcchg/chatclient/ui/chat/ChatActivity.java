@@ -186,6 +186,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         super.onResume();
         mIsPaused = false;
         mPresenter.onStart();
+        mMessagesEditView.requestFocus();
     }
 
     @Override
