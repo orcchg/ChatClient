@@ -5,12 +5,12 @@ Chat Client android app corresponding to ChatServer
 Key features:
 -------------
 
-- Uses HTTP protocol, request / response parsing
-- REST API
+- Material design both for handset and tablet
+- Notifications when device is paused
 - Registration and authentication
 - Password encryption
-- Multi-channeling
-- Broadcast and dedicated messages
+- Multiple isolated chat rooms (channels)
+- Broadcast and private messages
 - File transfer (IN PROGRESS...)
 - Secure messages transfering (IN PROGRESS...)
     
