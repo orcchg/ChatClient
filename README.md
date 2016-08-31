@@ -1,6 +1,8 @@
 # ChatClient
 
-Chat Client android app corresponding to ChatServer
+Chat Client android app corresponding to ChatServer.
+
+Checkout on Google Play: https://play.google.com/store/apps/details?id=com.orcchg.chatclient
 
 Key features:
 -------------
