@@ -22,7 +22,17 @@ public class MessageDrawable extends Drawable {
     public static final int TOP_RIGHT = 1;
     public static final int BOTTOM_LEFT = 2;
     public static final int BOTTOM_RIGHT = 3;
-    @IntDef({NO_SIDE, TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT})
+    public static final int SPECIAL_TOP_LEFT = 4;
+    public static final int SPECIAL_TOP_RIGHT = 5;
+    @IntDef({
+        NO_SIDE,
+        TOP_LEFT,
+        TOP_RIGHT,
+        BOTTOM_LEFT,
+        BOTTOM_RIGHT,
+        SPECIAL_TOP_LEFT,
+        SPECIAL_TOP_RIGHT
+    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Side {}
 
@@ -67,6 +77,7 @@ public class MessageDrawable extends Drawable {
                 path.lineTo(0, height);
                 path.lineTo(0, 0);
                 break;
+            case SPECIAL_TOP_LEFT:
             case TOP_LEFT:
                 path.moveTo(TRIANGLE_WIDTH, 0);
                 path.lineTo(width - radius, 0);
@@ -79,6 +90,7 @@ public class MessageDrawable extends Drawable {
                 path.lineTo(0, 0);
                 path.lineTo(TRIANGLE_WIDTH, 0);
                 break;
+            case SPECIAL_TOP_RIGHT:
             case TOP_RIGHT:
                 path.moveTo(radius, 0);
                 path.lineTo(width, 0);

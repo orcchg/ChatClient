@@ -35,28 +35,31 @@ public class ChatMessageViewHolder extends ChatBaseViewHolder<MessageVO> {
     public void bind(MessageVO viewObject) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 
+        long destId = viewObject.getDestId();
         boolean fromSelf = viewObject.getId() == mUserId;
-        if (fromSelf) {
+        if (fromSelf) {  // self message
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 params.addRule(RelativeLayout.ALIGN_PARENT_END);
             }
-            mMessageView.setSide(MessageDrawable.TOP_RIGHT);
+            @MessageDrawable.Side int side = destId != Status.UNKNOWN_ID ? MessageDrawable.SPECIAL_TOP_RIGHT : MessageDrawable.TOP_RIGHT;
+            mMessageView.setSide(side);
             mMessageView.getTitle().setVisibility(View.GONE);
             mPhotoView.setVisibility(View.GONE);
-        } else if (viewObject.getId() == Status.SYSTEM_ID) {
+        } else if (viewObject.getId() == Status.SYSTEM_ID) {  // system message
             params.addRule(RelativeLayout.CENTER_HORIZONTAL);
             mMessageView.setSide(MessageDrawable.NO_SIDE);
             mMessageView.getTitle().setVisibility(View.GONE);
             mPhotoView.setVisibility(View.GONE);
-        } else {
+        } else {  // another peer's message
             params.addRule(RelativeLayout.RIGHT_OF, R.id.space);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 params.addRule(RelativeLayout.END_OF, R.id.space);
             }
             Gravatar gravatar = new Gravatar();
             String url = gravatar.getUrl(viewObject.getEmail());
-            mMessageView.setSide(MessageDrawable.TOP_LEFT);
+            @MessageDrawable.Side int side = destId != Status.UNKNOWN_ID ? MessageDrawable.SPECIAL_TOP_LEFT : MessageDrawable.TOP_LEFT;
+            mMessageView.setSide(side);
             mMessageView.getTitle().setVisibility(View.VISIBLE);
             mPhotoView.setVisibility(View.VISIBLE);
             mPhotoView.setPhoto(url, true);

@@ -3,30 +3,43 @@ package com.orcchg.chatclient.data.viewobject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.orcchg.chatclient.data.model.Status;
+
 public class MessageVO implements Parcelable {
-    private long mId;
+    private long mId = Status.UNKNOWN_ID;
+    private long mDestId = Status.UNKNOWN_ID;
     private String mLogin;
     private String mEmail;
     private String mMessage;
     private long mTimestamp;
+    private boolean mIsDedicated;  // this message is only to you
 
     public MessageVO(Builder builder) {
         mId = builder.mId;
+        mDestId = builder.mDestId;
         mLogin = builder.mLogin;
         mEmail = builder.mEmail;
         mMessage = builder.mMessage;
         mTimestamp = builder.mTimestamp;
+        mIsDedicated = builder.mIsDedicated;
     }
 
     public static class Builder {
         private final long mId;
+        private long mDestId = Status.UNKNOWN_ID;
         private String mLogin;
         private String mEmail;
         private String mMessage;
         private long mTimestamp;
+        private boolean mIsDedicated;
 
         public Builder(long id) {
             mId = id;
+        }
+
+        public Builder setDestId(long destId) {
+            mDestId = destId;
+            return this;
         }
 
         public Builder setLogin(String login) {
@@ -49,6 +62,11 @@ public class MessageVO implements Parcelable {
             return this;
         }
 
+        public Builder setDedicated(boolean isDedicated) {
+            mIsDedicated = isDedicated;
+            return this;
+        }
+
         public MessageVO build() {
             return new MessageVO(this);
         }
@@ -56,6 +74,10 @@ public class MessageVO implements Parcelable {
 
     public long getId() {
         return mId;
+    }
+
+    public long getDestId() {
+        return mDestId;
     }
 
     public String getLogin() {
@@ -72,6 +94,14 @@ public class MessageVO implements Parcelable {
 
     public long getTimestamp() {
         return mTimestamp;
+    }
+
+    public boolean isDedicated() {
+        return mIsDedicated;
+    }
+
+    public void setDedicated(boolean isDedicated) {
+        mIsDedicated = isDedicated;
     }
 
     /* Parcelable */

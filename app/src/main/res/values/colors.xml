@@ -18,8 +18,13 @@
 
     <color name="chat_window_bg_color">#ffededed</color>
     <color name="chat_side_menu_bg_color">#4dffffff</color>
+    <color name="chat_toolbar_dedicated_color">#7c4dff</color>
+    <color name="chat_statusbar_dedicated_color">#5b26f0</color>
     <color name="photo_stub_color">#aed581</color>
     <color name="self_message_blob_background">#aed581</color>
+    <color name="self_message_dedicated_blob_background">#f9a825</color>
+    <color name="peer_message_blob_background">#ffffff</color>
+    <color name="peer_message_dedicated_blob_background">#889575cd</color>
     <color name="system_message_blob_background">#ffee58</color>
     <color name="substrate">#66f3f3f3</color>
     <color name="divider">#1f000000</color>

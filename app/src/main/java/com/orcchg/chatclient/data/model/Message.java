@@ -11,7 +11,7 @@ public class Message {
     @SerializedName("login") private String mLogin;
     @SerializedName("email") private String mEmail;
     @SerializedName("channel") private int mChannel = Status.DEFAULT_CHANNEL;
-    @SerializedName("dest_id") private long mDestId;
+    @SerializedName("dest_id") private long mDestId = Status.UNKNOWN_ID;
     @SerializedName("timestamp") private long mTimestamp;
     @SerializedName("size") private int mSize;
     @SerializedName("encrypted") private int mIsEncrypted;
@@ -33,8 +33,8 @@ public class Message {
         private final long mId;
         private final String mLogin;
         private final String mEmail;
-        private int mChannel;
-        private long mDestId;
+        private int mChannel = Status.DEFAULT_CHANNEL;
+        private long mDestId = Status.UNKNOWN_ID;
         private long mTimestamp;
         private int mSize;
         private boolean mIsEncrypted;

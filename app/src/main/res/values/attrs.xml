@@ -8,6 +8,9 @@
     <attr name="refPhotoStub" format="reference" />
     <attr name="refForegroundSelectorColor" format="reference" />
     <attr name="refSelfMessageBlobBackgroundColor" format="reference" />
+    <attr name="refSelfMessageDedicatedBlobBackgroundColor" format="reference" />
+    <attr name="refPeerMessageBlockBackgroundColor" format="reference" />
+    <attr name="refPeerMessageDedicatedBlockBackgroundColor" format="reference" />
     <attr name="refSystemMessageBlobBackgroundColor" format="reference" />
     <attr name="refSideMenuButtonToggleBgColor" format="reference" />
 </resources>

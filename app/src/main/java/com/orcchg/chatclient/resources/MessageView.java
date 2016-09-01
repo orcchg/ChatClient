@@ -28,6 +28,7 @@ public class MessageView extends FrameLayout {
     private @ColorInt int mTitleTextColor;
     private @ColorInt int mDescriptionTextColor;
     private @ColorInt int mSelfTextColor;
+    private @ColorInt static final int BAD_COLOR = Color.WHITE;
 
     protected OnClickListener mClickListener;
 
@@ -64,20 +65,31 @@ public class MessageView extends FrameLayout {
     }
 
     public void setSide(@MessageDrawable.Side int side) {
-        @ColorInt int color = Color.WHITE;
+        @ColorInt int color = BAD_COLOR;
         switch (side) {
             case MessageDrawable.NO_SIDE:
+                mDescriptionView.setTextColor(mDescriptionTextColor);
                 color = ViewUtils.getAttributeColor(getContext(), R.attr.refSystemMessageBlobBackgroundColor);
+                break;
+            case MessageDrawable.SPECIAL_TOP_LEFT:
+                color = ViewUtils.getAttributeColor(getContext(), R.attr.refPeerMessageDedicatedBlockBackgroundColor);
             case MessageDrawable.TOP_LEFT:
                 mContainer.setPadding(mLeftSideRootPaddings[0], mLeftSideRootPaddings[2], mLeftSideRootPaddings[3], mLeftSideRootPaddings[5]);
                 mSubContainer.setLayoutParams(mLeftSideSubParams);
                 mDescriptionView.setTextColor(mDescriptionTextColor);
+                if (color == BAD_COLOR) {
+                    color = ViewUtils.getAttributeColor(getContext(), R.attr.refPeerMessageBlockBackgroundColor);
+                }
                 break;
+            case MessageDrawable.SPECIAL_TOP_RIGHT:
+                color = ViewUtils.getAttributeColor(getContext(), R.attr.refSelfMessageDedicatedBlobBackgroundColor);
             case MessageDrawable.TOP_RIGHT:
                 mContainer.setPadding(mRightSideRootPaddings[0], mRightSideRootPaddings[2], mRightSideRootPaddings[3], mRightSideRootPaddings[5]);
                 mSubContainer.setLayoutParams(mRightSideSubParams);
                 mDescriptionView.setTextColor(mSelfTextColor);
-                color = ViewUtils.getAttributeColor(getContext(), R.attr.refSelfMessageBlobBackgroundColor);
+                if (color == BAD_COLOR) {
+                    color = ViewUtils.getAttributeColor(getContext(), R.attr.refSelfMessageBlobBackgroundColor);
+                }
                 break;
         }
 

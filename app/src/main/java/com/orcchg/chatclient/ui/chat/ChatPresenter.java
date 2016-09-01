@@ -32,6 +32,7 @@ import com.orcchg.chatclient.ui.authorization.LoginActivity;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.ui.chat.peerslist.ChatPeersList;
+import com.orcchg.chatclient.ui.chat.util.ChatStyle;
 import com.orcchg.chatclient.ui.main.MainActivity;
 import com.orcchg.chatclient.ui.notification.NotificationMaster;
 import com.orcchg.chatclient.util.NetworkUtility;
@@ -421,7 +422,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void showMessage(Message message) {
-        Mapper<Message, MessageVO> mapper = new MessageMapper();
+        boolean isDedicated = mUserId == message.getDestId();
+        Mapper<Message, MessageVO> mapper = new MessageMapper(isDedicated);
         MessageVO viewObject = mapper.map(message);
         mMessagesList.add(viewObject);
         notifyViewChanged();
@@ -865,9 +867,19 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     /* Dedicated message mode */
     // ------------------------------------------
+    private void decorate(final @ChatStyle.Style int style) {
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().decorate(style);
+            }
+        });
+    }
+
     void dropDedicatedMessageMode() {
         mDestId = Status.UNKNOWN_ID;
         mChatPeersList.setDestId(mDestId);
+        decorate(ChatStyle.STYLE_NORMAL);
         updateTitle();
     }
 }

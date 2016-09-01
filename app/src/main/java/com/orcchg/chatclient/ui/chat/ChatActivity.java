@@ -40,6 +40,7 @@ import com.orcchg.chatclient.ui.base.BaseActivity;
 import com.orcchg.chatclient.ui.chat.peerslist.DrawerChatPeersList;
 import com.orcchg.chatclient.ui.chat.peerslist.PopupMenuChatPeersList;
 import com.orcchg.chatclient.ui.chat.peerslist.SideChatPeersList;
+import com.orcchg.chatclient.ui.chat.util.ChatStyle;
 import com.orcchg.chatclient.util.FrameworkUtility;
 import com.orcchg.chatclient.util.NetworkUtility;
 import com.orcchg.chatclient.util.WindowUtility;
@@ -78,6 +79,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @IntDef({MENU_TYPE_DRAWER, MENU_TYPE_POPUP, MENU_TYPE_LIST})
     @Retention(RetentionPolicy.SOURCE)
     private @interface MenuType {}
+
+    private @ChatStyle.Style int mDecorateMode = ChatStyle.STYLE_NORMAL;
 
     @Bind(R.id.root_coordinator) ViewGroup mRootCoordinator;
     @Bind(R.id.root_container) ViewGroup mRootContainer;
@@ -349,6 +352,8 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
                 mPresenter.dropDedicatedMessageMode();
             }
         });
+
+        decorate(ChatStyle.STYLE_DEDICATED);
     }
 
     /* Toolbar */
@@ -400,6 +405,21 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         });
 
         mPresenter.setChatPeersList(new PopupMenuChatPeersList(mPopupMenu));
+    }
+
+    @Override
+    public void decorate(@ChatStyle.Style int style) {
+        mDecorateMode = style;
+        switch (style) {
+            case ChatStyle.STYLE_NORMAL:
+                WindowUtility.tintStatusBar(this, getResources().getColor(R.color.colorPrimaryDark));
+                mToolbar.setBackgroundResource(R.color.colorPrimary);
+                break;
+            case ChatStyle.STYLE_DEDICATED:
+                WindowUtility.tintStatusBar(this, getResources().getColor(R.color.chat_statusbar_dedicated_color));
+                mToolbar.setBackgroundResource(R.color.chat_toolbar_dedicated_color);
+                break;
+        }
     }
 
     /* Dialogs */
