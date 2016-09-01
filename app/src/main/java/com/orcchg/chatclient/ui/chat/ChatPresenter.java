@@ -425,8 +425,14 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         boolean isDedicated = mUserId == message.getDestId();
         Mapper<Message, MessageVO> mapper = new MessageMapper(isDedicated);
         MessageVO viewObject = mapper.map(message);
-        mMessagesList.add(viewObject);
-        notifyViewChanged();
+
+        /* filter messages */
+        if (mDestId == Status.UNKNOWN_ID ||  // public messages
+            // private message from dedicated peer
+            (mDestId != Status.UNKNOWN_ID && isDedicated)) {
+            mMessagesList.add(viewObject);
+            notifyViewChanged();
+        }
 
         /**
          * Messages dedicated to the current user are wrappend into notifications
