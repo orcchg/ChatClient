@@ -94,7 +94,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
                 openLoginActivity();
                 break;
             case Status.ACTION_IS_REGISTERED:
-                if (check.getCheck() == 0) {
+                if (check.getCheck() == Check.CHECK_FALSE) {
                     Timber.e("User is not registered, but previously had logged in. This is magic error...");
                 }
                 break;
