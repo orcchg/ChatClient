@@ -5,6 +5,13 @@ import android.support.annotation.IntDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import timber.log.Timber;
+
+import static com.orcchg.chatclient.util.FrameworkUtility.RequestCode.CHAT_ACTIVITY;
+import static com.orcchg.chatclient.util.FrameworkUtility.RequestCode.LOGIN_ACTIVITY;
+import static com.orcchg.chatclient.util.FrameworkUtility.RequestCode.MAIN_ACTIVITY;
+import static com.orcchg.chatclient.util.FrameworkUtility.RequestCode.REGISTRATION_ACTIVITY;
+
 public class FrameworkUtility {
 
     public static class RequestCode {
@@ -27,6 +34,7 @@ public class FrameworkUtility {
             ++sActiveCount;
         }
         sActive[code] = true;
+        Timber.v("setActive(): active %s, total %s", requestScreen(code), sActiveCount);
     }
 
     public static void setInactive(@RequestCode.Code int code) {
@@ -34,6 +42,7 @@ public class FrameworkUtility {
             --sActiveCount;
         }
         sActive[code] = false;
+        Timber.v("setInactive(): inactive %s, total %s", requestScreen(code), sActiveCount);
     }
 
     public static boolean isActive(@RequestCode.Code int code) {
@@ -42,5 +51,23 @@ public class FrameworkUtility {
 
     public static int getActiveCount() {
         return sActiveCount;
+    }
+
+    public static void diagnostic() {
+        for (int i = 0; i < RequestCode.ACTIVITIES_COUNT; ++i) {
+            Timber.v("Screen: %s, active: %s", requestScreen(i), Boolean.toString(sActive[i]));
+        }
+    }
+
+    /* Internal */
+    // --------------------------------------------------------------------------------------------
+    private static String requestScreen(@RequestCode.Code int code) {
+        switch (code) {
+            case MAIN_ACTIVITY:          return "Main";
+            case LOGIN_ACTIVITY:         return "Login";
+            case REGISTRATION_ACTIVITY:  return "Registration";
+            case CHAT_ACTIVITY:          return "Chat";
+        }
+        return null;
     }
 }

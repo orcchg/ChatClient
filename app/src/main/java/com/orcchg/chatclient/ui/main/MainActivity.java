@@ -36,6 +36,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FrameworkUtility.setActive(REQUEST_CODE);
+        FrameworkUtility.diagnostic();
         WindowUtility.logScreenParams(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -73,6 +74,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     @Override
     protected void onDestroy() {
         FrameworkUtility.setInactive(REQUEST_CODE);
+        FrameworkUtility.diagnostic();
         if (isFinishing() && FrameworkUtility.getActiveCount() == 0) {
             mPresenter.closeDirectConnection();
         }

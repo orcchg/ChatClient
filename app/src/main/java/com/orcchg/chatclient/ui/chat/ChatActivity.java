@@ -129,6 +129,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FrameworkUtility.setActive(REQUEST_CODE);
+        FrameworkUtility.diagnostic();
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         initToolbar();
@@ -216,6 +217,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
             mPresenter.removeDirectConnectionCallback();
         }
         FrameworkUtility.setInactive(REQUEST_CODE);
+        FrameworkUtility.diagnostic();
         if (isFinishing() && FrameworkUtility.getActiveCount() == 0) {
             mPresenter.closeDirectConnection();
         }

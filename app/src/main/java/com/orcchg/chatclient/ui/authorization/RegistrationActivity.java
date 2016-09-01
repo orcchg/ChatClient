@@ -48,6 +48,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FrameworkUtility.setActive(REQUEST_CODE);
+        FrameworkUtility.diagnostic();
         setContentView(R.layout.activity_registration);
         ButterKnife.bind(this);
         initToolbar();
@@ -93,6 +94,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     protected void onDestroy() {
         mPresenter.unsubscribe();
         FrameworkUtility.setInactive(REQUEST_CODE);
+        FrameworkUtility.diagnostic();
         if (isFinishing() && FrameworkUtility.getActiveCount() == 0) {
             mPresenter.closeDirectConnection();
         }

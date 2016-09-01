@@ -52,6 +52,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FrameworkUtility.setActive(REQUEST_CODE);
+        FrameworkUtility.diagnostic();
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         initToolbar();
@@ -115,6 +116,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     protected void onDestroy() {
         mPresenter.unsubscribe();
         FrameworkUtility.setInactive(REQUEST_CODE);
+        FrameworkUtility.diagnostic();
         if (isFinishing() && FrameworkUtility.getActiveCount() == 0) {
             mPresenter.closeDirectConnection();
         }
