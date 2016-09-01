@@ -82,7 +82,14 @@ public class ServerBridge {
     public void closeConnection() {
         Timber.d("closeConnection");
         if (mWorker != null) {
-            mWorker.terminate();
+            try {
+                mWorker.terminate();
+            } catch (IOException e) {
+                Timber.e("Error during connection termination: %s", Log.getStackTraceString(e));
+                // detach thread and let if finish silently
+                mWorker.interrupt();
+                mWorker = null;
+            }
         } else {
             Timber.w("Worker thread is null");
         }
@@ -143,7 +150,7 @@ public class ServerBridge {
                         mCallback.onSuccess();
                     }
                 }
-                while (!mIsStopped && mInput.read(buffer) >= 0) {
+                while (!mIsStopped && !mSocket.isClosed() && mInput.read(buffer) >= 0) {
                     diagnostic();
                     try {
                         Response response = Response.parse(buffer);
@@ -161,9 +168,7 @@ public class ServerBridge {
                     }
                 }
                 Timber.d("Thread is stopping");
-                mInput.close();
-                mSocket.close();
-                if (mCallback != null) mCallback.onComplete();
+                terminate();
             } catch (ConnectException e) {
                 Timber.e("%s", e.getMessage());
                 Timber.w("%s", Log.getStackTraceString(e));
@@ -186,8 +191,11 @@ public class ServerBridge {
             }
         }
 
-        private void terminate() {
+        private void terminate() throws IOException {
+            Timber.i("Terminate call");
             mIsStopped = true;
+            if (mSocket != null) mSocket.close();
+            if (mCallback != null) mCallback.onComplete();
         }
 
         private void setLoggingOut(boolean flag) { mIsLoggingOut = flag; }
@@ -202,6 +210,8 @@ public class ServerBridge {
                 output.write(request.getBytes());
             } catch (IOException e) {
                 if (mCallback != null) mCallback.onError(e);
+            } catch (NullPointerException e) {
+                Timber.e("Socket is null - ignore request: %s", Log.getStackTraceString(e));
             }
         }
     }
