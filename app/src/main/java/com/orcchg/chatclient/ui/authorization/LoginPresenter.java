@@ -16,6 +16,7 @@ import com.orcchg.chatclient.data.viewobject.LoginFormMapper;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.util.SharedUtility;
+import com.orcchg.chatclient.util.crypting.Cryptor;
 import com.orcchg.chatclient.util.crypting.SecurityUtility;
 
 import org.json.JSONException;
@@ -32,6 +33,8 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     private DataManager mDataManager;
     private Subscription mSubscriptionGet;
     private Subscription mSubscriptionSend;
+
+    private String mPlainPassword;
 
     LoginPresenter(DataManager dataManager) {
         mDataManager = dataManager;
@@ -92,13 +95,12 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
 
         String login = getMvpView().getLogin();
         String password = getMvpView().getPassword();
+        mPlainPassword = password;
+        password = Cryptor.encrypt(password);
         LoginForm form = new LoginForm(login, password);
         if (SecurityUtility.isSecurityEnabled((Activity) getMvpView())) {
             form.encrypt(SecurityUtility.getServerPublicKey());
         }
-
-//        Activity activity = (Activity) getMvpView();
-//        SharedUtility.storePasswordHash(activity, password);
 
 //        mSubscriptionSend = mDataManager.sendLoginForm(form)
 //            .subscribeOn(Schedulers.io())
@@ -166,6 +168,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                 String userEmail = map.get("email");
                 Activity activity1 = (Activity) getMvpView();
                 Utility.logInAndOpenChat(activity1, id, userName, userEmail);
+                SharedUtility.storePassword(activity1, mPlainPassword);
                 activity1.finish();
                 break;
             case ApiStatusFactory.STATUS_WRONG_PASSWORD:
@@ -297,6 +300,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
 
     // --------------------------------------------------------------------------------------------
     private void onWrongPassword() {
+        mPlainPassword = null;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {

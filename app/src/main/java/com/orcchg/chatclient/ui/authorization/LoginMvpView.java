@@ -11,4 +11,5 @@ public interface LoginMvpView extends MvpView {
 
     String getLogin();
     String getPassword();
+    void fillLoginFormFromStorage();
 }

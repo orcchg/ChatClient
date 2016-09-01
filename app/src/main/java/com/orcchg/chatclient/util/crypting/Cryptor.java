@@ -1,11 +1,22 @@
 package com.orcchg.chatclient.util.crypting;
 
+import android.util.Log;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import timber.log.Timber;
 
 public class Cryptor {
+
+    public static String encrypt(String data) {
+        try {
+            return Cryptor.hash256(data);
+        } catch (NoSuchAlgorithmException e) {
+            Timber.e("Failed to encrypt password: %s", Log.getStackTraceString(e));
+        }
+        return data;
+    }
 
     public static String hash256(String data) throws NoSuchAlgorithmException {
         return encrypt(data, "SHA-256");

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,17 +19,13 @@ import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.viewobject.AuthFormVO;
 import com.orcchg.chatclient.ui.base.BaseActivity;
 import com.orcchg.chatclient.util.FrameworkUtility;
-import com.orcchg.chatclient.util.crypting.Cryptor;
-
-import java.security.NoSuchAlgorithmException;
+import com.orcchg.chatclient.util.SharedUtility;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.LOGIN_ACTIVITY;
-    private static String SHARED_PREFS_KEY_USER_EMAIL;
 
     @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.email) AutoCompleteTextView mEmailView;
@@ -60,8 +55,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         initToolbar();
-
-        SHARED_PREFS_KEY_USER_EMAIL = getResources().getString(R.string.shared_prefs_user_email_key);
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -101,16 +94,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Intent intent = getIntent();
-        String userEmail = intent.getStringExtra(SHARED_PREFS_KEY_USER_EMAIL);
-        if (!TextUtils.isEmpty(userEmail)) {
-            mEmailView.setText(userEmail);
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         mPresenter.onRetry();
@@ -144,6 +127,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     public void showAuthForm(AuthFormVO viewObject) {
         mEmailView.setText(viewObject.getLogin());
         mPasswordView.setText(viewObject.getPassword());
+        fillLoginFormFromStorage();
     }
 
     @Override
@@ -194,13 +178,19 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
     @Override
     public String getPassword() {
-        String data = mPasswordView.getText().toString();
-        try {
-            return Cryptor.hash256(data);
-        } catch (NoSuchAlgorithmException e) {
-            Timber.e("Failed to encrypt password: %s", Log.getStackTraceString(e));
+        return mPasswordView.getText().toString();
+    }
+
+    @Override
+    public void fillLoginFormFromStorage() {
+        String userEmail = SharedUtility.getEmail(this);
+        String password = SharedUtility.getPassword(this);
+        if (!TextUtils.isEmpty(userEmail)) {
+            mEmailView.setText(userEmail);
         }
-        return data;
+        if (!TextUtils.isEmpty(password)) {
+            mPasswordView.setText(password);
+        }
     }
 
     /* Actions */

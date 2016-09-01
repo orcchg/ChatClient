@@ -702,7 +702,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
 //    private void autoRelogin() {
 //        Activity activity = (Activity) getMvpView();
-//        LoginForm form = new LoginForm(mUserName, SharedUtility.getPasswordHash(activity));
+//        LoginForm form = new LoginForm(mUserName, SharedUtility.getPassword(activity));
 //        mDataManager.sendLoginFormDirect(form);
 //    }
 

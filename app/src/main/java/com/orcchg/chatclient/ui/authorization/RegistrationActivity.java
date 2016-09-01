@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -18,13 +17,9 @@ import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.viewobject.AuthFormVO;
 import com.orcchg.chatclient.ui.base.BaseActivity;
 import com.orcchg.chatclient.util.FrameworkUtility;
-import com.orcchg.chatclient.util.crypting.Cryptor;
-
-import java.security.NoSuchAlgorithmException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class RegistrationActivity extends BaseActivity<RegistrationPresenter> implements RegistrationMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.REGISTRATION_ACTIVITY;
@@ -74,7 +69,6 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
                 mPresenter.onRetry();
             }
         });
-
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -167,13 +161,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
 
     @Override
     public String getPassword() {
-        String data = mPasswordView.getText().toString();
-        try {
-            return Cryptor.hash256(data);
-        } catch (NoSuchAlgorithmException e) {
-            Timber.e("Failed to encrypt password: %s", Log.getStackTraceString(e));
-        }
-        return data;
+        return mPasswordView.getText().toString();
     }
 
     /* Actions */

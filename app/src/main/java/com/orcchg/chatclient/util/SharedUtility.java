@@ -19,14 +19,26 @@ public class SharedUtility {
         return activity.getSharedPreferences(key, Context.MODE_PRIVATE);
     }
 
-    public static void storePasswordHash(Activity activity, String hash) {
+    public static void storePassword(Activity activity, String hash) {
         Resources resources = activity.getResources();
         SharedPreferences.Editor editor = SharedUtility.getSharedPrefs(activity).edit();
         editor.putString(resources.getString(R.string.shared_prefs_user_password_key), hash);
         editor.apply();
     }
 
-    public static String getPasswordHash(Activity activity) {
+    public static String getLogin(Activity activity) {
+        Resources resources = activity.getResources();
+        SharedPreferences sp = SharedUtility.getSharedPrefs(activity);
+        return sp.getString(resources.getString(R.string.shared_prefs_user_login_key), null);
+    }
+
+    public static String getEmail(Activity activity) {
+        Resources resources = activity.getResources();
+        SharedPreferences sp = SharedUtility.getSharedPrefs(activity);
+        return sp.getString(resources.getString(R.string.shared_prefs_user_email_key), null);
+    }
+
+    public static String getPassword(Activity activity) {
         Resources resources = activity.getResources();
         SharedPreferences sp = SharedUtility.getSharedPrefs(activity);
         return sp.getString(resources.getString(R.string.shared_prefs_user_password_key), null);

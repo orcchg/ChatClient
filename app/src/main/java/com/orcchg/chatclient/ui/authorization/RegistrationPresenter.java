@@ -15,6 +15,7 @@ import com.orcchg.chatclient.data.viewobject.RegistrationFormMapper;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.util.SharedUtility;
+import com.orcchg.chatclient.util.crypting.Cryptor;
 import com.orcchg.chatclient.util.crypting.SecurityUtility;
 
 import org.json.JSONException;
@@ -31,6 +32,8 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     private DataManager mDataManager;
     private Subscription mSubscriptionGet;
     private Subscription mSubscriptionSend;
+
+    private String mPlainPassword;
 
     RegistrationPresenter(DataManager dataManager) {
         mDataManager = dataManager;
@@ -93,6 +96,8 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
         String login = getMvpView().getLogin();
         String email = getMvpView().getEmail();
         String password = getMvpView().getPassword();
+        mPlainPassword = password;
+        password = Cryptor.encrypt(password);
         RegistrationForm form = new RegistrationForm(login, email, password);
         if (SecurityUtility.isSecurityEnabled((Activity) getMvpView())) {
             form.encrypt(SecurityUtility.getServerPublicKey());
@@ -164,6 +169,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
                 String userEmail = map.get("email");
                 Activity activity1 = (Activity) getMvpView();
                 Utility.logInAndOpenChat(activity1, id, userName, userEmail);
+                SharedUtility.storePassword(activity1, mPlainPassword);
                 activity1.finish();
                 break;
             case ApiStatusFactory.STATUS_WRONG_PASSWORD:
