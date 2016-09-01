@@ -851,12 +851,17 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             total = mAllPeers.get(mCurrentChannel).size();
         }
         final int peersOnChannel = total;
-        getMvpView().postOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                getMvpView().setTitleWithChannel(mCurrentChannel, peersOnChannel);
-            }
-        });
+
+        if (mDestId != Status.UNKNOWN_ID) {  // restore communication with dedicated peer if any
+            onMenuItemClick(mDestId);
+        } else {
+            getMvpView().postOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    getMvpView().setTitleWithChannel(mCurrentChannel, peersOnChannel);
+                }
+            });
+        }
     }
 
     @Nullable
