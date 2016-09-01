@@ -39,14 +39,14 @@ public class SimpleConnectionCallback<P extends BasePresenter> implements Server
     }
 
     @Override
-    public void onComplete() {
-        Timber.d("Completed (Direct connection)");
+    public void onTerminate() {
+        Timber.d("Terminated (Direct connection)");
         final P presenter = mPresenterRef.get();
         if (presenter != null) {
             presenter.getMvpView().postOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    presenter.getMvpView().onComplete();
+                    presenter.getMvpView().onTerminate();
                 }
             });
         } else {
@@ -56,6 +56,7 @@ public class SimpleConnectionCallback<P extends BasePresenter> implements Server
 
     @Override
     public void onNext(Response response) {
+        Timber.d("Next response (Direct connection)");
         // override in subclasses
     }
 
@@ -78,6 +79,7 @@ public class SimpleConnectionCallback<P extends BasePresenter> implements Server
 
     @Override
     public void onReconnect() {
+        Timber.d("Reconnect (Direct connection)");
         // override in subclasses
     }
 }

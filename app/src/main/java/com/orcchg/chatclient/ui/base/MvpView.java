@@ -9,11 +9,12 @@ import com.orcchg.chatclient.util.NetworkUtility;
  */
 public interface MvpView {
 
-    void onSuccess();
-    void onComplete();
-    void onError();
-    void onLoading();
-    void onNetworkError(@NetworkUtility.ConnectionError String error);
+    void onSuccess();    // direct network connection has been established
+    void onTerminate();  // direct network connection has been terminated
+    void onLoading();    // request has been issued and progress has started
+    void onComplete();   // response has been received and progress has finished
+    void onError();      // error during request issuing / response receiving
+    void onNetworkError(@NetworkUtility.ConnectionError String error);  // network error pair to error
 
     void postOnUiThread(Runnable runnable);
 }

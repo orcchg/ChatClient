@@ -14,12 +14,15 @@ import android.widget.TextView;
 
 import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
+import com.orcchg.chatclient.data.remote.ServerBridge;
 import com.orcchg.chatclient.data.viewobject.AuthFormVO;
 import com.orcchg.chatclient.ui.base.BaseActivity;
 import com.orcchg.chatclient.util.FrameworkUtility;
+import com.orcchg.chatclient.util.NetworkUtility;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class RegistrationActivity extends BaseActivity<RegistrationPresenter> implements RegistrationMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.REGISTRATION_ACTIVITY;
@@ -36,6 +39,8 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
 
     private View mFocusedView;
 
+    private boolean mIsBackPressed;
+
     @Override
     protected RegistrationPresenter createPresenter() {
         ChatClientApplication application = (ChatClientApplication) getApplication();
@@ -47,6 +52,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mIsBackPressed = false;
         FrameworkUtility.setActive(REQUEST_CODE);
         FrameworkUtility.diagnostic();
         setContentView(R.layout.activity_registration);
@@ -91,6 +97,12 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mIsBackPressed = true;
+    }
+
+    @Override
     protected void onDestroy() {
         mPresenter.unsubscribe();
         FrameworkUtility.setInactive(REQUEST_CODE);
@@ -112,27 +124,44 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
 
     @Override
     public void onSuccess() {
-        onComplete();
-    }
-
-    @Override
-    public void onComplete() {
+        Timber.d("onSuccess");
         Utility.showProgress(getResources(), mFormContainer, mProgressView, false);
         mErrorView.setVisibility(View.GONE);
         if (mFocusedView != null) mFocusedView.requestFocus();
     }
 
     @Override
-    public void onError() {
-        mFormContainer.setVisibility(View.GONE);
-        mProgressView.setVisibility(View.GONE);
-        mErrorView.setVisibility(View.VISIBLE);
+    public void onTerminate() {
+        Timber.d("onTerminate");
+        if (!isFinishing()) {
+            @NetworkUtility.ConnectionError String error = ServerBridge.getLastNetworkError();
+            if (!TextUtils.isEmpty(error)) {
+                onError();
+            }
+        }
     }
 
     @Override
     public void onLoading() {
+        Timber.d("onLoading");
         Utility.showProgress(getResources(), mFormContainer, mProgressView, true);
         mErrorView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onComplete() {
+        Timber.d("onComplete");
+        onSuccess();
+    }
+
+    @Override
+    public void onError() {
+        if (!mIsBackPressed) {
+            Timber.e("onError");
+            mFormContainer.setVisibility(View.GONE);
+            mProgressView.setVisibility(View.GONE);
+            mErrorView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

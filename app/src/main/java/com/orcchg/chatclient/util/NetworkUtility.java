@@ -28,15 +28,19 @@ public class NetworkUtility {
 
     @Nullable
     @ConnectionError
-    public static String getNetworkError(Throwable e) {
-        String message = e.getMessage();
-        if (message != null) {
-            int index = message.indexOf("E");
-            if (index >= 0) {
-                int whitespace = message.indexOf(' ', index);
-                String error = message.substring(index, whitespace);
-                Timber.i("Error code: %s", error);
-                return error;
+    public static String getNetworkError(@Nullable Throwable e) {
+        if (e != null) {
+            String message = e.getMessage();
+            if (message != null) {
+                int index = message.indexOf("E");
+                if (index >= 0) {
+                    int whitespace = message.indexOf(' ', index);
+                    if (index <= whitespace) {
+                        @ConnectionError String error = message.substring(index, whitespace);
+                        Timber.i("Error code: %s", error);
+                        return error;
+                    }
+                }
             }
         }
         return null;

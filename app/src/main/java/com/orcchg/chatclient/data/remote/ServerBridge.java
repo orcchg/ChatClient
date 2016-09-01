@@ -1,9 +1,11 @@
 package com.orcchg.chatclient.data.remote;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.MalformedJsonException;
 
 import com.orcchg.chatclient.data.parser.Response;
+import com.orcchg.chatclient.util.NetworkUtility;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,12 +25,13 @@ public class ServerBridge {
     private static final int BUFFER_SIZE = 1024;
 
     private static boolean sNeedReconnect = false;
+    private static @NetworkUtility.ConnectionError String sLastNetworkError;
 
     private WorkerThread mWorker;
 
     public interface ConnectionCallback {
         void onSuccess();
-        void onComplete();
+        void onTerminate();
         void onNext(Response response);
         void onError(Throwable e);
         void onReconnect();
@@ -58,8 +61,18 @@ public class ServerBridge {
         };
     }
 
+    @Nullable
+    @NetworkUtility.ConnectionError
+    public static String getLastNetworkError() {
+        return sLastNetworkError;
+    }
+
     public void setConnectionCallback(ConnectionCallback callback) {
-        Timber.d("setConnectionCallback");
+        if (callback != null) {
+            Timber.d("setConnectionCallback");
+        } else {
+            Timber.d("setConnectionCallback: dropped");
+        }
         mCallback = callback;
         if (mWorker != null) {
             mWorker.setConnectionCallback(mCallback);
@@ -86,6 +99,7 @@ public class ServerBridge {
                 mWorker.terminate();
             } catch (IOException e) {
                 Timber.e("Error during connection termination: %s", Log.getStackTraceString(e));
+                sLastNetworkError = NetworkUtility.getNetworkError(e);
                 // detach thread and let if finish silently
                 mWorker.interrupt();
                 mWorker = null;
@@ -101,7 +115,7 @@ public class ServerBridge {
     }
 
     public void setLoggingOut(boolean flag) {
-        Timber.d("setLoggingOut");
+        Timber.d("setLoggingOut: %s", Boolean.valueOf(flag).toString());
         if (mWorker != null) {
             mWorker.setLoggingOut(flag);
         } else {
@@ -172,10 +186,12 @@ public class ServerBridge {
             } catch (ConnectException e) {
                 Timber.e("%s", e.getMessage());
                 Timber.w("%s", Log.getStackTraceString(e));
+                sLastNetworkError = NetworkUtility.getNetworkError(e);
                 if (mCallback != null) mCallback.onError(e);
                 if (mInternalCallback != null) mInternalCallback.onConnectionReset();
             } catch (IOException e) {
                 Timber.e("Connection error: %s", Log.getStackTraceString(e));
+                sLastNetworkError = NetworkUtility.getNetworkError(e);
                 if (!mIsLoggingOut && mCallback != null) mCallback.onError(e);
                 if (mInternalCallback != null) mInternalCallback.onConnectionReset();
             }
@@ -193,9 +209,14 @@ public class ServerBridge {
 
         private void terminate() throws IOException {
             Timber.i("Terminate call");
-            mIsStopped = true;
-            if (mSocket != null) mSocket.close();
-            if (mCallback != null) mCallback.onComplete();
+            if (!mIsStopped) {
+                mIsStopped = true;
+                if (mSocket != null) mSocket.close();
+                if (mCallback != null) mCallback.onTerminate();
+                Timber.d("Terminated successfully");
+            } else {
+                Timber.d("Already terminated");
+            }
         }
 
         private void setLoggingOut(boolean flag) { mIsLoggingOut = flag; }
@@ -209,9 +230,11 @@ public class ServerBridge {
                 OutputStream output = mSocket.getOutputStream();
                 output.write(request.getBytes());
             } catch (IOException e) {
+                sLastNetworkError = NetworkUtility.getNetworkError(e);
                 if (mCallback != null) mCallback.onError(e);
             } catch (NullPointerException e) {
                 Timber.e("Socket is null - ignore request: %s", Log.getStackTraceString(e));
+                sLastNetworkError = NetworkUtility.getNetworkError(e);
             }
         }
     }

@@ -14,6 +14,7 @@ import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.model.Status;
+import com.orcchg.chatclient.data.remote.ServerBridge;
 import com.orcchg.chatclient.resources.ButtonItem;
 import com.orcchg.chatclient.resources.PhotoItem;
 import com.orcchg.chatclient.ui.base.BaseActivity;
@@ -55,6 +57,8 @@ import java.lang.annotation.RetentionPolicy;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import timber.log.Timber;
+
+import static com.orcchg.chatclient.R.id.error;
 
 public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.CHAT_ACTIVITY;
@@ -96,13 +100,14 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Bind(R.id.btn_send_message) ImageButton mSendMessageButton;
     @Bind(R.id.btn_clear_message) ImageButton mClearMessageButton;
     @Bind(R.id.progress) View mProgressView;
-    @Bind(R.id.error) View mErrorView;
+    @Bind(error) View mErrorView;
     @Bind(R.id.retry_button) Button mRetryButton;
 
     private LinearLayoutManager mLayoutManager;
     private ProgressDialog mProgressDialog;
 
     private boolean mIsPaused;
+    private boolean mIsBackPressed;
     private Parcelable mMessagesListState;
 
     /* Peers lists */
@@ -135,6 +140,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mIsBackPressed = false;
         @IntentStatus int status = processNotificationIntent(getIntent());
         if (status == PROCESS_NOTIF_INTENT_STATUS_ERROR) {
             startActivity(new Intent(this, MainActivity.class));
@@ -220,6 +226,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        mIsBackPressed = true;
         mPresenter.onBackPressed();
         mPresenter.logout();
     }
@@ -242,11 +249,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     // --------------------------------------------------------------------------------------------
     @Override
     public void onSuccess() {
-        onComplete();
-    }
-
-    @Override
-    public void onComplete() {
+        Timber.d("onSuccess");
         if (mMessagesView.getVisibility() != View.VISIBLE) {
             mActionContainer.setVisibility(View.VISIBLE);
             mMessagesView.setVisibility(View.VISIBLE);
@@ -256,11 +259,40 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     }
 
     @Override
-    public void onError() {
+    public void onTerminate() {
+        Timber.d("onTerminate");
+        if (!isFinishing()) {
+            @NetworkUtility.ConnectionError String error = ServerBridge.getLastNetworkError();
+            if (!TextUtils.isEmpty(error)) {
+                onError();
+            }
+        }
+    }
+
+    @Override
+    public void onLoading() {
+        Timber.d("onLoading");
         mActionContainer.setVisibility(View.GONE);
         mMessagesView.setVisibility(View.GONE);
-        mErrorView.setVisibility(View.VISIBLE);
-        mProgressView.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.GONE);
+        mProgressView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onComplete() {
+        Timber.d("onComplete");
+        onSuccess();
+    }
+
+    @Override
+    public void onError() {
+        if (!mIsBackPressed) {
+            Timber.e("onError");
+            mActionContainer.setVisibility(View.GONE);
+            mMessagesView.setVisibility(View.GONE);
+            mErrorView.setVisibility(View.VISIBLE);
+            mProgressView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -285,14 +317,6 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         mMessagesEditView.setText(message);
         mMessagesEditView.setSelection(mMessagesEditView.getText().length());
         mMessagesEditView.setError(getResources().getString(R.string.error_forbidden_message));
-    }
-
-    @Override
-    public void onLoading() {
-        mActionContainer.setVisibility(View.GONE);
-        mMessagesView.setVisibility(View.GONE);
-        mErrorView.setVisibility(View.GONE);
-        mProgressView.setVisibility(View.VISIBLE);
     }
 
     @Override

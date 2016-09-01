@@ -598,6 +598,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
             @Override
             public void onNext(Response response) {
+                super.onNext(response);
                 ChatPresenter presenter = getPresenterRef().get();
                 if (presenter != null) {
                     if (response != null) {

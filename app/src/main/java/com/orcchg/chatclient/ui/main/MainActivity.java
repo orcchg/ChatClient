@@ -3,17 +3,21 @@ package com.orcchg.chatclient.ui.main;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
 import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
+import com.orcchg.chatclient.data.remote.ServerBridge;
 import com.orcchg.chatclient.ui.base.BaseActivity;
 import com.orcchg.chatclient.util.FrameworkUtility;
+import com.orcchg.chatclient.util.NetworkUtility;
 import com.orcchg.chatclient.util.WindowUtility;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class MainActivity extends BaseActivity<MainPresenter> implements MainMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.MAIN_ACTIVITY;
@@ -23,6 +27,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     @Bind(R.id.progress) View mProgressView;
     @Bind(R.id.error) View mErrorView;
     @Bind(R.id.retry_button) Button mRetryButton;
+
+    private boolean mIsBackPressed;
 
     @Override
     protected MainPresenter createPresenter() {
@@ -35,6 +41,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mIsBackPressed = false;
         FrameworkUtility.setActive(REQUEST_CODE);
         FrameworkUtility.diagnostic();
         WindowUtility.logScreenParams(this);
@@ -68,6 +75,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        mIsBackPressed = true;
         mPresenter.closeDirectConnection();
     }
 
@@ -85,25 +93,42 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     // --------------------------------------------------------------------------------------------
     @Override
     public void onSuccess() {
-        onComplete();
+        Timber.d("onSuccess");
+        mProgressView.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onTerminate() {
+        Timber.d("onTerminate");
+        if (!isFinishing()) {
+            @NetworkUtility.ConnectionError String error = ServerBridge.getLastNetworkError();
+            if (!TextUtils.isEmpty(error)) {
+                onError();
+            }
+        }
     }
 
     @Override
     public void onComplete() {
-        mProgressView.setVisibility(View.GONE);
+        Timber.d("onComplete");
+        onSuccess();
+    }
+
+    @Override
+    public void onLoading() {
+        Timber.d("onLoading");
+        mProgressView.setVisibility(View.VISIBLE);
         mErrorView.setVisibility(View.GONE);
     }
 
     @Override
     public void onError() {
-        mProgressView.setVisibility(View.GONE);
-        mErrorView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onLoading() {
-        mProgressView.setVisibility(View.VISIBLE);
-        mErrorView.setVisibility(View.GONE);
+        if (!mIsBackPressed) {
+            Timber.e("onError");
+            mProgressView.setVisibility(View.GONE);
+            mErrorView.setVisibility(View.VISIBLE);
+        }
     }
 
     /* Toolbar */

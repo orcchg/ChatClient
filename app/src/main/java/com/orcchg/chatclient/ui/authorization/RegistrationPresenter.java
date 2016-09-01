@@ -236,7 +236,6 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
                         AuthFormVO viewObject = mapper.map(form);
                         presenter.showForm(viewObject);
                         presenter.onComplete();
-                        return;
 
                     } catch (JSONException e) {
                         Timber.e("Server has responded with malformed json body: %s", response.getBody());
