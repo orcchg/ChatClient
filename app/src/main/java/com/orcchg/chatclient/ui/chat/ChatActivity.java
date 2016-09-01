@@ -2,6 +2,7 @@ package com.orcchg.chatclient.ui.chat;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
@@ -41,6 +42,8 @@ import com.orcchg.chatclient.ui.chat.peerslist.DrawerChatPeersList;
 import com.orcchg.chatclient.ui.chat.peerslist.PopupMenuChatPeersList;
 import com.orcchg.chatclient.ui.chat.peerslist.SideChatPeersList;
 import com.orcchg.chatclient.ui.chat.util.ChatStyle;
+import com.orcchg.chatclient.ui.main.MainActivity;
+import com.orcchg.chatclient.ui.notification.NotificationMaster;
 import com.orcchg.chatclient.util.FrameworkUtility;
 import com.orcchg.chatclient.util.NetworkUtility;
 import com.orcchg.chatclient.util.WindowUtility;
@@ -51,6 +54,7 @@ import java.lang.annotation.RetentionPolicy;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.CHAT_ACTIVITY;
@@ -131,6 +135,13 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        @IntentStatus int status = processNotificationIntent(getIntent());
+        if (status == PROCESS_NOTIF_INTENT_STATUS_ERROR) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+
         FrameworkUtility.setActive(REQUEST_CODE);
         FrameworkUtility.diagnostic();
         setContentView(R.layout.activity_chat);
@@ -616,5 +627,27 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         mList.setAdapter(mAdapter);
         mList.setLayoutManager(new LinearLayoutManager(this));
         mPresenter.setChatPeersList(new SideChatPeersList(mAdapter));
+    }
+
+    /* Notifications */
+    // --------------------------------------------------------------------------------------------
+    private static final int PROCESS_NOTIF_INTENT_STATUS_OK = 0;
+    private static final int PROCESS_NOTIF_INTENT_STATUS_ERROR = 1;
+    @IntDef({PROCESS_NOTIF_INTENT_STATUS_OK, PROCESS_NOTIF_INTENT_STATUS_ERROR})
+    @Retention(RetentionPolicy.SOURCE)
+    private @interface IntentStatus {}
+
+    @IntentStatus
+    private int processNotificationIntent(Intent intent) {
+        if (intent != null) {
+            boolean extra = intent.getBooleanExtra(NotificationMaster.EXTRA_OPEN_BY_NOTIFICATION, false);
+            if (extra && !FrameworkUtility.isActive(FrameworkUtility.RequestCode.CHAT_ACTIVITY)) {
+                Timber.w("Attempt to open ChatActivity via notification, but it had been destoyed");
+                return PROCESS_NOTIF_INTENT_STATUS_ERROR;
+            } else {
+                Timber.d("Opened by notification");
+            }
+        }
+        return PROCESS_NOTIF_INTENT_STATUS_OK;
     }
 }

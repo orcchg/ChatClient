@@ -16,6 +16,7 @@ import com.orcchg.chatclient.ui.chat.ChatActivity;
 import com.orcchg.jgravatar.Gravatar;
 
 public class NotificationMaster {
+    public static final String EXTRA_OPEN_BY_NOTIFICATION = "extra_open_by_notification";
 
     public static void pushNotification(Activity activity, PeerVO peerVO, String message) {
         Gravatar gravatar = new Gravatar();
@@ -38,6 +39,7 @@ public class NotificationMaster {
         }
 
         Intent intent = new Intent(activity, ChatActivity.class);
+        intent.putExtra(EXTRA_OPEN_BY_NOTIFICATION, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(activity, (int) peerVO.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
 
