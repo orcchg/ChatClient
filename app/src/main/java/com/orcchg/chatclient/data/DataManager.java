@@ -50,6 +50,7 @@ public class DataManager {
     public void getLoginFormDirect() {
         StringBuilder line = new StringBuilder("GET /login HTTP/1.1\r\n")
                 .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
+        mServer.setLoggingOut(false);
         mServer.sendRequest(line.toString());
     }
 
@@ -64,6 +65,7 @@ public class DataManager {
                 .append("Content-Type: application/json\r\n")
                 .append("Content-Length: ").append(json.length()).append("\r\n\r\n")
                 .append(json);
+        mServer.setLoggingOut(false);
         mServer.sendRequest(line.toString());
     }
 
@@ -74,6 +76,7 @@ public class DataManager {
     public void getRegistrationFormDirect() {
         StringBuilder line = new StringBuilder("GET /register HTTP/1.1\r\n")
                 .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
+        mServer.setLoggingOut(false);
         mServer.sendRequest(line.toString());
     }
 
@@ -88,6 +91,7 @@ public class DataManager {
                 .append("Content-Type: application/json\r\n")
                 .append("Content-Length: ").append(json.length()).append("\r\n\r\n")
                 .append(json);
+        mServer.setLoggingOut(false);
         mServer.sendRequest(line.toString());
     }
 
@@ -117,7 +121,7 @@ public class DataManager {
         StringBuilder line = new StringBuilder("DELETE /logout?id=")
                 .append(id).append(" HTTP/1.1\r\n")
                 .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
-        mServer.setLoggingOut();
+        mServer.setLoggingOut(true);
         mServer.sendRequest(line.toString());
     }
 

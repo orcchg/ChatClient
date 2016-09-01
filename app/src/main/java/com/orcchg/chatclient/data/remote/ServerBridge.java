@@ -93,10 +93,10 @@ public class ServerBridge {
         sNeedReconnect = true;
     }
 
-    public void setLoggingOut() {
+    public void setLoggingOut(boolean flag) {
         Timber.d("setLoggingOut");
         if (mWorker != null) {
-            mWorker.setLoggingOut(true);
+            mWorker.setLoggingOut(flag);
         } else {
             Timber.w("Worker thread is null");
         }
@@ -175,6 +175,7 @@ public class ServerBridge {
                 if (mInternalCallback != null) mInternalCallback.onConnectionReset();
             }
 
+            diagnostic();
             if (mInternalCallback != null) mInternalCallback.onThreadStopped();
         }
 
