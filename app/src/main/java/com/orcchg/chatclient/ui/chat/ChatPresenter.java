@@ -723,7 +723,12 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     void onMenuItemClick(long id) {
         mDestId = id;
-        mChatPeersList.setDestId(mDestId);
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mChatPeersList.setDestId(mDestId);
+            }
+        });
         PeerVO peer = findPeerById(mDestId);
         if (peer != null) {
             String login = peer.getLogin();
