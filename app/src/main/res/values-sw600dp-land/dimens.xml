@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="message_item_max_width">480dp</dimen>
+
     <dimen name="peers_list_width">300dp</dimen>
 </resources>
