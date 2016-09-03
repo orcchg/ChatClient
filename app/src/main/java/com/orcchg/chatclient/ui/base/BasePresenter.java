@@ -1,5 +1,7 @@
 package com.orcchg.chatclient.ui.base;
 
+import timber.log.Timber;
+
 /**
  * Base class that implements the Presenter interface and provides a base implementation for
  * attachView() and detachView(). It also handles keeping a reference to the mvpView that
@@ -20,6 +22,10 @@ public class BasePresenter<T extends MvpView> implements Presenter<T> {
     }
 
     public boolean isViewAttached() {
+        if (mMvpView == null) {
+            Timber.tag(this.getClass().getSimpleName());
+            Timber.e("View is not attached !!!");
+        }
         return mMvpView != null;
     }
 

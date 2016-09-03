@@ -91,6 +91,8 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     }
 
     void sendRegistrationForm() {
+        if (!isViewAttached()) return;
+
         onLoading();
 
         String login = getMvpView().getLogin();
@@ -157,6 +159,8 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     }
 
     private void processStatus(Status status) {
+        if (!isViewAttached()) return;
+
         String errorMessage = "";
         boolean flag = false;
         @ApiStatusFactory.Status int code = ApiStatusFactory.getStatusByCode(status.getCode());
@@ -253,6 +257,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     /* View state */
     // --------------------------------------------------------------------------------------------
     private void onComplete() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -262,6 +267,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     }
 
     private void onLoading() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -271,6 +277,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     }
 
     private void onError() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -285,6 +292,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     }
 
     private void showForm(final AuthFormVO viewObject) {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -295,6 +303,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
 
     // --------------------------------------------------------------------------------------------
     private void onAlreadyRegistered() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -304,6 +313,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     }
 
     private void onAlreadyLoggedIn() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {

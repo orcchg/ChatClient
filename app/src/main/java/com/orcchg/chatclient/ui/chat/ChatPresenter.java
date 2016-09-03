@@ -146,6 +146,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     /* Chat */
     // --------------------------------------------------------------------------------------------
     void loadMessages() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -182,6 +183,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     void sendMessage() {
+        if (!isViewAttached()) return;
+
         String messageString = getMvpView().getMessage();
         if (TextUtils.isEmpty(messageString)) {
             Timber.w("Empty message is forbidden");
@@ -207,6 +210,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     void logout() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -221,6 +225,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     void switchChannel(int channel) {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -410,6 +415,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void openActivity(Class clazz) {
+        if (!isViewAttached()) return;
         removeDirectConnectionCallback();
         Activity activity = (Activity) getMvpView();
         Intent intent = new Intent(activity, clazz);
@@ -425,6 +431,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void showMessage(Message message) {
+        if (!isViewAttached()) return;
+
         boolean isDedicated = mUserId == message.getDestId();
         Mapper<Message, MessageVO> mapper = new MessageMapper(isDedicated);
         MessageVO viewObject = mapper.map(message);
@@ -460,6 +468,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void notifyViewChanged() {
+        if (!isViewAttached()) return;
+
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -471,6 +481,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void onChannelSwitched() {
+        if (!isViewAttached()) return;
+
         getAllPeers(mCurrentChannel);  // request peers on new channel
         mLastChannel = mCurrentChannel;
         Activity activity = (Activity) getMvpView();
@@ -504,6 +516,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
      */
     private void onUnauthorized() {
         Timber.e("Unauthorized access");
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -513,6 +526,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void onForbiddenMessage() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -522,6 +536,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void onWrongChannel() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -533,6 +548,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void onSameChannel() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -543,6 +559,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void onLogout(@StringRes int resId) {
+        if (!isViewAttached()) return;
         Activity activity = (Activity) getMvpView();
         if (!activity.isFinishing()) {
             showToast(resId);
@@ -560,6 +577,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void showSnackbar(final String message) {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -569,6 +587,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void showToast(final @StringRes int resId) {
+        if (!isViewAttached()) return;
         final Activity activity = (Activity) getMvpView();
         getMvpView().postOnUiThread(new Runnable() {
             @Override
@@ -579,6 +598,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void showReconnectProgress(final boolean isShow) {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -606,6 +626,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 if (presenter != null) {
                     if (response != null) {
                         if (response.getCodeline().getCode() == Response.TERMINATE_CODE) {
+                            if (!isViewAttached()) return;
                             Timber.d("Received terminate code from Server");
                             Activity activity = (Activity) presenter.getMvpView();
                             String terminate_string = activity.getResources().getString(R.string.terminate_message);
@@ -623,6 +644,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                             }
 
                             if (json.has("system")) {
+                                if (!isViewAttached()) return;
                                 Timber.d("System message: %s", response.getBody());
                                 SystemMessage systemMessage = SystemMessage.fromJson(response.getBody());
                                 Activity activity = (Activity) presenter.getMvpView();
@@ -721,10 +743,12 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     /* Chat menu */
     // --------------------------------------------------------------------------------------------
     void onMenuSwitchChannel() {
+        if (!isViewAttached()) return;
         getMvpView().showSwitchChannelDialog(mCurrentChannel);
     }
 
     void onMenuItemClick(long id) {
+        if (!isViewAttached()) return;
         mDestId = id;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
@@ -751,6 +775,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void addPeerMenuItem(final long id, final PeerVO peer) {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -760,6 +785,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void removePeerMenuItem(final long id) {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -771,6 +797,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     /* List of peers */
     // --------------------------------------------------------------------------------------------
     private void fillPeersOnChannel(List<Peer> peers, int channel) {
+        if (!isViewAttached()) return;
+
         Mapper<Peer, PeerVO> mapper = new PeerMapper();
         if (channel == Status.WRONG_CHANNEL) {  // all logged in peers
             Timber.d("All logged in peers: ");
@@ -835,6 +863,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void removePeer(final PeerVO peer) {
+        if (!isViewAttached()) return;
+
         removePeerFromChannel(peer, peer.getChannel());
         updateTitle();
         getMvpView().postOnUiThread(new Runnable() {
@@ -855,6 +885,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     private void updateTitle() {
+        if (!isViewAttached()) return;
+
         int total = 0;
         if (mAllPeers.containsKey(mCurrentChannel)) {
             total = mAllPeers.get(mCurrentChannel).size();
@@ -888,6 +920,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     /* Dedicated message mode */
     // ------------------------------------------
     private void decorate(final @ChatStyle.Style int style) {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {

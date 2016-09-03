@@ -91,6 +91,8 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     }
 
     void sendLoginForm() {
+        if (!isViewAttached()) return;
+
         onLoading();
 
         String login = getMvpView().getLogin();
@@ -156,6 +158,8 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     }
 
     private void processStatus(Status status) {
+        if (!isViewAttached()) return;
+
         String errorMessage = "";
         boolean flag = false;
         @ApiStatusFactory.Status int code = ApiStatusFactory.getStatusByCode(status.getCode());
@@ -257,6 +261,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     /* View state */
     // --------------------------------------------------------------------------------------------
     private void onComplete() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -266,6 +271,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     }
 
     private void onLoading() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -275,6 +281,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     }
 
     private void onError() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -289,6 +296,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     }
 
     private void showForm(final AuthFormVO viewObject) {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -299,6 +307,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
 
     // --------------------------------------------------------------------------------------------
     private void onWrongPassword() {
+        if (!isViewAttached()) return;
         mPlainPassword = null;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
@@ -309,6 +318,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     }
 
     private void onAlreadyLoggedIn() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {

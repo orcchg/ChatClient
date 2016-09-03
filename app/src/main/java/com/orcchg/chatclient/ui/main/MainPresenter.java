@@ -39,6 +39,8 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
     }
 
     void init() {
+        if (!isViewAttached()) return;
+
         Activity activity = (Activity) getMvpView();
         Resources resources = activity.getResources();
         SharedPreferences sp = SharedUtility.getSharedPrefs(activity);
@@ -132,6 +134,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
                         }
 
                         if (json.has("system")) {
+                            if (!isViewAttached()) return;
                             Timber.d("System message: %s", response.getBody());
                             SystemMessage systemMessage = SystemMessage.fromJson(response.getBody());
                             Activity activity = (Activity) presenter.getMvpView();
@@ -165,6 +168,8 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
     /* Open activities */
     // --------------------------------------------------------------------------------------------
     void openLoginActivity() {
+        if (!isViewAttached()) return;
+
         Activity activity = (Activity) getMvpView();
         Intent intent = new Intent(activity, LoginActivity.class);
         intent.putExtra(MainActivity.SHARED_PREFS_KEY_USER_EMAIL, mUserEmail);
@@ -177,6 +182,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
     /* View state */
     // --------------------------------------------------------------------------------------------
     private void onComplete() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -186,6 +192,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
     }
 
     private void onLoading() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -195,6 +202,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
     }
 
     private void onError() {
+        if (!isViewAttached()) return;
         getMvpView().postOnUiThread(new Runnable() {
             @Override
             public void run() {
