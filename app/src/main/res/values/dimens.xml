@@ -8,6 +8,8 @@
     <dimen name="message_item_right_small_padding">8dp</dimen>
     <dimen name="message_item_left_padding">16dp</dimen>
     <dimen name="message_item_left_small_padding">8dp</dimen>
+    <dimen name="message_item_time_width">30dp</dimen>
+    <dimen name="message_item_time_height">14dp</dimen>
     <dimen name="icon_size">40dp</dimen>
     <dimen name="fab_size">48dp</dimen>
 
@@ -21,4 +23,5 @@
     <dimen name="text_description_size">14sp</dimen>
     <dimen name="text_error_size">14sp</dimen>
     <dimen name="text_button_size">16sp</dimen>
+    <dimen name="text_time_size">12dp</dimen>
 </resources>

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -14,6 +15,8 @@ import com.mikepenz.materialdrawer.util.DrawerUIUtils;
 import com.orcchg.chatclient.data.DataManager;
 import com.orcchg.chatclient.data.remote.RestAdapter;
 import com.orcchg.chatclient.data.remote.ServerBridge;
+
+import java.util.TimeZone;
 
 import timber.log.Timber;
 
@@ -45,6 +48,11 @@ public class ChatClientApplication extends Application {
 
     public DataManager getDataManager() {
         return mDataManager;
+    }
+
+    @Nullable
+    public static TimeZone getTimeZone() {
+        return null;  // TODO: specify tz
     }
 
     private void initDrawerImageLoader() {

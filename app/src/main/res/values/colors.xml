@@ -15,6 +15,7 @@
     <color name="text_white">#ffffffff</color>
     <color name="text_title">#de000000</color>
     <color name="text_description">#8b000000</color>
+    <color name="text_label">#91000000</color>
 
     <color name="chat_window_bg_color">#ffededed</color>
     <color name="chat_side_menu_bg_color">#4dffffff</color>

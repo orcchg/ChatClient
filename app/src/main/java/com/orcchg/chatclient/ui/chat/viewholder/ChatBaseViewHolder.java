@@ -24,6 +24,10 @@ public abstract class ChatBaseViewHolder<ViewObject> extends RecyclerView.ViewHo
 
     public abstract void bind(ViewObject viewObject);
 
+    public void setTimestampVisibility(boolean isVisible) {
+        // no-op
+    }
+
     /* Internal */
     // --------------------------------------------------------------------------------------------
     private ItemClickListener createOnItemClickListener(final WeakReference<ItemClickListener> ref) {
