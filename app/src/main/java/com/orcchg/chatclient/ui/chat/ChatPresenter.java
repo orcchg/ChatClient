@@ -340,7 +340,8 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                     errorMessage = "Client's requested with invalid query";
                 }
                 Timber.e(errorMessage);
-                throw new RuntimeException(errorMessage);
+                onMagic();
+                break;
             case ApiStatusFactory.STATUS_UNAUTHORIZED:
                 onUnauthorized();
                 break;
@@ -512,6 +513,13 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     /**
+     * User has done something bad that Server has got an error (fatal).
+     */
+    private void onMagic() {
+        showSnackbar(R.string.warning_snackbar);
+    }
+
+    /**
      * User has attempted to send message or switch channel without being previously authorized.
      */
     private void onUnauthorized() {
@@ -582,6 +590,16 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
             @Override
             public void run() {
                 getMvpView().showSnackbar(message, Snackbar.LENGTH_SHORT);
+            }
+        });
+    }
+
+    private void showSnackbar(final @StringRes int resId) {
+        if (!isViewAttached()) return;
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().showSnackbar(resId, Snackbar.LENGTH_SHORT);
             }
         });
     }

@@ -10,6 +10,7 @@ import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -343,6 +344,12 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     @Override
     public void showSnackbar(String message, int duration) {
+        Snackbar.make(mRootCoordinator, message, duration).show();
+    }
+
+    @Override
+    public void showSnackbar(@StringRes int resId, int duration) {
+        String message = getResources().getString(resId);
         Snackbar.make(mRootCoordinator, message, duration).show();
     }
 
