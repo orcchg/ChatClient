@@ -26,6 +26,7 @@ public abstract class IconItem extends FrameLayout {
     protected View mStubView;
 
     protected OnClickListener mClickListener;
+    protected OnLongClickListener mLongClickListener;
     protected RequestListener<String, GlideDrawable> mProgressListener;
 
     public IconItem(Context context) {
@@ -46,6 +47,7 @@ public abstract class IconItem extends FrameLayout {
         mProgressView = (ProgressBar) rootView.findViewById(R.id.ii_progress);
         mProgressListener = new ProgressListener(this);
         setOnClickListener(mClickListener);
+        setOnLongClickListener(mLongClickListener);
     }
 
     /* Listener */
@@ -54,6 +56,20 @@ public abstract class IconItem extends FrameLayout {
         mClickListener = listener;
         if (mContainer != null) {
             mContainer.setOnClickListener(mClickListener);
+        }
+    }
+
+    public void setOnLongClickListener(final OnLongClickListener listener) {
+        mLongClickListener = listener;
+        if (mContainer != null) {
+            mContainer.setOnLongClickListener(mLongClickListener);
+        }
+    }
+
+    public void setItemClickListener(final ItemClickListener listener) {
+        if (listener != null) {
+            setOnClickListener(listener.getClickListener());
+            setOnLongClickListener(listener.getLongClickListener());
         }
     }
 

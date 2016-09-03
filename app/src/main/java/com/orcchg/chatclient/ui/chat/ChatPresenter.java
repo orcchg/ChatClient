@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
+import android.view.View;
 import android.widget.Toast;
 
 import com.orcchg.chatclient.R;
@@ -33,6 +34,7 @@ import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.ui.chat.peerslist.ChatPeersList;
 import com.orcchg.chatclient.ui.chat.util.ChatStyle;
+import com.orcchg.chatclient.resources.ItemClickListener;
 import com.orcchg.chatclient.ui.main.MainActivity;
 import com.orcchg.chatclient.ui.notification.NotificationMaster;
 import com.orcchg.chatclient.util.NetworkUtility;
@@ -89,6 +91,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         mMessagesList = new ArrayList<>();
         mAllPeers = new HashMap<>();
         mChatAdapter = new ChatAdapter(mUserId, mMessagesList);
+        mChatAdapter.setOnItemClickListener(createOnMessageItemClickListener(), createOnPhotoItemClickListener());
     }
 
     void setChatPeersList(ChatPeersList peersList) {
@@ -898,5 +901,43 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         mChatPeersList.setDestId(mDestId);
         decorate(ChatStyle.STYLE_NORMAL);
         updateTitle();
+    }
+
+    /* Adapter item click listeners */
+    // --------------------------------------------------------------------------------------------
+    private ItemClickListener createOnMessageItemClickListener() {
+        ItemClickListener listener = new ItemClickListener();
+        listener.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO
+            }
+        });
+        listener.setLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO
+                return false;
+            }
+        });
+        return listener;
+    }
+
+    private ItemClickListener createOnPhotoItemClickListener() {
+        ItemClickListener listener = new ItemClickListener();
+        listener.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO
+            }
+        });
+        listener.setLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO
+                return false;
+            }
+        });
+        return listener;
     }
 }

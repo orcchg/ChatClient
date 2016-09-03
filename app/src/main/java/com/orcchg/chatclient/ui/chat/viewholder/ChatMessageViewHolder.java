@@ -68,5 +68,11 @@ public class ChatMessageViewHolder extends ChatBaseViewHolder<MessageVO> {
         mMessageView.getTitle().setText(viewObject.getLogin());
         mMessageView.getDescription().setText(viewObject.getMessage());
         mMessageView.setLayoutParams(params);
+        if (mOnMessageItemClickListener != null) {
+            mMessageView.setOnClickListener(mOnMessageItemClickListener.getClickListener());
+            mMessageView.setOnLongClickListener(mOnMessageItemClickListener.getLongClickListener());
+        }
+
+        mPhotoView.setItemClickListener(mOnPhotoItemClickListener);
     }
 }

@@ -1,5 +1,6 @@
 package com.orcchg.chatclient.util;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
@@ -39,6 +40,20 @@ public class WindowUtility {
     public static void tintStatusBar(@NonNull Activity activity, @ColorInt int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity.getWindow().setStatusBarColor(color);
+        }
+    }
+
+    public static void tintStatusBarAnimated(final @NonNull Activity activity, @ColorInt int fromColor, @ColorInt int toColor) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ValueAnimator animator = ValueAnimator.ofArgb(fromColor, toColor);
+            animator.setDuration(250);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    activity.getWindow().setStatusBarColor((int) animation.getAnimatedValue());
+                }
+            });
+            animator.start();
         }
     }
 }

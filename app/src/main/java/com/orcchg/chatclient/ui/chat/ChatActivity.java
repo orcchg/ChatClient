@@ -1,10 +1,13 @@
 package com.orcchg.chatclient.ui.chat;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -150,8 +153,10 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
         FrameworkUtility.setActive(REQUEST_CODE);
         FrameworkUtility.diagnostic();
+
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+        initResources();
         initToolbar();
         initProgressDialog();
         if (WindowUtility.isTablet(this)) {
@@ -442,17 +447,51 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         mPresenter.setChatPeersList(new PopupMenuChatPeersList(mPopupMenu));
     }
 
+    /* Resources & decoration */
+    // --------------------------------------------------------------------------------------------
+    private @ColorInt int mNormalStatusBarColor;
+    private @ColorInt int mNormalToolbarColor;
+    private @ColorInt int mDedicatedStatusBarColor;
+    private @ColorInt int mDedicatedToolbarColor;
+
+    private ValueAnimator mNormalToDedicatedColorAnimator;
+    private ValueAnimator mDedicatedToNormalColorAnimator;
+
+    private void initResources() {
+        mNormalStatusBarColor = getResources().getColor(R.color.colorPrimaryDark);
+        mNormalToolbarColor = getResources().getColor(R.color.colorPrimary);
+        mDedicatedStatusBarColor = getResources().getColor(R.color.chat_statusbar_dedicated_color);
+        mDedicatedToolbarColor = getResources().getColor(R.color.chat_toolbar_dedicated_color);
+
+        mNormalToDedicatedColorAnimator = ValueAnimator.ofArgb(mNormalToolbarColor, mDedicatedToolbarColor);
+        mDedicatedToNormalColorAnimator = ValueAnimator.ofArgb(mDedicatedToolbarColor, mNormalToolbarColor);
+        mNormalToDedicatedColorAnimator.setDuration(250);
+        mDedicatedToNormalColorAnimator.setDuration(250);
+
+        mNormalToDedicatedColorAnimator.addUpdateListener(createViewColorUpdateListener(mToolbar));
+        mDedicatedToNormalColorAnimator.addUpdateListener(createViewColorUpdateListener(mToolbar));
+    }
+
+    private ValueAnimator.AnimatorUpdateListener createViewColorUpdateListener(final View view) {
+        return new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                view.setBackgroundColor((int) animation.getAnimatedValue());
+            }
+        };
+    }
+
     @Override
     public void decorate(@ChatStyle.Style int style) {
         mDecorateMode = style;
         switch (style) {
             case ChatStyle.STYLE_NORMAL:
-                WindowUtility.tintStatusBar(this, getResources().getColor(R.color.colorPrimaryDark));
-                mToolbar.setBackgroundResource(R.color.colorPrimary);
+                WindowUtility.tintStatusBarAnimated(this, mDedicatedStatusBarColor, mNormalStatusBarColor);
+                mDedicatedToNormalColorAnimator.start();
                 break;
             case ChatStyle.STYLE_DEDICATED:
-                WindowUtility.tintStatusBar(this, getResources().getColor(R.color.chat_statusbar_dedicated_color));
-                mToolbar.setBackgroundResource(R.color.chat_toolbar_dedicated_color);
+                WindowUtility.tintStatusBarAnimated(this, mNormalStatusBarColor, mDedicatedStatusBarColor);
+                mNormalToDedicatedColorAnimator.start();
                 break;
         }
     }
