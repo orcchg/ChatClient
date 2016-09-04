@@ -52,6 +52,12 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (FrameworkUtility.isActive(FrameworkUtility.RequestCode.CHAT_ACTIVITY)) {
+            Timber.w("Chat is still alive but paused. Go to Chat instead");
+            finish();
+            return;
+        }
+
         mIsBackPressed = false;
         FrameworkUtility.setActive(REQUEST_CODE);
         FrameworkUtility.diagnostic();

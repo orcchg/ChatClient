@@ -720,8 +720,10 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
             if (extra && !FrameworkUtility.isActive(FrameworkUtility.RequestCode.CHAT_ACTIVITY)) {
                 Timber.w("Attempt to open ChatActivity via notification, but it had been destoyed");
                 return PROCESS_NOTIF_INTENT_STATUS_ERROR;
-            } else {
+            } else if (extra) {
                 Timber.d("Opened by notification");
+            } else {
+                Timber.d("Opened by direct intent");
             }
         }
         return PROCESS_NOTIF_INTENT_STATUS_OK;
