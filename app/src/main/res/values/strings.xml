@@ -11,6 +11,7 @@
     <string name="shared_prefs_server_pubkey" translatable="false">SP_SERVER_PUBLIC_KEY</string>
 
     <!-- Menu -->
+    <string name="menu_force_logout">Logout on all devices</string>
     <string name="menu_chat_title">Actions</string>
     <string name="menu_chat_item_switch_channel">Switch channel</string>
     <string name="menu_chat_item_logout">Logout</string>

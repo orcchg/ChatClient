@@ -35,6 +35,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     private Subscription mSubscriptionSend;
 
     private String mPlainPassword;
+    private boolean mForceLogout;
 
     LoginPresenter(DataManager dataManager) {
         mDataManager = dataManager;
@@ -111,6 +112,19 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
         mDataManager.sendLoginFormDirect(form);
     }
 
+    void prepareToLogoutOnAllDevices() {
+        mForceLogout = true;
+        sendLoginForm();  // to get user id
+    }
+
+    private void logoutOnAllDevices(long id) {
+        if (!isViewAttached()) return;
+
+        onLoading();
+
+        mDataManager.logoutOnAllDevicesDirect(id);
+    }
+
     // --------------------------------------------------------------------------------------------
     private Observer<AuthFormVO> processAuthForm() {
         return new Observer<AuthFormVO>() {
@@ -165,15 +179,20 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
         @ApiStatusFactory.Status int code = ApiStatusFactory.getStatusByCode(status.getCode());
         switch (code) {
             case ApiStatusFactory.STATUS_SUCCESS:
-                Timber.i("Successfully logged in");
                 long id = status.getId();
-                Map<String, String> map = SharedUtility.splitPayload(status.getPayload());
-                String userName = map.get("login");
-                String userEmail = map.get("email");
-                Activity activity1 = (Activity) getMvpView();
-                Utility.logInAndOpenChat(activity1, id, userName, userEmail);
-                SharedUtility.storePassword(activity1, mPlainPassword);
-                activity1.finish();
+                if (mForceLogout) {
+                    Timber.i("Ready to logout on all devices");
+                    logoutOnAllDevices(id);
+                } else {
+                    Timber.i("Successfully logged in");
+                    Map<String, String> map = SharedUtility.splitPayload(status.getPayload());
+                    String userName = map.get("login");
+                    String userEmail = map.get("email");
+                    Activity activity1 = (Activity) getMvpView();
+                    Utility.logInAndOpenChat(activity1, id, userName, userEmail);
+                    SharedUtility.storePassword(activity1, mPlainPassword);
+                    activity1.finish();
+                }
                 break;
             case ApiStatusFactory.STATUS_WRONG_PASSWORD:
                 Timber.d("Wrong password");

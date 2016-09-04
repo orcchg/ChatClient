@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -227,11 +228,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
     /* Actions */
     // --------------------------------------------------------------------------------------------
-    private void attemptLogin() {
-        if (mPresenter.hasRequestedLoginForm()) {
-            return;
-        }
-
+    private boolean checkFields() {
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
@@ -239,28 +236,33 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
-        View focusView = null;
 
         if (Utility.tooShort(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
+            mFocusedView = mPasswordView;
             cancel = true;
         }
 
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+            mFocusedView = mEmailView;
             cancel = true;
         } else if (!Utility.isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
+            mFocusedView = mEmailView;
             cancel = true;
         }
 
-        mFocusedView = focusView;
+        return cancel;
+    }
 
-        if (cancel) {
-            focusView.requestFocus();
+    private void attemptLogin() {
+        if (mPresenter.hasRequestedLoginForm()) {
+            return;
+        }
+
+        if (checkFields()) {
+            mFocusedView.requestFocus();
         } else {
             mPresenter.sendLoginForm();
         }
@@ -277,6 +279,27 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     // --------------------------------------------------------------------------------------------
     private void initToolbar() {
         mToolbar.setTitle(R.string.login_label);
+        mToolbar.inflateMenu(R.menu.login_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.force_logout:
+                        onLogoutOnAllDevices();
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void onLogoutOnAllDevices() {
+        Timber.d("Logout on all devices clicked");
+        if (checkFields()) {
+            mFocusedView.requestFocus();
+        } else {
+            mPresenter.prepareToLogoutOnAllDevices();
+        }
     }
 }
 

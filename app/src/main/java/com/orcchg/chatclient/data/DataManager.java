@@ -11,8 +11,6 @@ import com.orcchg.chatclient.data.remote.ServerBridge;
 
 import rx.Observable;
 
-import static android.R.attr.name;
-
 public class DataManager {
 
     private RestAdapter mRestAdapter;
@@ -123,6 +121,10 @@ public class DataManager {
                 .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
         mServer.setLoggingOut(true);
         mServer.sendRequest(line.toString());
+    }
+
+    public void logoutOnAllDevicesDirect(long id) {
+        // TODO:
     }
 
     public Observable<Status> switchChannel(long id, int channel) {
