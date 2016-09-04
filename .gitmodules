@@ -1,0 +1,3 @@
+[submodule "android-proguard-snippets"]
+	path = android-proguard-snippets
+	url = https://github.com/krschultz/android-proguard-snippets
