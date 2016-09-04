@@ -13,7 +13,17 @@ android {
     }
     buildTypes {
         release {
+            debuggable true
             minifyEnabled true
+            proguardFile 'android-proguard-snippets/libraries/proguard-glide.pro'
+            proguardFile 'android-proguard-snippets/libraries/proguard-gson.pro'
+            proguardFile 'android-proguard-snippets/libraries/proguard-square-okhttp3.pro'
+            proguardFile 'android-proguard-snippets/libraries/proguard-square-okio.pro'
+            proguardFile 'android-proguard-snippets/libraries/proguard-square-retrofit2.pro'
+            proguardFile 'android-proguard-snippets/libraries/proguard-support-design.pro'
+            proguardFile 'android-proguard-snippets/libraries/proguard-support-v7-appcompat.pro'
+            proguardFile 'android-proguard-snippets/libraries/proguard-support-v7-cardview.pro'
+            proguardFile 'android-proguard-snippets/libraries/proguard-rx-java.pro'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
