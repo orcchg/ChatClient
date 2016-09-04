@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.ColorInt;
@@ -470,8 +471,13 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         mDedicatedStatusBarColor = getResources().getColor(R.color.chat_statusbar_dedicated_color);
         mDedicatedToolbarColor = getResources().getColor(R.color.chat_toolbar_dedicated_color);
 
-        mNormalToDedicatedColorAnimator = ValueAnimator.ofArgb(mNormalToolbarColor, mDedicatedToolbarColor);
-        mDedicatedToNormalColorAnimator = ValueAnimator.ofArgb(mDedicatedToolbarColor, mNormalToolbarColor);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mNormalToDedicatedColorAnimator = ValueAnimator.ofArgb(mNormalToolbarColor, mDedicatedToolbarColor);
+            mDedicatedToNormalColorAnimator = ValueAnimator.ofArgb(mDedicatedToolbarColor, mNormalToolbarColor);
+        } else {
+            mNormalToDedicatedColorAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), mNormalToolbarColor, mDedicatedToolbarColor);
+            mDedicatedToNormalColorAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), mDedicatedToolbarColor, mNormalToolbarColor);
+        }
         mNormalToDedicatedColorAnimator.setDuration(250);
         mDedicatedToNormalColorAnimator.setDuration(250);
 
