@@ -114,6 +114,15 @@ public class ServerBridge {
         sNeedReconnect = true;
     }
 
+    public boolean isLoggingOut() {
+        if (mWorker != null) {
+            return mWorker.isLoggingOut();
+        } else {
+            Timber.w("Worker thread is null");
+        }
+        return false;
+    }
+
     public void setLoggingOut(boolean flag) {
         Timber.d("setLoggingOut: %s", Boolean.valueOf(flag).toString());
         if (mWorker != null) {
@@ -218,6 +227,8 @@ public class ServerBridge {
                 Timber.d("Already terminated");
             }
         }
+
+        private boolean isLoggingOut() { return mIsLoggingOut; }
 
         private void setLoggingOut(boolean flag) { mIsLoggingOut = flag; }
 

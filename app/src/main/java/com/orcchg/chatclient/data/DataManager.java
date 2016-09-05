@@ -31,6 +31,10 @@ public class DataManager {
         mServer.lostDirectConnection();
     }
 
+    public boolean isLoggingOut() {
+        return mServer.isLoggingOut();
+    }
+
     /* Authentication */
     // --------------------------------------------------------------------------------------------
     public void getLoginFormDirect() {
