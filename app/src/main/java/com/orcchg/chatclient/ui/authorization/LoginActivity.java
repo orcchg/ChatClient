@@ -135,7 +135,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
     @Override
     protected void onDestroy() {
-        mPresenter.unsubscribe();
         FrameworkUtility.setInactive(REQUEST_CODE);
         FrameworkUtility.diagnostic();
         if (isFinishing() && FrameworkUtility.getActiveCount() == 0) {
@@ -264,10 +263,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     }
 
     private void attemptLogin() {
-        if (mPresenter.hasRequestedLoginForm()) {
-            return;
-        }
-
         if (checkFields()) {
             mFocusedView.requestFocus();
         } else {

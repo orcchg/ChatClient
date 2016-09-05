@@ -246,7 +246,6 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     @Override
     protected void onDestroy() {
-        mPresenter.unsubscribe();
         if (mPresenter.isBackPressed()) {
             mPresenter.removeDirectConnectionCallback();
         }

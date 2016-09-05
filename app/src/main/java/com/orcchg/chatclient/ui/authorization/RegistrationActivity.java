@@ -117,7 +117,6 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
 
     @Override
     protected void onDestroy() {
-        mPresenter.unsubscribe();
         FrameworkUtility.setInactive(REQUEST_CODE);
         FrameworkUtility.diagnostic();
         if (isFinishing() && FrameworkUtility.getActiveCount() == 0) {
@@ -211,10 +210,6 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     /* Actions */
     // --------------------------------------------------------------------------------------------
     private void attemptRegister() {
-        if (mPresenter.hasRequestedRegistrationForm()) {
-            return;
-        }
-
         mLoginView.setError(null);
         mEmailView.setError(null);
         mPasswordView.setError(null);

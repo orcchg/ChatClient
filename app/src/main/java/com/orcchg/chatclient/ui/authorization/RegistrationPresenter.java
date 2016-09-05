@@ -23,29 +23,16 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-import rx.Observer;
-import rx.Subscription;
 import timber.log.Timber;
 
 public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
 
     private DataManager mDataManager;
-    private Subscription mSubscriptionGet;
-    private Subscription mSubscriptionSend;
 
     private String mPlainPassword;
 
     RegistrationPresenter(DataManager dataManager) {
         mDataManager = dataManager;
-    }
-
-    boolean hasRequestedRegistrationForm() {
-        return mSubscriptionGet != null && !mSubscriptionGet.isUnsubscribed();
-    }
-
-    void unsubscribe() {
-        if (mSubscriptionGet != null) mSubscriptionGet.unsubscribe();
-        if (mSubscriptionSend != null) mSubscriptionSend.unsubscribe();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -113,51 +100,6 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     }
 
     // --------------------------------------------------------------------------------------------
-    private Observer<AuthFormVO> processAuthForm() {
-        return new Observer<AuthFormVO>() {
-            @Override
-            public void onCompleted() {
-                Timber.d("onCompleted (Form)");
-                getMvpView().onComplete();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Timber.e("Error (Form): %s", Log.getStackTraceString(e));
-                getMvpView().onError();
-            }
-
-            @Override
-            public void onNext(AuthFormVO viewObject) {
-                Timber.d("onNext (Form)");
-                getMvpView().showAuthForm(viewObject);
-            }
-        };
-    }
-
-    // --------------------------------------------------------------------------------------------
-    private Observer<Status> processStatus() {
-        return new Observer<Status>() {
-            @Override
-            public void onCompleted() {
-                Timber.d("onCompleted (Status)");
-                getMvpView().onComplete();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Timber.e("Error (Status): %s", Log.getStackTraceString(e));
-                getMvpView().onError();
-            }
-
-            @Override
-            public void onNext(Status status) {
-                Timber.d("onNext (Status)");
-                processStatus(status);
-            }
-        };
-    }
-
     private void processStatus(Status status) {
         if (!isViewAttached()) return;
 

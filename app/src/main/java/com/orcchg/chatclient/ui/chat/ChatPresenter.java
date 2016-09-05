@@ -28,13 +28,12 @@ import com.orcchg.chatclient.data.viewobject.MessageToPeerMapper;
 import com.orcchg.chatclient.data.viewobject.MessageVO;
 import com.orcchg.chatclient.data.viewobject.PeerMapper;
 import com.orcchg.chatclient.data.viewobject.PeerVO;
-import com.orcchg.chatclient.mock.MockProvider;
+import com.orcchg.chatclient.resources.ItemClickListener;
 import com.orcchg.chatclient.ui.authorization.LoginActivity;
 import com.orcchg.chatclient.ui.base.BasePresenter;
 import com.orcchg.chatclient.ui.base.SimpleConnectionCallback;
 import com.orcchg.chatclient.ui.chat.peerslist.ChatPeersList;
 import com.orcchg.chatclient.ui.chat.util.ChatStyle;
-import com.orcchg.chatclient.resources.ItemClickListener;
 import com.orcchg.chatclient.ui.main.MainActivity;
 import com.orcchg.chatclient.ui.notification.NotificationMaster;
 import com.orcchg.chatclient.util.NetworkUtility;
@@ -49,12 +48,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class ChatPresenter extends BasePresenter<ChatMvpView> {
@@ -79,9 +72,6 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     private boolean mStateRestored = false;
     private boolean mNeedReconnect = false;
 
-    private Subscription mSubscriptionSend;
-    private Subscription mSubscriptionLogout;
-
     ChatPresenter(DataManager dataManager, long id, String name, String email) {
         mDataManager = dataManager;
         mUserId = id;
@@ -100,11 +90,6 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     ChatAdapter getChatAdapter() {
         return mChatAdapter;
-    }
-
-    void unsubscribe() {
-        if (mSubscriptionSend != null) mSubscriptionSend.unsubscribe();
-        if (mSubscriptionLogout != null) mSubscriptionLogout.unsubscribe();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -145,29 +130,6 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     /* Chat */
     // --------------------------------------------------------------------------------------------
-    void loadMessages() {
-        if (!isViewAttached()) return;
-        getMvpView().postOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                getMvpView().onLoading();
-            }
-        });
-
-        final Mapper<Message, MessageVO> mapper = new MessageMapper();
-
-        Observable.from(MockProvider.createMessages())
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .flatMap(new Func1<Message, Observable<MessageVO>>() {
-                @Override
-                public Observable<MessageVO> call(Message message) {
-                    MessageVO viewObject = mapper.map(message);
-                    return Observable.just(viewObject);
-                }
-            }).subscribe(createObserver());
-    }
-
     /**
      * Request to get all logged in peers on {@param channel}.
      *
@@ -237,53 +199,6 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
     }
 
     // --------------------------------------------------------------------------------------------
-    private Observer<MessageVO> createObserver() {
-        return new Observer<MessageVO>() {
-            @Override
-            public void onCompleted() {
-                Timber.d("onComplete (Message)");
-                mChatAdapter.notifyDataSetChanged();
-                getMvpView().onComplete();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Timber.e("Error (Message): %s", Log.getStackTraceString(e));
-                getMvpView().onError();
-            }
-
-            @Override
-            public void onNext(MessageVO viewObject) {
-                Timber.d("onNext (Message): %s", viewObject.getLogin());
-                mMessagesList.add(viewObject);
-                getMvpView().scrollListTo(mMessagesList.size());
-            }
-        };
-    }
-
-    // --------------------------------------------------------------------------------------------
-    private Observer<Status> processStatus(final @Status.Action int action) {
-        return new Observer<Status>() {
-            @Override
-            public void onCompleted() {
-                Timber.d("onCompleted (Status)");
-                getMvpView().onComplete();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Timber.e("Error (Status): %s", Log.getStackTraceString(e));
-                getMvpView().onError();
-            }
-
-            @Override
-            public void onNext(Status status) {
-                Timber.d("onNext (Status)");
-                processStatus(status, action);
-            }
-        };
-    }
-
     private void processStatus(Status status, final @Status.Action int action) {
         String errorMessage = "";
         boolean flag = false;

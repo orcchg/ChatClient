@@ -13,7 +13,6 @@ import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerUIUtils;
 import com.orcchg.chatclient.data.DataManager;
-import com.orcchg.chatclient.data.remote.RestAdapter;
 import com.orcchg.chatclient.data.remote.ServerBridge;
 
 import java.util.TimeZone;
@@ -22,7 +21,6 @@ import timber.log.Timber;
 
 public class ChatClientApplication extends Application {
 
-    private RestAdapter mRestAdapter;
     private ServerBridge mServer;
     private DataManager mDataManager;
 
@@ -39,9 +37,8 @@ public class ChatClientApplication extends Application {
             }
         });
 
-        mRestAdapter = RestAdapter.Creator.create();
         mServer = new ServerBridge();
-        mDataManager = new DataManager(mRestAdapter, mServer);
+        mDataManager = new DataManager(mServer);
 
         initDrawerImageLoader();
     }
