@@ -20,7 +20,7 @@
     <!-- Dialog -->
     <string name="dialog_switch_channel_title">Channel</string>
     <string name="dialog_switch_channel_hint">Enter channel</string>
-    <string name="dialog_progress_reconnect">Reconnecting...</string>
+    <string name="dialog_progress_reconnect">Reconnecting&#8230;</string>
 
     <!-- Lexeme -->
     <string name="prompt_login_or_email">Login or email</string>

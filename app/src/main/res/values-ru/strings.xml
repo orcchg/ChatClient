@@ -1,0 +1,48 @@
+<resources>
+    <!-- Menu -->
+    <string name="menu_force_logout">Выход на всех устройствах</string>
+    <string name="menu_chat_title">Действия</string>
+    <string name="menu_chat_item_switch_channel">Другая комната</string>
+    <string name="menu_chat_item_logout">Выход</string>
+    <string name="menu_chat_dedicated_message_to">Сообщение для %s</string>
+
+    <!-- Dialog -->
+    <string name="dialog_switch_channel_title">Комната</string>
+    <string name="dialog_switch_channel_hint">Переход в комнату</string>
+    <string name="dialog_progress_reconnect">Соединение&#8230;</string>
+
+    <!-- Lexeme -->
+    <string name="prompt_login_or_email">Имя или email</string>
+    <string name="prompt_login">Имя</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_retry">Повторить</string>
+    <string name="action_sign_in_or_register">Войдите или зарегистрируйтесь</string>
+    <string name="action_sign_in">Вход</string>
+    <string name="action_sign_up">Регистрация</string>
+    <string name="error_already_logged_in">Пользователь уже вошел</string>
+    <string name="error_already_registered">Пользователь уже зарегистрирован</string>
+    <string name="error_invalid_email">Некорректный email</string>
+    <string name="error_invalid_password">Пароль слишком короткий</string>
+    <string name="error_incorrect_password">Некорректный пароль</string>
+    <string name="error_field_required">Требуется заполнить поле</string>
+    <string name="error_field_too_short">Поле слишком короткое</string>
+    <string name="error_forbidden_message">Сообщение содержит недопустимые символы</string>
+    <string name="error_network">Сетевая ошибка. Повторите попытку позже.</string>
+    <string name="error_wrong_channel">Невозможно войти в комнату %d</string>
+    <string name="error_same_channel">Уже в комнате %d</string>
+
+    <string name="main_label">Обработка&#8230;</string>
+    <string name="login_label">Вход</string>
+    <string name="registration_label">Регистрация</string>
+    <string name="chat_label">Чат</string>
+    <string name="chat_channel_label">Комната %1$d (%2$d)</string>
+    <string name="kicked_toast_message">Вы были выброшены !</string>
+    <string name="logout_toast_message">Вы успешно вышли</string>
+    <string name="switch_channel_toast_message">Вы перешли в комнату %d</string>
+    <string name="terminate_message">Сервер остановлен</string>
+    <string name="warning_snackbar">Убит котенок!</string>
+
+    <string name="button_ok">ОК</string>
+    <string name="button_cancel">Отмена</string>
+</resources>
