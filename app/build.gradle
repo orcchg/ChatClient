@@ -13,7 +13,7 @@ android {
     }
     buildTypes {
         release {
-            debuggable true
+            debuggable false
             minifyEnabled false
             proguardFile "${rootProject.ext.proguardPropertiesPath}/proguard-glide.pro"
             proguardFile "${rootProject.ext.proguardPropertiesPath}/proguard-gson.pro"
