@@ -1,6 +1,7 @@
 package com.orcchg.chatclient.data.remote;
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.MalformedJsonException;
 
@@ -65,6 +66,10 @@ public class ServerBridge {
     @NetworkUtility.ConnectionError
     public static String getLastNetworkError() {
         return sLastNetworkError;
+    }
+
+    public static boolean hasNetworkError() {
+        return !TextUtils.isEmpty(sLastNetworkError);
     }
 
     public void setConnectionCallback(ConnectionCallback callback) {

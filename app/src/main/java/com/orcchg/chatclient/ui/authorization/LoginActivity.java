@@ -58,8 +58,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (FrameworkUtility.isActive(FrameworkUtility.RequestCode.CHAT_ACTIVITY) &&
-            !FrameworkUtility.isFinishing(FrameworkUtility.RequestCode.CHAT_ACTIVITY) &&
-            !isLoggingOut()) {
+            !FrameworkUtility.isFinishing(FrameworkUtility.RequestCode.CHAT_ACTIVITY)/* &&
+            !ServerBridge.hasNetworkError()*/) {
             Timber.w("Chat is still alive but paused. Go to Chat instead");
             finish();
             return;

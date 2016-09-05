@@ -305,6 +305,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
             mErrorView.setVisibility(View.VISIBLE);
             mProgressView.setVisibility(View.GONE);
         }
+        WindowUtility.showSoftKeyboard(this, false);
     }
 
     @Override
