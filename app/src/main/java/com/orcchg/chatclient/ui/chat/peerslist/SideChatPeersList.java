@@ -69,7 +69,7 @@ public class SideChatPeersList extends ChatPeersList {
         }
 
         private void addItem(long id, PeerVO peer) {
-            if (!mPeerIds.containsKey(Long.valueOf(id))) {
+            if (id != Status.UNKNOWN_ID && !mPeerIds.containsKey(Long.valueOf(id))) {
                 mPeerVOs.add(peer);
                 int position = mPeerVOs.size() - 1;
                 mPeerIds.put(id, position);
