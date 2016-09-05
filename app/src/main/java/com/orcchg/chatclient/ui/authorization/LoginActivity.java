@@ -279,18 +279,18 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     // --------------------------------------------------------------------------------------------
     private void initToolbar() {
         mToolbar.setTitle(R.string.login_label);
-        mToolbar.inflateMenu(R.menu.login_menu);
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.force_logout:
-                        onLogoutOnAllDevices();
-                        return true;
-                }
-                return false;
-            }
-        });
+//        mToolbar.inflateMenu(R.menu.login_menu);
+//        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                switch (item.getItemId()) {
+//                    case R.id.force_logout:
+//                        onLogoutOnAllDevices();
+//                        return true;
+//                }
+//                return false;
+//            }
+//        });
     }
 
     private void onLogoutOnAllDevices() {
