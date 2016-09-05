@@ -224,6 +224,12 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        FrameworkUtility.setFinishing(REQUEST_CODE, isFinishing());
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         mMessagesListState = mLayoutManager.onSaveInstanceState();
         mPresenter.onSaveInstanceState(outState);

@@ -27,8 +27,11 @@ public class FrameworkUtility {
     }
 
     private static final boolean[] sActive = new boolean[RequestCode.ACTIVITIES_COUNT];
+    private static final boolean[] sFinishing = new boolean[RequestCode.ACTIVITIES_COUNT];
     private static int sActiveCount = 0;
 
+    /* Active */
+    // --------------------------------------------------------------------------------------------
     public static void setActive(@RequestCode.Code int code) {
         if (!isActive(code)) {
             ++sActiveCount;
@@ -53,9 +56,21 @@ public class FrameworkUtility {
         return sActiveCount;
     }
 
+    /* Finishing */
+    // --------------------------------------------------------------------------------------------
+    public static void setFinishing(@RequestCode.Code int code, boolean isFinishing) {
+        sFinishing[code] = isFinishing;
+        Timber.v("setFinishing(): finishing %s, flag: %s", requestScreen(code), Boolean.toString(isFinishing));
+    }
+
+    public static boolean isFinishing(@RequestCode.Code int code) {
+        return sFinishing[code];
+    }
+
     public static void diagnostic() {
         for (int i = 0; i < RequestCode.ACTIVITIES_COUNT; ++i) {
-            Timber.v("Screen: %s, active: %s", requestScreen(i), Boolean.toString(sActive[i]));
+            Timber.v("Screen: %s, active: %s, finishing: %s",
+                    requestScreen(i), Boolean.toString(sActive[i]), Boolean.toString(sFinishing[i]));
         }
     }
 

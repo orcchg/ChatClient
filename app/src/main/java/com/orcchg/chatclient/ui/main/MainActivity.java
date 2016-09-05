@@ -41,7 +41,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (FrameworkUtility.isActive(FrameworkUtility.RequestCode.CHAT_ACTIVITY)) {
+        if (FrameworkUtility.isActive(FrameworkUtility.RequestCode.CHAT_ACTIVITY) &&
+            !FrameworkUtility.isFinishing(FrameworkUtility.RequestCode.CHAT_ACTIVITY)) {
             Timber.w("Chat is still alive but paused. Go to Chat instead");
             finish();
             return;
@@ -76,6 +77,12 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     protected void onPause() {
         super.onPause();
         mPresenter.removeDirectConnectionCallback();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FrameworkUtility.setFinishing(REQUEST_CODE, isFinishing());
     }
 
     @Override

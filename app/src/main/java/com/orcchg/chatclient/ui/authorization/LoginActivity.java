@@ -57,7 +57,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (FrameworkUtility.isActive(FrameworkUtility.RequestCode.CHAT_ACTIVITY)) {
+        if (FrameworkUtility.isActive(FrameworkUtility.RequestCode.CHAT_ACTIVITY) &&
+            !FrameworkUtility.isFinishing(FrameworkUtility.RequestCode.CHAT_ACTIVITY)) {
             Timber.w("Chat is still alive but paused. Go to Chat instead");
             finish();
             return;
@@ -117,6 +118,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     protected void onPause() {
         super.onPause();
         mPresenter.removeDirectConnectionCallback();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FrameworkUtility.setFinishing(REQUEST_CODE, isFinishing());
     }
 
     @Override
