@@ -142,7 +142,7 @@ public class SideChatPeersList extends ChatPeersList {
                 mRoot = rootView;
                 ButterKnife.bind(this, mRoot);
 
-                mSelectedBackground = rootView.getContext().getColor(R.color.colorControlActivatedSemi);
+                mSelectedBackground = rootView.getContext().getResources().getColor(R.color.colorControlActivatedSemi);
             }
 
             private void bind(final PeerVO viewObject, final int position) {

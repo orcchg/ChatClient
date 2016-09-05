@@ -19,6 +19,7 @@ public class WindowUtility {
     public static void logScreenParams(Context context) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         Timber.i("Dots-per-Inch: %s, density: %s", metrics.densityDpi, metrics.density);
+        Timber.i("Screen width: %s, height: %s", metrics.widthPixels, metrics.heightPixels);
     }
 
     public static boolean isTablet(Context context) {
@@ -50,7 +51,9 @@ public class WindowUtility {
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    activity.getWindow().setStatusBarColor((int) animation.getAnimatedValue());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        activity.getWindow().setStatusBarColor((int) animation.getAnimatedValue());
+                    }
                 }
             });
             animator.start();
