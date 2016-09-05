@@ -16,3 +16,7 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    proguardPropertiesPath = "${rootProject.rootDir}/android-proguard-snippets/libraries"
+}
