@@ -53,7 +53,8 @@
                     android:layout_height="match_parent"
                     android:maxLength="@integer/message_max_length"
                     android:paddingLeft="32dp"
-                    android:paddingStart="32dp"/>
+                    android:paddingStart="32dp"
+                    android:inputType="textCapSentences"/>
 
                 <ImageButton
                     android:id="@+id/btn_clear_message"
