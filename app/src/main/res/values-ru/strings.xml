@@ -31,6 +31,7 @@
     <string name="error_network">Сетевая ошибка. Повторите попытку позже.</string>
     <string name="error_wrong_channel">Невозможно войти в комнату %d</string>
     <string name="error_same_channel">Уже в комнате %d</string>
+    <string name="error_optional_text">Вы будете автоматически выброшены. Пожалуйста, перезайдите.</string>
 
     <string name="main_label">Обработка&#8230;</string>
     <string name="login_label">Вход</string>

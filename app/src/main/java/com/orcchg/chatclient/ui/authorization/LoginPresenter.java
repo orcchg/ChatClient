@@ -134,7 +134,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                     Activity activity1 = (Activity) getMvpView();
                     Utility.logInAndOpenChat(activity1, id, userName, userEmail);
                     SharedUtility.storePassword(activity1, mPlainPassword);
-                    activity1.finish();
+                    getMvpView().finishView();
                 }
                 break;
             case ApiStatusFactory.STATUS_WRONG_PASSWORD:
@@ -146,7 +146,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                 Activity activity2 = (Activity) getMvpView();
                 Intent intent2 = new Intent(activity2, RegistrationActivity.class);
                 activity2.startActivity(intent2);
-                activity2.finish();
+                getMvpView().finishView();
                 break;
             case ApiStatusFactory.STATUS_ALREADY_REGISTERED:
                 Timber.w("Server's responded with forbidden error: already registered");

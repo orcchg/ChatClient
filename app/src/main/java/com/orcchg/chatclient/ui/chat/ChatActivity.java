@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -107,6 +108,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Bind(R.id.progress) View mProgressView;
     @Bind(error) View mErrorView;
     @Bind(R.id.retry_button) Button mRetryButton;
+    @Bind(R.id.optional_text) TextView mOptionalText;
 
     private LinearLayoutManager mLayoutManager;
     private ProgressDialog mProgressDialog;
@@ -138,6 +140,12 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         String name = getIntent().getStringExtra(EXTRA_USER_NAME);
         String email = getIntent().getStringExtra(EXTRA_USER_EMAIL);
         return new ChatPresenter(application.getDataManager(), id, name, email);
+    }
+
+    @Override
+    @FrameworkUtility.RequestCode.Code
+    protected int getActivityRequestCode() {
+        return REQUEST_CODE;
     }
 
     /* Lifecycle */
@@ -276,6 +284,7 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
         if (!isFinishing()) {
             @NetworkUtility.ConnectionError String error = ServerBridge.getLastNetworkError();
             if (!TextUtils.isEmpty(error)) {
+                mOptionalText.setVisibility(View.VISIBLE);
                 onError();
             }
         }

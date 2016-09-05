@@ -36,6 +36,7 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     @Bind(R.id.progress) View mProgressView;
     @Bind(R.id.error) View mErrorView;
     @Bind(R.id.retry_button) Button mRetryButton;
+    @Bind(R.id.optional_text) TextView mOptionalText;
 
     private View mFocusedView;
 
@@ -45,6 +46,12 @@ public class RegistrationActivity extends BaseActivity<RegistrationPresenter> im
     protected RegistrationPresenter createPresenter() {
         ChatClientApplication application = (ChatClientApplication) getApplication();
         return new RegistrationPresenter(application.getDataManager());
+    }
+
+    @Override
+    @FrameworkUtility.RequestCode.Code
+    protected int getActivityRequestCode() {
+        return REQUEST_CODE;
     }
 
     /* Lifecycle */

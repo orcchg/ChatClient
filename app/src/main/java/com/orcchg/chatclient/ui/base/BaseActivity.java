@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.orcchg.chatclient.ChatClientApplication;
+import com.orcchg.chatclient.util.FrameworkUtility;
 import com.orcchg.chatclient.util.NetworkUtility;
 import com.orcchg.chatclient.util.crypting.SecurityUtility;
 
@@ -20,6 +21,9 @@ public abstract class BaseActivity<P extends Presenter> extends AppCompatActivit
     protected P mPresenter;
 
     protected abstract P createPresenter();
+
+    @FrameworkUtility.RequestCode.Code
+    protected abstract int getActivityRequestCode();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,6 +75,12 @@ public abstract class BaseActivity<P extends Presenter> extends AppCompatActivit
     @Override
     public void postOnUiThread(Runnable runnable) {
         runOnUiThread(runnable);
+    }
+
+    @Override
+    public void finishView() {
+        FrameworkUtility.setFinishing(getActivityRequestCode(), true);
+        finish();
     }
 
     @Override

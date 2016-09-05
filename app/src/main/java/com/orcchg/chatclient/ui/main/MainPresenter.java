@@ -175,7 +175,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         intent.putExtra(MainActivity.SHARED_PREFS_KEY_USER_EMAIL, mUserEmail);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         activity.startActivity(intent);
-        activity.finish();
+        getMvpView().finishView();
         activity.overridePendingTransition(0, 0);
     }
 

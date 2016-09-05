@@ -36,6 +36,7 @@ import com.orcchg.chatclient.ui.chat.peerslist.ChatPeersList;
 import com.orcchg.chatclient.ui.chat.util.ChatStyle;
 import com.orcchg.chatclient.ui.main.MainActivity;
 import com.orcchg.chatclient.ui.notification.NotificationMaster;
+import com.orcchg.chatclient.util.FrameworkUtility;
 import com.orcchg.chatclient.util.NetworkUtility;
 import com.orcchg.chatclient.util.SharedUtility;
 import com.orcchg.chatclient.util.crypting.SecurityUtility;
@@ -336,7 +337,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         Activity activity = (Activity) getMvpView();
         Intent intent = new Intent(activity, clazz);
         activity.startActivity(intent);
-        activity.finish();  // close chat
+        getMvpView().finishView();  // close chat
     }
 
     // --------------------------------------------------------------------------------------------
@@ -489,7 +490,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 Intent intent = new Intent(activity, LoginActivity.class);
                 activity.startActivity(intent);
             }
-            activity.finish();
+            getMvpView().finishView();
         }
     }
 

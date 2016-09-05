@@ -17,4 +17,5 @@ public interface MvpView {
     void onNetworkError(@NetworkUtility.ConnectionError String error);  // network error pair to error
 
     void postOnUiThread(Runnable runnable);
+    void finishView();
 }

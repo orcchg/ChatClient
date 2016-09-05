@@ -42,6 +42,7 @@
     <string name="error_network">Network error. Please, try again later.</string>
     <string name="error_wrong_channel">Can\'not switch to channel %d</string>
     <string name="error_same_channel">Already on channel %d</string>
+    <string name="error_optional_text">You will be logout automatically. Relogin, please.</string>
 
     <string name="main_label">Processing&#8230;</string>
     <string name="login_label">Login</string>

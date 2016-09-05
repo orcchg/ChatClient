@@ -41,6 +41,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Bind(R.id.progress) View mProgressView;
     @Bind(R.id.error) View mErrorView;
     @Bind(R.id.retry_button) Button mRetryButton;
+    @Bind(R.id.optional_text) TextView mOptionalText;
     
     private View mFocusedView;
 
@@ -50,6 +51,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     protected LoginPresenter createPresenter() {
         ChatClientApplication application = (ChatClientApplication) getApplication();
         return new LoginPresenter(application.getDataManager());
+    }
+
+    @Override
+    @FrameworkUtility.RequestCode.Code
+    protected int getActivityRequestCode() {
+        return REQUEST_CODE;
     }
 
     /* Lifecycle */

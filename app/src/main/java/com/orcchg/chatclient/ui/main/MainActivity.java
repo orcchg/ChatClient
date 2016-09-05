@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.orcchg.chatclient.ChatClientApplication;
 import com.orcchg.chatclient.R;
@@ -27,6 +28,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     @Bind(R.id.progress) View mProgressView;
     @Bind(R.id.error) View mErrorView;
     @Bind(R.id.retry_button) Button mRetryButton;
+    @Bind(R.id.optional_text) TextView mOptionalText;
 
     private boolean mIsBackPressed;
 
@@ -34,6 +36,12 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     protected MainPresenter createPresenter() {
         ChatClientApplication application = (ChatClientApplication) getApplication();
         return new MainPresenter(application.getDataManager());
+    }
+
+    @Override
+    @FrameworkUtility.RequestCode.Code
+    protected int getActivityRequestCode() {
+        return REQUEST_CODE;
     }
 
     /* Lifecycle */

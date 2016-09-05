@@ -116,7 +116,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
                 Activity activity1 = (Activity) getMvpView();
                 Utility.logInAndOpenChat(activity1, id, userName, userEmail);
                 SharedUtility.storePassword(activity1, mPlainPassword);
-                activity1.finish();
+                getMvpView().finishView();
                 break;
             case ApiStatusFactory.STATUS_WRONG_PASSWORD:
                 Timber.w("Server's responded with forbidden error: wrong password");
