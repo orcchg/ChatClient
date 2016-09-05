@@ -182,6 +182,7 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                 long id = status.getId();
                 if (mForceLogout) {
                     Timber.i("Ready to logout on all devices");
+                    mForceLogout = false;
                     logoutOnAllDevices(id);
                 } else {
                     Timber.i("Successfully logged in");

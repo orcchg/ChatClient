@@ -124,7 +124,7 @@ public class DataManager {
     }
 
     public void logoutOnAllDevicesDirect(long id) {
-        // TODO:
+        logoutDirect(id);
     }
 
     public Observable<Status> switchChannel(long id, int channel) {

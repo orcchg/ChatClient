@@ -439,9 +439,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
         MessageVO viewObject = mapper.map(message);
 
         /* filter messages */
-        if (mDestId == Status.UNKNOWN_ID ||  // public messages
-            // private message from dedicated peer
-            (mDestId != Status.UNKNOWN_ID && isDedicated)) {
+        if (mDestId == Status.UNKNOWN_ID || isDedicated) {
             mMessagesList.add(viewObject);
             notifyViewChanged();
         }
@@ -451,7 +449,7 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
          * in case Chat is paused.
          */
         if (getMvpView().isPaused() && message.getDestId() == mUserId) {
-            Timber.d("Notification from peer: " + message.getId());
+            Timber.d("Notification from peer: %s", message.getId());
             Mapper<Message, PeerVO> mapper1 = new MessageToPeerMapper();
             NotificationMaster.pushNotification(
                     (Activity) getMvpView(),

@@ -24,9 +24,16 @@ public class Status {
     public static final int ACTION_MESSAGE = 2;
     public static final int ACTION_LOGOUT = 3;
     public static final int ACTION_SWITCH_CHANNEL = 4;
-    public static final int ACTION_IS_LOGGED_IN = 5;
-    public static final int ACTION_IS_REGISTERED = 6;
-    public static final int ACTION_ALL_PEERS = 7;
+    public static final int ACTION_PEER_ID = 5;
+    public static final int ACTION_IS_LOGGED_IN = 6;
+    public static final int ACTION_IS_REGISTERED = 7;
+    public static final int ACTION_CHECK_AUTH = 8;
+    public static final int ACTION_ALL_PEERS = 9;
+    public static final int ACTION_PRIVATE_REQUEST = 10;
+    public static final int ACTION_PRIVATE_CONFIRM = 11;
+    public static final int ACTION_PRIVATE_ABORT = 12;
+    public static final int ACTION_PRIVATE_PUBKEY = 13;
+    public static final int ACTION_PRIVATE_PUBKEY_EXCHANGE = 14;
     @IntDef({
         ACTION_UNKNOWN,
         ACTION_KICK,
@@ -36,9 +43,16 @@ public class Status {
         ACTION_MESSAGE,
         ACTION_LOGOUT,
         ACTION_SWITCH_CHANNEL,
+        ACTION_PEER_ID,
         ACTION_IS_LOGGED_IN,
         ACTION_IS_REGISTERED,
-        ACTION_ALL_PEERS
+        ACTION_CHECK_AUTH,
+        ACTION_ALL_PEERS,
+        ACTION_PRIVATE_REQUEST,
+        ACTION_PRIVATE_CONFIRM,
+        ACTION_PRIVATE_ABORT,
+        ACTION_PRIVATE_PUBKEY,
+        ACTION_PRIVATE_PUBKEY_EXCHANGE
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Action {}
