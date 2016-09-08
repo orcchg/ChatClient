@@ -73,6 +73,27 @@ public class DataManager {
         mServer.sendRequest(line.toString());
     }
 
+    // ------------------------------------------
+    public void checkAuthDirect(LoginForm form) {
+        authDirect("/check_auth", form);
+    }
+
+    public void kickByAuthDirect(LoginForm form) {
+        authDirect("/kick_by_auth", form);
+    }
+
+    private void authDirect(String path, LoginForm form) {
+        String login = form.getLogin();
+        String password = form.getPassword();
+        boolean encrypted = form.isEncrypted();
+        StringBuilder line = new StringBuilder("GET " + path + "?login=")
+                .append(login).append("&password=").append(password).append("&encrypted=").append(encrypted ? '1' : '0')
+                .append(" HTTP/1.1\r\n\"")
+                .append("Host: ").append(ServerBridge.IP_ADDRESS).append(':').append(ServerBridge.PORT).append("\r\n\r\n");
+        mServer.setLoggingOut(false);
+        mServer.sendRequest(line.toString());
+    }
+
     /* Chat */
     // --------------------------------------------------------------------------------------------
     public void sendMessageDirect(Message message) {

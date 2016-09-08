@@ -11,8 +11,6 @@ import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
@@ -97,7 +95,6 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     private @ChatStyle.Style int mDecorateMode = ChatStyle.STYLE_NORMAL;
 
     @Bind(R.id.root_coordinator) ViewGroup mRootCoordinator;
-    @Bind(R.id.root_container) ViewGroup mRootContainer;
     @Bind(R.id.action_container) View mActionContainer;
     @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.photo) PhotoItem mPhotoItem;
@@ -356,17 +353,6 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Override
     public void scrollListTo(int position) {
         mLayoutManager.scrollToPosition(position);
-    }
-
-    @Override
-    public void showSnackbar(String message, int duration) {
-        Snackbar.make(mRootCoordinator, message, duration).show();
-    }
-
-    @Override
-    public void showSnackbar(@StringRes int resId, int duration) {
-        String message = getResources().getString(resId);
-        Snackbar.make(mRootCoordinator, message, duration).show();
     }
 
     @Override

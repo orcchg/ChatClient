@@ -1,5 +1,7 @@
 package com.orcchg.chatclient.ui.base;
 
+import android.support.annotation.StringRes;
+
 import com.orcchg.chatclient.util.NetworkUtility;
 
 /**
@@ -18,4 +20,7 @@ public interface MvpView {
 
     void postOnUiThread(Runnable runnable);
     void finishView();
+
+    void showSnackbar(String message, int duration);
+    void showSnackbar(@StringRes int resId, int duration);
 }

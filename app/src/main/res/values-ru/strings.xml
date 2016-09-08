@@ -42,8 +42,10 @@
     <string name="chat_channel_label">Комната %1$d (%2$d)</string>
     <string name="kicked_toast_message">Вы были выброшены !</string>
     <string name="logout_toast_message">Вы успешно вышли</string>
+    <string name="logout_on_all_devices_toast_message">Вы успешно вышли на всех устройствах</string>
     <string name="switch_channel_toast_message">Вы перешли в комнату %d</string>
     <string name="terminate_message">Сервер остановлен</string>
+    <string name="unauthorized_toast_message">Участник не в чате</string>
     <string name="warning_snackbar">Убит котенок!</string>
 
     <string name="button_ok">ОК</string>

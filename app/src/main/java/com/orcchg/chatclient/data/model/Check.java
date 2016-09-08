@@ -49,4 +49,9 @@ public class Check {
         reader.setLenient(true);
         return gson.fromJson(reader, Check.class);
     }
+
+    @Override
+    public String toString() {
+        return toJson();
+    }
 }

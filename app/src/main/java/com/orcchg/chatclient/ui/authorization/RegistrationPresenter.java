@@ -60,26 +60,11 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
     // --------------------------------------------------------------------------------------------
     private void requestRegistrationForm() {
         onLoading();
-
-//        final Mapper<RegistrationForm, AuthFormVO> mapper = new RegistrationFormMapper();
-//
-//        mSubscriptionGet = mDataManager.getRegistrationForm()
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .flatMap(new Func1<RegistrationForm, Observable<AuthFormVO>>() {
-//                @Override
-//                public Observable<AuthFormVO> call(RegistrationForm registrationForm) {
-//                    AuthFormVO viewObject = mapper.map(registrationForm);
-//                    return Observable.just(viewObject);
-//                }
-//            })
-//            .subscribe(processAuthForm());
         mDataManager.getRegistrationFormDirect();
     }
 
     void sendRegistrationForm() {
         if (!isViewAttached()) return;
-
         onLoading();
 
         String login = getMvpView().getLogin();
@@ -92,10 +77,6 @@ public class RegistrationPresenter extends BasePresenter<RegistrationMvpView> {
             form.encrypt(SecurityUtility.getServerPublicKey());
         }
 
-//        mSubscriptionSend = mDataManager.sendRegistrationForm(form)
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe(processStatus());
         mDataManager.sendRegistrationFormDirect(form);
     }
 

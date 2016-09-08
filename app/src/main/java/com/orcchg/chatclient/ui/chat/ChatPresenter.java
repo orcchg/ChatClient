@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.view.View;
-import android.widget.Toast;
 
 import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.ApiStatusFactory;
@@ -36,7 +34,6 @@ import com.orcchg.chatclient.ui.chat.peerslist.ChatPeersList;
 import com.orcchg.chatclient.ui.chat.util.ChatStyle;
 import com.orcchg.chatclient.ui.main.MainActivity;
 import com.orcchg.chatclient.ui.notification.NotificationMaster;
-import com.orcchg.chatclient.util.FrameworkUtility;
 import com.orcchg.chatclient.util.NetworkUtility;
 import com.orcchg.chatclient.util.SharedUtility;
 import com.orcchg.chatclient.util.crypting.SecurityUtility;
@@ -164,11 +161,6 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
         Mapper<Message, MessageVO> mapper = new MessageMapper();
         mLastMessage = mapper.map(message);
-
-//        mSubscriptionSend = mDataManager.sendMessage(message)
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe(processStatus(ACTION_MESSAGE));
         mDataManager.sendMessageDirect(message);
     }
 
@@ -180,10 +172,6 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
                 getMvpView().onLoading();
             }
         });
-//        mSubscriptionLogout = mDataManager.logout(mUserId, mUserName)
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe(processStatus(ACTION_LOGOUT));
         mDataManager.logoutDirect(mUserId);
     }
 
@@ -496,37 +484,6 @@ public class ChatPresenter extends BasePresenter<ChatMvpView> {
 
     private void onLostConnection() {
         mDataManager.lostDirectConnection();
-    }
-
-    private void showSnackbar(final String message) {
-        if (!isViewAttached()) return;
-        getMvpView().postOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                getMvpView().showSnackbar(message, Snackbar.LENGTH_SHORT);
-            }
-        });
-    }
-
-    private void showSnackbar(final @StringRes int resId) {
-        if (!isViewAttached()) return;
-        getMvpView().postOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                getMvpView().showSnackbar(resId, Snackbar.LENGTH_SHORT);
-            }
-        });
-    }
-
-    private void showToast(final @StringRes int resId) {
-        if (!isViewAttached()) return;
-        final Activity activity = (Activity) getMvpView();
-        getMvpView().postOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(activity, resId, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void showReconnectProgress(final boolean isShow) {

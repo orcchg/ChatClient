@@ -1,5 +1,10 @@
 package com.orcchg.chatclient.ui.base;
 
+import android.app.Activity;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
+import android.widget.Toast;
+
 import timber.log.Timber;
 
 /**
@@ -42,5 +47,36 @@ public class BasePresenter<T extends MvpView> implements Presenter<T> {
             super("Please call Presenter.attachView(MvpView) before" +
                     " requesting data to the Presenter");
         }
+    }
+
+    protected void showSnackbar(final String message) {
+        if (!isViewAttached()) return;
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().showSnackbar(message, Snackbar.LENGTH_SHORT);
+            }
+        });
+    }
+
+    protected void showSnackbar(final @StringRes int resId) {
+        if (!isViewAttached()) return;
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMvpView().showSnackbar(resId, Snackbar.LENGTH_SHORT);
+            }
+        });
+    }
+
+    protected void showToast(final @StringRes int resId) {
+        if (!isViewAttached()) return;
+        final Activity activity = (Activity) getMvpView();
+        getMvpView().postOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(activity, resId, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

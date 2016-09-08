@@ -4,6 +4,7 @@
     <dimen name="toolbar_text_padding_left">32dp</dimen>
 
     <dimen name="message_item_max_width">205dp</dimen>
+    <dimen name="message_item_vertical_margin">4dp</dimen>
     <dimen name="message_item_vertical_padding">4dp</dimen>
     <dimen name="message_item_right_padding">16dp</dimen>
     <dimen name="message_item_right_small_padding">8dp</dimen>

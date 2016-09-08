@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
+import com.orcchg.chatclient.R;
 import com.orcchg.chatclient.data.ApiStatusFactory;
 import com.orcchg.chatclient.data.DataManager;
 import com.orcchg.chatclient.data.Mapper;
+import com.orcchg.chatclient.data.model.Check;
 import com.orcchg.chatclient.data.model.LoginForm;
 import com.orcchg.chatclient.data.model.Status;
 import com.orcchg.chatclient.data.parser.Response;
@@ -31,7 +33,6 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     private DataManager mDataManager;
 
     private String mPlainPassword;
-    private boolean mForceLogout;
 
     LoginPresenter(DataManager dataManager) {
         mDataManager = dataManager;
@@ -62,27 +63,35 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
     // --------------------------------------------------------------------------------------------
     private  void requestLoginForm() {
         onLoading();
-
-//        final Mapper<LoginForm, AuthFormVO> mapper = new LoginFormMapper();
-//
-//        mSubscriptionGet = mDataManager.getLoginForm()
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .flatMap(new Func1<LoginForm, Observable<AuthFormVO>>() {
-//                @Override
-//                public Observable<AuthFormVO> call(LoginForm loginForm) {
-//                    AuthFormVO viewObject = mapper.map(loginForm);
-//                    return Observable.just(viewObject);
-//                }
-//            }).subscribe(processAuthForm());
         mDataManager.getLoginFormDirect();
     }
 
     void sendLoginForm() {
         if (!isViewAttached()) return;
-
         onLoading();
+        LoginForm form = prepareLoginForm();
+        mDataManager.sendLoginFormDirect(form);
+    }
 
+    private void checkAuth() {
+        if (!isViewAttached()) return;
+        onLoading();
+        LoginForm form = prepareLoginForm();
+        mDataManager.checkAuthDirect(form);
+    }
+
+    private void kickByAuth() {
+        if (!isViewAttached()) return;
+        onLoading();
+        LoginForm form = prepareLoginForm();
+        mDataManager.kickByAuthDirect(form);
+    }
+
+    void prepareToLogoutOnAllDevices() {
+        kickByAuth();  // to get user id
+    }
+
+    private LoginForm prepareLoginForm() {
         String login = getMvpView().getLogin();
         String password = getMvpView().getPassword();
         mPlainPassword = password;
@@ -91,29 +100,27 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
         if (SecurityUtility.isSecurityEnabled((Activity) getMvpView())) {
             form.encrypt(SecurityUtility.getServerPublicKey());
         }
-
-//        mSubscriptionSend = mDataManager.sendLoginForm(form)
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe(processStatus());
-        mDataManager.sendLoginFormDirect(form);
-    }
-
-    void prepareToLogoutOnAllDevices() {
-        mForceLogout = true;
-        sendLoginForm();  // to get user id
-    }
-
-    private void logoutOnAllDevices(long id) {
-        if (!isViewAttached()) return;
-
-        onLoading();
-
-        mDataManager.logoutOnAllDevicesDirect(id);
+        return form;
     }
 
     // --------------------------------------------------------------------------------------------
-    private void processStatus(Status status) {
+    private void processCheck(Check check) {
+        @Status.Action int action = check.getAction();
+        Timber.v("Processing check: %s", check.toString());
+        switch (action) {
+            case Status.ACTION_KICK_BY_AUTH:
+                if (check.getCheck() == Check.CHECK_TRUE) {
+                    Timber.i("Successfully logged out on all devices");
+                    showSnackbar(R.string.logout_on_all_devices_toast_message);
+                } else {
+                    Timber.w("Authentication failed !");
+                    onWrongPassword();
+                }
+                break;
+        }
+    }
+
+    private void processStatus(Status status, final @Status.Action int action) {
         if (!isViewAttached()) return;
 
         String errorMessage = "";
@@ -121,21 +128,15 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
         @ApiStatusFactory.Status int code = ApiStatusFactory.getStatusByCode(status.getCode());
         switch (code) {
             case ApiStatusFactory.STATUS_SUCCESS:
+                Timber.i("Successfully logged in");
                 long id = status.getId();
-                if (mForceLogout) {
-                    Timber.i("Ready to logout on all devices");
-                    mForceLogout = false;
-                    logoutOnAllDevices(id);
-                } else {
-                    Timber.i("Successfully logged in");
-                    Map<String, String> map = SharedUtility.splitPayload(status.getPayload());
-                    String userName = map.get("login");
-                    String userEmail = map.get("email");
-                    Activity activity1 = (Activity) getMvpView();
-                    Utility.logInAndOpenChat(activity1, id, userName, userEmail);
-                    SharedUtility.storePassword(activity1, mPlainPassword);
-                    getMvpView().finishView();
-                }
+                Map<String, String> map = SharedUtility.splitPayload(status.getPayload());
+                String userName = map.get("login");
+                String userEmail = map.get("email");
+                Activity activity1 = (Activity) getMvpView();
+                Utility.logInAndOpenChat(activity1, id, userName, userEmail);
+                SharedUtility.storePassword(activity1, mPlainPassword);
+                getMvpView().finishView();
                 break;
             case ApiStatusFactory.STATUS_WRONG_PASSWORD:
                 Timber.d("Wrong password");
@@ -164,7 +165,8 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                 Timber.e(errorMessage);
                 throw new RuntimeException(errorMessage);
             case ApiStatusFactory.STATUS_UNAUTHORIZED:
-                Timber.w("Server's responded with forbidden error: unauthorized");
+                Timber.w("Server's responded with forbidden error: already unauthorized");
+                showSnackbar(R.string.unauthorized_toast_message);
                 break;
             case ApiStatusFactory.STATUS_WRONG_CHANNEL:
                 Timber.w("Server's responded with forbidden error: wrong channel");
@@ -193,10 +195,18 @@ public class LoginPresenter extends BasePresenter<LoginMvpView> {
                 if (presenter != null) {
                     try {
                         JSONObject json = new JSONObject(response.getBody());
+                        if (json.has("check")) {
+                            Timber.d("Check response: %s", response.getBody());
+                            Check check = Check.fromJson(response.getBody());
+                            presenter.onComplete();
+                            presenter.processCheck(check);
+                            return;
+                        }
+
                         if (json.has("code")) {
                             Timber.d("Code response: %s", response.getBody());
                             Status status = Status.fromJson(response.getBody());
-                            presenter.processStatus(status);
+                            presenter.processStatus(status, status.getAction());
                             return;
                         }
 

@@ -51,8 +51,10 @@
     <string name="chat_channel_label">Channel %1$d (%2$d)</string>
     <string name="kicked_toast_message">You\'ve been kicked !</string>
     <string name="logout_toast_message">You\'ve just logged out</string>
+    <string name="logout_on_all_devices_toast_message">You\'ve just logged out on all devices</string>
     <string name="switch_channel_toast_message">Channel\'ve been switched to %d</string>
     <string name="terminate_message">Server shutdown</string>
+    <string name="unauthorized_toast_message">Peer is not logged in</string>
     <string name="warning_snackbar">Calm down!</string>
 
     <string name="button_ok">OK</string>

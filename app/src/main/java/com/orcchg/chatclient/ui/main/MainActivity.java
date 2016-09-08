@@ -2,6 +2,8 @@ package com.orcchg.chatclient.ui.main;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,6 +24,7 @@ import timber.log.Timber;
 
 public class MainActivity extends BaseActivity<MainPresenter> implements MainMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.MAIN_ACTIVITY;
+    public static final String EXTRA_SNACKBAR_MESSAGE_RES_ID = "extra_snackbar_message_res_id";
     static String SHARED_PREFS_KEY_USER_EMAIL;
 
     @Bind(R.id.toolbar) Toolbar mToolbar;
@@ -78,6 +81,11 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     @Override
     protected void onResume() {
         super.onResume();
+        @StringRes int snackbarResId = getIntent().getIntExtra(EXTRA_SNACKBAR_MESSAGE_RES_ID, 0);
+        if (snackbarResId > 0) {
+            showSnackbar(snackbarResId, Snackbar.LENGTH_SHORT);
+        }
+
         mPresenter.init();
         mPresenter.onRetry();
     }

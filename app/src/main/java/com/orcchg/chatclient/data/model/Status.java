@@ -28,12 +28,13 @@ public class Status {
     public static final int ACTION_IS_LOGGED_IN = 6;
     public static final int ACTION_IS_REGISTERED = 7;
     public static final int ACTION_CHECK_AUTH = 8;
-    public static final int ACTION_ALL_PEERS = 9;
-    public static final int ACTION_PRIVATE_REQUEST = 10;
-    public static final int ACTION_PRIVATE_CONFIRM = 11;
-    public static final int ACTION_PRIVATE_ABORT = 12;
-    public static final int ACTION_PRIVATE_PUBKEY = 13;
-    public static final int ACTION_PRIVATE_PUBKEY_EXCHANGE = 14;
+    public static final int ACTION_KICK_BY_AUTH = 9;
+    public static final int ACTION_ALL_PEERS = 10;
+    public static final int ACTION_PRIVATE_REQUEST = 11;
+    public static final int ACTION_PRIVATE_CONFIRM = 12;
+    public static final int ACTION_PRIVATE_ABORT = 13;
+    public static final int ACTION_PRIVATE_PUBKEY = 14;
+    public static final int ACTION_PRIVATE_PUBKEY_EXCHANGE = 15;
     @IntDef({
         ACTION_UNKNOWN,
         ACTION_KICK,
@@ -47,6 +48,7 @@ public class Status {
         ACTION_IS_LOGGED_IN,
         ACTION_IS_REGISTERED,
         ACTION_CHECK_AUTH,
+        ACTION_KICK_BY_AUTH,
         ACTION_ALL_PEERS,
         ACTION_PRIVATE_REQUEST,
         ACTION_PRIVATE_CONFIRM,
