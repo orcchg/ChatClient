@@ -58,7 +58,7 @@ import com.orcchg.jgravatar.Gravatar;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
@@ -94,18 +94,18 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
 
     private @ChatStyle.Style int mDecorateMode = ChatStyle.STYLE_NORMAL;
 
-    @Bind(R.id.root_coordinator) ViewGroup mRootCoordinator;
-    @Bind(R.id.action_container) View mActionContainer;
-    @Bind(R.id.toolbar) Toolbar mToolbar;
-    @Bind(R.id.photo) PhotoItem mPhotoItem;
-    @Bind(R.id.rv_messages) RecyclerView mMessagesView;
-    @Bind(R.id.et_message) EditText mMessagesEditView;
-    @Bind(R.id.btn_send_message) ImageButton mSendMessageButton;
-    @Bind(R.id.btn_clear_message) ImageButton mClearMessageButton;
-    @Bind(R.id.progress) View mProgressView;
-    @Bind(error) View mErrorView;
-    @Bind(R.id.retry_button) Button mRetryButton;
-    @Bind(R.id.optional_text) TextView mOptionalText;
+    @BindView(R.id.root_coordinator) ViewGroup mRootCoordinator;
+    @BindView(R.id.action_container) View mActionContainer;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.photo) PhotoItem mPhotoItem;
+    @BindView(R.id.rv_messages) RecyclerView mMessagesView;
+    @BindView(R.id.et_message) EditText mMessagesEditView;
+    @BindView(R.id.btn_send_message) ImageButton mSendMessageButton;
+    @BindView(R.id.btn_clear_message) ImageButton mClearMessageButton;
+    @BindView(R.id.progress) View mProgressView;
+    @BindView(error) View mErrorView;
+    @BindView(R.id.retry_button) Button mRetryButton;
+    @BindView(R.id.optional_text) TextView mOptionalText;
 
     private LinearLayoutManager mLayoutManager;
     private ProgressDialog mProgressDialog;
@@ -122,10 +122,10 @@ public class ChatActivity extends BaseActivity<ChatPresenter> implements ChatMvp
     @Nullable private DrawerArrowDrawable mDrawerToggle;
 
     @Nullable private SideChatPeersList.PeersAdapter mAdapter;
-    @Nullable @Bind(R.id.rv_peers_list) RecyclerView mList;
-    @Nullable @Bind(R.id.side_menu_container) ViewGroup mSideMenuContainer;
-    @Nullable @Bind(R.id.btni_switch_channel) ButtonItem mSwitchChannelBtnI;
-    @Nullable @Bind(R.id.btni_logout) ButtonItem mLogoutBtnI;
+    @Nullable @BindView(R.id.rv_peers_list) RecyclerView mList;
+    @Nullable @BindView(R.id.side_menu_container) ViewGroup mSideMenuContainer;
+    @Nullable @BindView(R.id.btni_switch_channel) ButtonItem mSwitchChannelBtnI;
+    @Nullable @BindView(R.id.btni_logout) ButtonItem mLogoutBtnI;
 
     private @MenuType int mMenuType;
 

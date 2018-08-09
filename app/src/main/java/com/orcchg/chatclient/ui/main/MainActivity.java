@@ -18,7 +18,7 @@ import com.orcchg.chatclient.util.FrameworkUtility;
 import com.orcchg.chatclient.util.NetworkUtility;
 import com.orcchg.chatclient.util.WindowUtility;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
@@ -27,11 +27,11 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     public static final String EXTRA_SNACKBAR_MESSAGE_RES_ID = "extra_snackbar_message_res_id";
     static String SHARED_PREFS_KEY_USER_EMAIL;
 
-    @Bind(R.id.toolbar) Toolbar mToolbar;
-    @Bind(R.id.progress) View mProgressView;
-    @Bind(R.id.error) View mErrorView;
-    @Bind(R.id.retry_button) Button mRetryButton;
-    @Bind(R.id.optional_text) TextView mOptionalText;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.progress) View mProgressView;
+    @BindView(R.id.error) View mErrorView;
+    @BindView(R.id.retry_button) Button mRetryButton;
+    @BindView(R.id.optional_text) TextView mOptionalText;
 
     private boolean mIsBackPressed;
 
@@ -82,7 +82,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainMvp
     protected void onResume() {
         super.onResume();
         @StringRes int snackbarResId = getIntent().getIntExtra(EXTRA_SNACKBAR_MESSAGE_RES_ID, 0);
-        if (snackbarResId > 0) {
+        if (snackbarResId != 0) {
             showSnackbar(snackbarResId, Snackbar.LENGTH_SHORT);
         }
 

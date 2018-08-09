@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SideChatPeersList extends ChatPeersList {
@@ -130,10 +130,10 @@ public class SideChatPeersList extends ChatPeersList {
 
         class PeerViewHolder extends RecyclerView.ViewHolder {
             private View mRoot;
-            @Bind(R.id.ll_item_container) ViewGroup mContainer;
-            @Bind(R.id.pi_icon) PhotoItem mIcon;
-            @Bind(R.id.tv_label) TextView mLabel;
-            @Bind(R.id.select_indicator) View mSelectIndicator;
+            @BindView(R.id.ll_item_container) ViewGroup mContainer;
+            @BindView(R.id.pi_icon) PhotoItem mIcon;
+            @BindView(R.id.tv_label) TextView mLabel;
+            @BindView(R.id.select_indicator) View mSelectIndicator;
 
             private @ColorInt int mSelectedBackground;
 

@@ -17,17 +17,17 @@ import com.orcchg.chatclient.resources.PhotoItem;
 import com.orcchg.chatclient.util.CommonUtility;
 import com.orcchg.jgravatar.Gravatar;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ChatMessageViewHolder extends ChatBaseViewHolder<MessageVO> {
 
-    @Bind(R.id.photo) PhotoItem mPhotoView;
-    @Bind(R.id.message) MessageView mMessageView;
-    @Bind(R.id.left_container) ViewGroup mLeftContainer;
-    @Bind(R.id.right_container) ViewGroup mRightContainer;
-    @Bind(R.id.left_text) TextView mLeftText;
-    @Bind(R.id.right_text) TextView mRightText;
+    @BindView(R.id.photo) PhotoItem mPhotoView;
+    @BindView(R.id.message) MessageView mMessageView;
+    @BindView(R.id.left_container) ViewGroup mLeftContainer;
+    @BindView(R.id.right_container) ViewGroup mRightContainer;
+    @BindView(R.id.left_text) TextView mLeftText;
+    @BindView(R.id.right_text) TextView mRightText;
 
     private final long mUserId;
 

@@ -46,4 +46,5 @@
 # platform version.  We know about them, and they are safe.
 -dontwarn android.support.**
 
+-keep class **$$ViewBinder { *; }
 -keep class com.orcchg.chatclient.data.model.* { *; }

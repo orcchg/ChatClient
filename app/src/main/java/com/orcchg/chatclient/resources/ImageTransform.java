@@ -153,7 +153,8 @@ public class ImageTransform {
             return result;
         }
 
-        @Override public String getId() {
+        @Override
+        public String getId() {
             return "com.orcchg.chatclient.resources.ImageTransform: CropTransform_" + mCropType;
         }
     }

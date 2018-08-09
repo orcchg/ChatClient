@@ -20,23 +20,23 @@ import com.orcchg.chatclient.ui.base.BaseActivity;
 import com.orcchg.chatclient.util.FrameworkUtility;
 import com.orcchg.chatclient.util.NetworkUtility;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class RegistrationActivity extends BaseActivity<RegistrationPresenter> implements RegistrationMvpView {
     public static final int REQUEST_CODE = FrameworkUtility.RequestCode.REGISTRATION_ACTIVITY;
 
-    @Bind(R.id.toolbar) Toolbar mToolbar;
-    @Bind(R.id.login) AutoCompleteTextView mLoginView;
-    @Bind(R.id.email) AutoCompleteTextView mEmailView;
-    @Bind(R.id.password) EditText mPasswordView;
-    @Bind(R.id.sign_up_button) Button mSignUpButton;
-    @Bind(R.id.form_container_scroll) View mFormContainer;
-    @Bind(R.id.progress) View mProgressView;
-    @Bind(R.id.error) View mErrorView;
-    @Bind(R.id.retry_button) Button mRetryButton;
-    @Bind(R.id.optional_text) TextView mOptionalText;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.login) AutoCompleteTextView mLoginView;
+    @BindView(R.id.email) AutoCompleteTextView mEmailView;
+    @BindView(R.id.password) EditText mPasswordView;
+    @BindView(R.id.sign_up_button) Button mSignUpButton;
+    @BindView(R.id.form_container_scroll) View mFormContainer;
+    @BindView(R.id.progress) View mProgressView;
+    @BindView(R.id.error) View mErrorView;
+    @BindView(R.id.retry_button) Button mRetryButton;
+    @BindView(R.id.optional_text) TextView mOptionalText;
 
     private View mFocusedView;
 
