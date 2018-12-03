@@ -26,4 +26,8 @@
     <dimen name="text_error_size">14sp</dimen>
     <dimen name="text_button_size">16sp</dimen>
     <dimen name="text_time_size">12dp</dimen>
+
+    <!-- Used only on Tablets -->
+    <dimen name="content_bottom_margin">20dp</dimen>
+    <dimen name="peers_list_width">200dp</dimen>
 </resources>
